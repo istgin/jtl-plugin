@@ -19,7 +19,6 @@ class ByjunoInvoice extends ByjunoBase
   public function redirectOnPaymentSuccess(): bool
   {
     //$args = func_get_args();
-    //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$args', print_r($args,true));
     return true;
   }
 
@@ -31,7 +30,6 @@ class ByjunoInvoice extends ByjunoBase
   public function redirectOnCancel(): bool
   {
     //$args = func_get_args();
-    //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$args', print_r($args,true));
     return true;
   }
 
