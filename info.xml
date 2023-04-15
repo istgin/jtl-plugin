@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding="ISO-8859-1"?>
+<jtlshopplugin>
+    <Name>Byjuno Plugin</Name>
+    <Description><![CDATA[Byjuno Plugin für JTL Shop 5]]></Description>
+    <Author>Byjuno AG</Author>
+    <URL>http://www.byjuno.ch</URL>
+    <XMLVersion>100</XMLVersion>
+    <MinShopVersion>5.2.0</MinShopVersion>
+    <Version>1.0.0</Version>
+    <PluginID>byjuno</PluginID>
+    <CreateDate>2023-04-10</CreateDate>
+    <Install>
+
+        <Locales>
+            <Variable>
+                <Name>byjuno</Name>
+                <Description>Byjuno</Description>
+                <VariableLocalized iso="GER">Byjuno</VariableLocalized>
+                <VariableLocalized iso="ENG">Byjuno</VariableLocalized>
+            </Variable>
+        </Locales>
+
+        <Hooks>
+            <Hook id="181">OrderStatusChange.php</Hook>
+        </Hooks>
+
+        <PaymentMethod>
+
+            <Method>
+                <Name>Byjuno Invoice</Name>
+                <PictureURL>../mcpay/logos/ccard2.png</PictureURL>
+                <Sort>10</Sort>
+                <SendMail>0</SendMail>
+                <Provider>Byjuno</Provider>
+                <TSCode>INVOICE</TSCode>
+                <PreOrder>1</PreOrder>
+                <Soap>0</Soap>
+                <Curl>1</Curl>
+                <Sockets>0</Sockets>
+                <ClassFile>ByjunoInvoice.php</ClassFile>
+                <ClassName>ByjunoInvoice</ClassName>
+                <TemplateFile>template/byjuno_invoice.tpl</TemplateFile>
+                <AdditionalTemplateFile>template/byjuno_invoice.tpl</AdditionalTemplateFile>
+                <MethodLanguage iso="GER">
+                    <Name>Byjuno Invoice</Name>
+                    <ChargeName>Byjuno Invoice</ChargeName>
+                    <InfoText>Byjuno Invoice infotext</InfoText>
+                </MethodLanguage>
+                <MethodLanguage iso="ENG">
+                    <Name>Byjuno Invoice</Name>
+                    <ChargeName>Byjuno Invoice</ChargeName>
+                    <InfoText>Byjuno Invoice infotext</InfoText>
+                </MethodLanguage>
+                <Setting type="text" initialValue="Bestellung {$orderid}" sort="20" conf="Y">
+                    <Name>Buchungstext</Name>
+                    <Description>ID der Bestellung. {$orderid} ist Platzhalter für die BestellNr.</Description>
+                    <ValueName>paytext</ValueName>z
+                </Setting>
+            </Method>
+
+            <Method>
+                <Name>Byjuno Installemnt</Name>
+                <PictureURL>../mcpay/logos/sepa2.png</PictureURL>
+                <Sort>20</Sort>
+                <SendMail>0</SendMail>
+                <Provider>Byjuno</Provider>
+                <TSCode>INVOICE</TSCode>
+                <PreOrder>1</PreOrder>
+                <Soap>0</Soap>
+                <Curl>1</Curl>
+                <Sockets>0</Sockets>
+                <ClassFile>ByjunoInstallemnt.php</ClassFile>
+                <ClassName>ByjunoInstallemnt</ClassName>
+                <TemplateFile>template/byjuno_installment.tpl</TemplateFile>
+                <AdditionalTemplateFile>template/byjuno_installment.tpl</AdditionalTemplateFile>
+                <MethodLanguage iso="GER">
+                    <Name>Byjuno Installemnt</Name>
+                    <ChargeName>Byjuno Installemnt</ChargeName>
+                    <InfoText>Byjuno Installemnt infotext</InfoText>
+                </MethodLanguage>
+                <MethodLanguage iso="ENG">
+                    <Name>Byjuno Invoice</Name>
+                    <ChargeName>Byjuno Installemnt</ChargeName>
+                    <InfoText>Byjuno Installemnt infotext</InfoText>
+                </MethodLanguage>
+                <Setting type="text" initialValue="Bestellung {$orderid}" sort="20" conf="Y">
+                    <Name>Buchungstext</Name>
+                    <Description>ID der Bestellung. {$orderid} ist Platzhalter für die BestellNr.</Description>
+                    <ValueName>paytext</ValueName>
+                </Setting>
+            </Method>
+
+        </PaymentMethod>
+
+        <Adminmenu>
+            <Settingslink sort="1">
+                <Name>Einstellungen</Name>
+                <Setting type="text" initialValue="Y" sort="10" conf="N">
+                    <Name>Byjuno settings</Name>
+                    <Description>Byjuno settings.</Description>
+                    <ValueName>byjuno_headline</ValueName>
+                </Setting>
+                <Setting type="selectbox" initialValue="true" sort="20" conf="Y">
+                    <Name>Byjuno aktivieren</Name>
+                    <Description>Soll Byjuno aktiviert werden?</Description>
+                    <ValueName>byjuno_aktiv</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Ja</Option>
+                        <Option value="false" sort="2">Nein</Option>
+                    </SelectboxOptions>
+                </Setting>
+            </Settingslink>
+
+            <Customlink sort="2">
+                <Name>Logs</Name>
+                <Filename>logs.php</Filename>
+            </Customlink>
+
+        </Adminmenu>
+    </Install>
+</jtlshopplugin>
