@@ -61,7 +61,51 @@ class ByjunoBase extends Method
 
     }
 
+    /**
+     * validateAdditional
+     *
+     * @return bool
+     */
+    public function validateAdditional(): bool
+    {
+        $_SESSION["byjuno_error_msg"] = "";
+        $_SESSION["byjuno_gender"] = "";
+        $_SESSION["byjuno_bithday"] = "";
+        $_SESSION["byjuno_payment"] = "";
+        $_SESSION["byjuno_send_method"] = "";
+        if (!isset($_POST["byjuno_form"])) {
+            return true;
+        }
+        if (empty($_POST["byjuno_gender"])) {
+            $_SESSION["byjuno_error_msg"] = "Gender is required";
+            return false;
+        } else {
+            $_SESSION["byjuno_gender"] = $_POST["byjuno_gender"];
+        }
 
+        if (empty($_POST["byjuno_year"]) || empty($_POST["byjuno_month"]) || empty($_POST["byjuno_day"])) {
+            $_SESSION["byjuno_error_msg"] =  "Birthday is incorrect";
+            return false;
+        } else {
+            $_SESSION["byjuno_gender"] = $_POST["byjuno_year"].'-'.$_POST["byjuno_month"].'-'.$_POST["byjuno_day"];
+        }
+
+        if (empty($_POST["byjuno_payment"])) {
+            $_SESSION["byjuno_error_msg"] =  "Please select repayment";
+            return false;
+        } else {
+            $_SESSION["byjuno_payment"] = $_POST["byjuno_payment"];
+        }
+
+        if (empty($_POST["byjuno_send_method"])) {
+            $_SESSION["byjuno_error_msg"] =  "Please select invoice delivery method";
+            return false;
+        } else {
+            $_SESSION["byjuno_send_method"] = $_POST["byjuno_send_method"];
+        }
+       // $_SESSION["byjuno_error_msg"]  = "XXX";
+        return true;
+    }
     /**
      * handleAdditional
      *
@@ -75,100 +119,18 @@ class ByjunoBase extends Method
         // HERE SOMEHOW add form
     //    exit('aaa');
         global $smarty;
-        $smarty->assign('byjuno_iframe', "somehow show custom fields if possible");
-        $_SESSION['mcpay_error'] = array();
-        //echo '<pre>'.print_r($req,true).'</pre>';
-        //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$req', print_r($req,true));
-
-        if (empty($_SESSION['Zahlungsart']->nWaehrendBestellung)){
-            //return true; // hide zusatzschritt if after order
+        $result = false;
+        if (!empty($_SESSION["byjuno_error_msg"])) {
+            $smarty->assign('byjuno_error', $_SESSION["byjuno_error_msg"]);
+            $_SESSION["byjuno_error_msg"] = "";
+            $result = false;
+        } else if (!isset($_POST["byjuno_form"])) {
+            $result = false;
+        } else {
+            $result = true;
         }
-        // load texts
-        $this->loadTexts();
-
-        if (!empty($req['zahlungsartzusatzschritt'])) {
-            if (!empty($req['mcpay_card_reuse']) && $req['mcpay_card_reuse'] != 'new') {
-                // no inputs needed
-                $_SESSION['mcpay']['CardReuse'] = TRUE;
-            } else {
-                $_SESSION['mcpay']['CardReuse'] = FALSE;
-
-                // holder
-                if (empty($req['mcpay_card_holder'])) {
-                    $_SESSION['mcpay_error'][] = $this->getText('mcpayCardHolderError', 'Card Holder is mandatory.');
-                } else {
-                    $_SESSION['mcpay']['CardHolder'] = $req['mcpay_card_holder'];
-                }
-                // pan
-                if (empty($req['mcpay_card_pan'])) {
-                    $_SESSION['mcpay_error'][] = $this->getText('mcpayCardPanError', 'Card Pan is mandatory.');
-                } else {
-                    $_SESSION['mcpay']['CardPan'] = $req['mcpay_card_pan'];
-                }
-                // month
-                if (empty($req['mcpay_card_month'])) {
-                    $_SESSION['mcpay_error'][] = $this->getText('mcpayExpireMonthError', 'Expire Month is mandatory.');
-                } else {
-                    $_SESSION['mcpay']['CardMonth'] = $req['mcpay_card_month'];
-                }
-                // year
-                if (empty($req['mcpay_card_year'])) {
-                    $_SESSION['mcpay_error'][] = $this->getText('mcpayExpireYearError', 'Expire Year is mandatory.');
-                } else {
-                    $_SESSION['mcpay']['CardYear'] = $req['mcpay_card_year'];
-                }
-                // cvc
-                if (empty($req['mcpay_card_cvc'])) {
-                    $_SESSION['mcpay_error'][] = $this->getText('mcpayCardCVCError', 'Card CVC is mandatory.');
-                } else {
-                    $_SESSION['mcpay']['CardCVC'] = $req['mcpay_card_cvc'];
-                }
-                // token
-                if (empty($req['mcpay_card_token']) && empty($_SESSION['mcpay_error'])) {
-                    $_SESSION['mcpay_error'][] = $this->getText('mcpayCardTokenError', 'Card Token is mandatory.');
-                } else {
-                    $_SESSION['mcpay']['CardToken'] = $req['mcpay_card_token'];
-                }
-
-                // save paymethod
-                if (!empty($req['mcpay_card_remember'])) {
-                    // save before using card
-                    //$res = $this->setPaydata('ccard', $_SESSION['mcpay']);
-                    //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$res', print_r($res,true).$this->paymethod);
-                    $_SESSION['mcpay']['CardRemember'] = TRUE;
-                } else {
-                    $_SESSION['mcpay']['CardRemember'] = FALSE;
-                }
-            }
-
-
-            // error handling
-            if (empty($_SESSION['mcpay_error'])) {
-                return TRUE; // hide zusatzschritt
-            } else {
-                return TRUE;
-                //echo '<pre>'.print_r($_SESSION['mcpay_error'],true).'</pre>';
-                $error_msg = '';
-                foreach ($_SESSION['mcpay_error'] AS $k => $v) {
-                    $error_msg .= $v.'<br>';
-                }
-
-                global $smarty;
-                $smarty->assign('error_msg', $error_msg);
-            }
-        }
-
-        if (!empty($_SESSION['mcpay']['lastError'])){
-            $error_msg = $_SESSION['mcpay']['lastError'];
-            global $smarty;
-            $smarty->assign('error_msg', $error_msg);
-        }
-
-        $order = new Bestellung();
-     //   $this->preparePaymentProcess($order);
-     //   $this->McPay->log->log(__CLASS__.'->'.__FUNCTION__,'Zusatzschritt');
-        //echo '<pre>'.print_r($_SESSION['mcpay'],true).'</pre>';
-        return FALSE; // show zusatzschritt
+        $smarty->assign('byjuno_iframe', "show fields");
+        return $result;
     }
 
 
@@ -488,16 +450,6 @@ class ByjunoBase extends Method
             }
         }
         */
-    }
-
-    /**
-     * validateAdditional
-     *
-     * @return bool
-     */
-    public function validateAdditional(): bool
-    {
-        return TRUE; // hide zusatzschritt after validating
     }
 
     /**
