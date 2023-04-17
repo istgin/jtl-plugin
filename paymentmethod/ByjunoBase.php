@@ -3,15 +3,10 @@ declare(strict_types=1);
 
 namespace Plugin\byjuno\paymentmethod;
 
-use Exception;
-use JTL\Alert\Alert;
 use JTL\Checkout\Bestellung;
-use JTL\Checkout\ZahlungsInfo;
-use JTL\Helpers\Text;
-use JTL\Shop;
-use JTL\Smarty\JTLSmarty;
-use JTL\Plugin\Payment\Method;
 use JTL\Plugin\Helper as PluginHelper;
+use JTL\Plugin\Payment\Method;
+use JTL\Shop;
 use stdClass;
 
 
@@ -73,6 +68,7 @@ class ByjunoBase extends Method
         $_SESSION["byjuno_bithday"] = "";
         $_SESSION["byjuno_payment"] = "";
         $_SESSION["byjuno_send_method"] = "";
+        $_SESSION["byjyno_terms"] = "";
         if (!isset($_POST["byjuno_form"])) {
             return true;
         }
@@ -82,30 +78,38 @@ class ByjunoBase extends Method
         } else {
             $_SESSION["byjuno_gender"] = $_POST["byjuno_gender"];
         }
-
         if (empty($_POST["byjuno_year"]) || empty($_POST["byjuno_month"]) || empty($_POST["byjuno_day"])) {
-            $_SESSION["byjuno_error_msg"] =  "Birthday is incorrect";
+            $_SESSION["byjuno_error_msg"] = "Birthday is incorrect";
             return false;
         } else {
-            $_SESSION["byjuno_gender"] = $_POST["byjuno_year"].'-'.$_POST["byjuno_month"].'-'.$_POST["byjuno_day"];
+            $_SESSION["byjuno_gender"] = $_POST["byjuno_year"] . '-' . $_POST["byjuno_month"] . '-' . $_POST["byjuno_day"];
         }
 
         if (empty($_POST["byjuno_payment"])) {
-            $_SESSION["byjuno_error_msg"] =  "Please select repayment";
+            $_SESSION["byjuno_error_msg"] = "Please select repayment";
             return false;
         } else {
             $_SESSION["byjuno_payment"] = $_POST["byjuno_payment"];
         }
 
         if (empty($_POST["byjuno_send_method"])) {
-            $_SESSION["byjuno_error_msg"] =  "Please select invoice delivery method";
+            $_SESSION["byjuno_error_msg"] = "Please select invoice delivery method";
             return false;
         } else {
             $_SESSION["byjuno_send_method"] = $_POST["byjuno_send_method"];
         }
-       // $_SESSION["byjuno_error_msg"]  = "XXX";
+
+        if (empty($_POST["byjyno_terms"]) || $_POST["byjyno_terms"] != "terms_conditions") {
+            $_SESSION["byjuno_error_msg"] = "You must agree with byjuno terms and conditions";
+            return false;
+        } else {
+            $_SESSION["byjyno_terms"] = $_POST["byjyno_terms"];
+        }
+
+
         return true;
     }
+
     /**
      * handleAdditional
      *
@@ -117,11 +121,38 @@ class ByjunoBase extends Method
     {
         // return TRUE; if no custom fields shown
         // HERE SOMEHOW add form
-    //    exit('aaa');
+        //    exit('aaa');
         global $smarty;
+
+        $b2b = false;//Configuration::get("BYJUNO_B2B") == 'enable';
+        $byjuno_invoice = false;
+        $byjuno_installment = false;
+        // if (Configuration::get("single_invoice") == 'enable' || Configuration::get("byjuno_invoice") == 'enable') {
+        $byjuno_invoice = true;
+        //  }
+
+        /*  if (Configuration::get("installment_3") == 'enable'
+              || Configuration::get("installment_36") == 'enable'
+              || Configuration::get("installment_12") == 'enable'
+              || Configuration::get("installment_24") == 'enable'
+              || Configuration::get("installment_4x12") == 'enable'
+          ) {*/
+        $byjuno_installment = true;
+        // }
+        if ($b2b) {
+            // $invoice_address = new Address($this->context->cart->id_address_invoice);
+            //  if (!empty($invoice_address->company)) {
+            $byjuno_installment = false;
+            //  }
+        }
+
+        $byjuno_invoice = true;
+        $byjuno_installment = true;
+
         $result = false;
+        $byjuno_error = "";
         if (!empty($_SESSION["byjuno_error_msg"])) {
-            $smarty->assign('byjuno_error', $_SESSION["byjuno_error_msg"]);
+            $byjuno_error = $_SESSION["byjuno_error_msg"];
             $_SESSION["byjuno_error_msg"] = "";
             $result = false;
         } else if (!isset($_POST["byjuno_form"])) {
@@ -129,10 +160,114 @@ class ByjunoBase extends Method
         } else {
             $result = true;
         }
-        $smarty->assign('byjuno_iframe', "show fields");
+        $lang = 'de';
+
+        $payment = 'invoice';
+        $selected_payments_invoice = Array();
+        $selected_payments_installment = Array();
+        $langtoc = "DE";
+
+
+        $years = Array(1990, 2000);
+        $months = Array(1, 2);
+        $days = Array(1, 2);
+        $tm = strtotime("1990-01-01");
+        $invoice_send = "email";
+        $selected_gender = 'Mr.';
+        $byjuno_years = date("Y", $tm);
+        $byjuno_months = date("m", $tm);
+        $byjuno_days = date("d", $tm);
+        $paymentMethod = Array();
+        $values = array(
+            'byjuno_error' => $byjuno_error,
+            'payment' => $payment,
+            'invoice_send' => $invoice_send,
+            'byjuno_allowpostal' => 1,
+            'byjuno_gender_birthday' => 1,
+            'email' => 'test@byjuno.ch',
+            'address' => 'XXXX',
+            'l_year' => $this->l("Year"),
+            'years' => $years,
+            'sl_year' => $byjuno_years,
+            'l_month' => $this->l("Month"),
+            'months' => $months,
+            'sl_month' => $byjuno_months,
+            'l_day' => $this->l("Day"),
+            'days' => $days,
+            'sl_day' => $byjuno_days,
+            'sl_gender' => $selected_gender,
+            'l_select_payment_plan' => $this->l("Select payment plan"),
+            'l_select_invoice_delivery_method' => $this->l("Select invoice delivery method"),
+            'l_gender' => $this->l("Gender"),
+            'l_male' => $this->l("Male"),
+            'l_female' => $this->l("Female"),
+            'l_date_of_birth' => $this->l("Date of Birth"),
+            'l_i_agree_with_terms_and_conditions' => $this->l("I agree with terms and conditions"),
+            'l_other_payment_methods' => $this->l("Other payment methods"),
+            'l_i_confirm_my_order' => $this->l("I confirm my order"),
+            'l_your_shopping_cart_is_empty' => $this->l("Your shopping cart is empty."),
+            'l_by_email' => $this->l("By email"),
+            'l_by_post' => $this->l("By post"),
+            'l_you_must_agree_terms_conditions' => $this->l("You must agree terms conditions"),
+        );
+        if ($byjuno_invoice) {
+            if ($b2b /*&& !empty($invoice_address->company)*/) {
+                $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 1);
+                $tocUrl = 'https://byjuino.ch';//Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
+                $values['selected_payments_invoice'] = $selected_payments_invoice;
+                $values['toc_url_invoice'] = $tocUrl;
+            } else {
+                // if (Configuration::get("byjuno_invoice") == 'enable') {
+                $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Invoice (with partial payment option)'), 'id' => 'byjuno_invoice', "selected" => 0);
+                //  }
+                // if (Configuration::get("single_invoice") == 'enable') {
+                $selected_payments_invoice[] = Array('name' => $this->l('Byjuno Single Invoice'), 'id' => 'single_invoice', "selected" => 0);
+                //  }
+                $tocUrl = 'https://byjuino.ch'; //Configuration::get('BYJUNO_TOC_INVOICE_' . $langtoc);
+
+                $selected_payments_invoice[0]["selected"] = 1;
+                $values['selected_payments_invoice'] = $selected_payments_invoice;
+                $values['toc_url_invoice'] = $tocUrl;
+            }
+        }
+
+        if ($byjuno_installment) {
+            //  if (Configuration::get("installment_3") == 'enable') {
+            $selected_payments_installment[] = Array('name' => $this->l('3 installments'), 'id' => 'installment_3', "selected" => 0);
+            // }
+            //  if (Configuration::get("installment_36") == 'enable') {
+            $selected_payments_installment[] = Array('name' => $this->l('36 installments'), 'id' => 'installment_36', "selected" => 0);
+            // }
+            // if (Configuration::get("installment_12") == 'enable') {
+            $selected_payments_installment[] = Array('name' => $this->l('12 installments'), 'id' => 'installment_12', "selected" => 0);
+            //  }
+            //  if (Configuration::get("installment_24") == 'enable') {
+            $selected_payments_installment[] = Array('name' => $this->l('24 installments'), 'id' => 'installment_24', "selected" => 0);
+            //  }
+            //  if (Configuration::get("installment_4x12") == 'enable') {
+            $selected_payments_installment[] = Array('name' => $this->l('4 installments in 12 months'), 'id' => 'installment_4x12', "selected" => 0);
+            //   }
+            $tocUrl = 'https://byjuino.ch'; //Configuration::get('BYJUNO_TOC_INSTALLMENT_' . $langtoc);
+            $selected_payments_installment[0]["selected"] = 1;
+
+            $values['selected_payments_installment'] = $selected_payments_installment;
+            $values['toc_url_installment'] = $tocUrl;
+        }
+        $values["byjuno_iframe"] = true;
+        //  echo "<pre>";
+        //var_dump($values);
+        //  echo "</pre>";
+        $smarty->assign(
+            $values
+        );
+        //  $smarty->assign('byjuno_iframe', "show fields");
         return $result;
     }
 
+    function l($text)
+    {
+        return $text;;
+    }
 
     /**
      * getPluginVersion
@@ -179,15 +314,15 @@ class ByjunoBase extends Method
             $sql = '
         UPDATE `tbestellung` 
         SET `dBezahltDatum` = NOW(),
-          `cStatus` = "'.$status.'",
+          `cStatus` = "' . $status . '",
           `cAbgeholt` = "N"
           ';
             if (!empty($comment)) {
                 //$sql .= ', `cKommentar` = "'.addslashes(utf8_decode($comment)).'" ';
-                $sql .= ', `cKommentar` = "'.addslashes(($comment)).'" ';
+                $sql .= ', `cKommentar` = "' . addslashes(($comment)) . '" ';
             }
-            $sql.= 'WHERE `cBestellNr` = "'.addslashes($orderId).'"';
-            if ($this->McPay->debug) $this->McPay->log->debug(__CLASS__.'->'.__FUNCTION__.'->sql: '.print_r($sql, true));
+            $sql .= 'WHERE `cBestellNr` = "' . addslashes($orderId) . '"';
+            if ($this->McPay->debug) $this->McPay->log->debug(__CLASS__ . '->' . __FUNCTION__ . '->sql: ' . print_r($sql, true));
             Shop::Container()->getDB()->query($sql, 3);
         }
         return TRUE;
@@ -204,55 +339,55 @@ class ByjunoBase extends Method
     function getUserDataFromOrder($order, $config)
     {
         //echo '<pre>'.print_r($config,true).'</pre>';
-       // $this->McPay->setConfig($config);
+        // $this->McPay->setConfig($config);
 
         //echo '<pre>'.print_r($_SESSION['Kunde'],true).'</pre>';
-        $custID  = $_SESSION['Kunde']->kKunde;
+        $custID = $_SESSION['Kunde']->kKunde;
         $orderId = $order->cBestellNr;
         if (empty($orderId)) $orderId = baueBestellnummer();
 
         if (empty($_SESSION['Kunde'])) { // guest order
-            $custID = 'guest-'.$orderId;
+            $custID = 'guest-' . $orderId;
         } else {
-            $orderId .= '-'.$custID;
+            $orderId .= '-' . $custID;
         }
-      //  $custID = $this->McPay->unifyID($custID);
+        //  $custID = $this->McPay->unifyID($custID);
 
         $currency = $_SESSION['Waehrung']->getCode(); //cISO;
-        $amount   = $order->fGesamtsummeKundenwaehrung; // In customer currency
+        $amount = $order->fGesamtsummeKundenwaehrung; // In customer currency
         if (empty($amount)) $amount = $_SESSION["Warenkorb"]->gibGesamtsummeWaren(true);
-        $amount   = round($amount * 100);
+        $amount = round($amount * 100);
 
-        $user     = $_SESSION['Kunde'];
-        $oPlugin  = $this->getPluginObj($order);
+        $user = $_SESSION['Kunde'];
+        $oPlugin = $this->getPluginObj($order);
         $chksumData = array(
-            'amount'        => $amount,
-            'currency'      => $currency,
-            'iso'           => $user->cLand,
-            'host'          => $_SERVER['HTTP_HOST'],
-            'project'       => $config['project'],
-            'shoptype'      => 'jtl',
-            'shopversion'   => (string)(JTL_VERSION/100).'.'.JTL_MINOR_VERSION,
-            'plugintype'    => 'API',
+            'amount' => $amount,
+            'currency' => $currency,
+            'iso' => $user->cLand,
+            'host' => $_SERVER['HTTP_HOST'],
+            'project' => $config['project'],
+            'shoptype' => 'jtl',
+            'shopversion' => (string)(JTL_VERSION / 100) . '.' . JTL_MINOR_VERSION,
+            'plugintype' => 'API',
             'pluginversion' => implode('.', str_split((string)$oPlugin->nVersion)),
         );
         $userData = array(
-            'company'    => $user->cFirma,
-            'firstName'  => $user->cVorname,
-            'lastName'   => $user->cNachname,
+            'company' => $user->cFirma,
+            'firstName' => $user->cVorname,
+            'lastName' => $user->cNachname,
             'salutation' => $user->cAnrede == 'm' ? 'MR' : 'MRS',
-            'street'     => $user->cStrasse.' '.$user->cHausnummer,
-            'zip'        => $user->cPLZ,
-            'city'       => $user->cOrt,
-            'country'    => $user->cLand,
-            'email'      => $user->cMail,
-            'ip'         => '', //$_SESSION['oBesucher']->cIP,
-            'id'         => "XXXX",
-            'order_id'   => $orderId,
-            'lang'       => $config['lang'],
-            'amount'     => $amount,
-            'currency'   => $currency,
-            'chksum'     => $chksumData, // request security
+            'street' => $user->cStrasse . ' ' . $user->cHausnummer,
+            'zip' => $user->cPLZ,
+            'city' => $user->cOrt,
+            'country' => $user->cLand,
+            'email' => $user->cMail,
+            'ip' => '', //$_SESSION['oBesucher']->cIP,
+            'id' => "XXXX",
+            'order_id' => $orderId,
+            'lang' => $config['lang'],
+            'amount' => $amount,
+            'currency' => $currency,
+            'chksum' => $chksumData, // request security
         );
         if (empty($userData['ip'])) $userData['ip'] = $_SERVER['REMOTE_ADDR']; // Falls IP Leer, dann aus dem Server holen
         //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$userData', print_r($userData,true));
@@ -263,9 +398,9 @@ class ByjunoBase extends Method
      * handleNotification
      *
      * @param \Bestellung $order
-     * @param string      $paymentHash
-     * @param array       $args
-     * @param bool        $returnURL
+     * @param string $paymentHash
+     * @param array $args
+     * @param bool $returnURL
      *
      * @return string|void
      */
@@ -288,7 +423,7 @@ class ByjunoBase extends Method
         $byjunoOrder->error = '1';// text default NULL,
         $byjunoOrder->response = '1';// text default NULL,
         $byjunoOrder->request = '1';// text default NULL,
-       // $byjunoOrder->dLetzterBlock = 'NOW()';
+        // $byjunoOrder->dLetzterBlock = 'NOW()';
         Shop::Container()->getDB()->insert('xplugin_byjyno_orders', $byjunoOrder);
     }
 
@@ -297,79 +432,79 @@ class ByjunoBase extends Method
         if (!empty($_SESSION["change_paid"])) {
             $this->addS4Log($order->kBestellung, "S3");
             return;
-          //  $this->setOrderStatusToPaid($order);
+            //  $this->setOrderStatusToPaid($order);
         }
         $crlf = "\r\n";
         //$args = func_get_args();
         //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$args', print_r($args, true).print_r($order,true));
-        if ($this->McPay->debug) $this->McPay->log->debug(__CLASS__.'->'.__FUNCTION__.'->args: '.print_r($args, true));
+        if ($this->McPay->debug) $this->McPay->log->debug(__CLASS__ . '->' . __FUNCTION__ . '->args: ' . print_r($args, true));
 
         $orderID = $order->cBestellNr;
         if (empty($orderID) && !empty($args['orderid'])) {
             $orderID = $args['orderid'];
             if (strpos($orderID, '-')) {
-                $p       = explode('-', $orderID);
+                $p = explode('-', $orderID);
                 $orderID = $p[0];
             }
         }
 
         $trxID = $args['transactionId'];
-        if (empty($trxID) || $trxID == '__transactionId__'){
+        if (empty($trxID) || $trxID == '__transactionId__') {
             $trxID = $args['auth'];
         }
 
-        $incomingPayment           = new stdClass();
-        $incomingPayment->fBetrag  = $order->fGesamtsummeKundenwaehrung;
-        $incomingPayment->cISO     = $order->Waehrung->cISO;
+        $incomingPayment = new stdClass();
+        $incomingPayment->fBetrag = $order->fGesamtsummeKundenwaehrung;
+        $incomingPayment->cISO = $order->Waehrung->cISO;
         $incomingPayment->cHinweis = $trxID;
 
-        $return = 'status=ok'.$crlf;
+        $return = 'status=ok' . $crlf;
 
-        switch($args['function']){
+        switch ($args['function']) {
             case 'custinfo':
                 break;
             case 'billing':
-                $url   = $this->getReturnURL($order);
+                $url = $this->getReturnURL($order);
 
                 $this->addIncomingPayment($order, $incomingPayment);
                 $this->setOrderStatusToPaid($order);
                 $this->sendConfirmationMail($order);
                 $this->updateNotificationID($order->kBestellung, $paymentHash);
 
-                $return = 'status=ok'.$crlf // ok  | error
-                    .'url='.$url.$crlf
-                    .'target=_top'.$crlf
-                    .'forward=1'.$crlf
-                    .'message=OK'.$crlf;
+                $return = 'status=ok' . $crlf // ok  | error
+                    . 'url=' . $url . $crlf
+                    . 'target=_top' . $crlf
+                    . 'forward=1' . $crlf
+                    . 'message=OK' . $crlf;
                 break;
 
             case 'storno':
-                $incomingPayment->fBetrag  = ($args['amount'] / 100) * -1;
-                $incomingPayment->cISO     = $args['currency'];
+                $incomingPayment->fBetrag = ($args['amount'] / 100) * -1;
+                $incomingPayment->cISO = $args['currency'];
 
                 $this->addIncomingPayment($order, $incomingPayment);
                 $this->setStatus(BESTELLUNG_STATUS_STORNO, $orderID);
                 break;
 
             case 'backpay':
-                $incomingPayment->fBetrag  = ($args['amount'] / 100);
-                $incomingPayment->cISO     = $args['currency'];
+                $incomingPayment->fBetrag = ($args['amount'] / 100);
+                $incomingPayment->cISO = $args['currency'];
 
                 $this->addIncomingPayment($order, $incomingPayment);
                 $this->setStatus(BESTELLUNG_STATUS_IN_BEARBEITUNG, $orderID);
                 break;
 
             case 'refund':
-                $incomingPayment->fBetrag  = ($args['amount'] / 100) * -1;
-                $incomingPayment->cISO     = $args['currency'];
+                $incomingPayment->fBetrag = ($args['amount'] / 100) * -1;
+                $incomingPayment->cISO = $args['currency'];
 
                 $this->addIncomingPayment($order, $incomingPayment);
                 $this->setStatus(BESTELLUNG_STATUS_IN_BEARBEITUNG, $orderID);
                 break;
 
             case 'quit':
-                $incomingPayment->fBetrag  = $order->fGesamtsummeKundenwaehrung * -1;
-                $incomingPayment->cISO     = $order->Waehrung->cISO;
+                $incomingPayment->fBetrag = $order->fGesamtsummeKundenwaehrung * -1;
+                $incomingPayment->cISO = $order->Waehrung->cISO;
 
                 $this->addIncomingPayment($order, $incomingPayment);
                 $this->setStatus(BESTELLUNG_STATUS_STORNO, $orderID);
@@ -385,9 +520,9 @@ class ByjunoBase extends Method
                 $this->setStatus(BESTELLUNG_STATUS_IN_BEARBEITUNG, $orderID);
                 break;
         }
-        if ($this->McPay->debug) $this->McPay->log->debug(__CLASS__.'->'.__FUNCTION__.'->return: '.print_r($return,true));
+        if ($this->McPay->debug) $this->McPay->log->debug(__CLASS__ . '->' . __FUNCTION__ . '->return: ' . print_r($return, true));
 
-        if ($returnURL){
+        if ($returnURL) {
             //header('Location: '.$return->forwardURL);
         }
 
@@ -494,8 +629,8 @@ class ByjunoBase extends Method
      * finalizeOrder
      *
      * @param \Bestellung $order
-     * @param string      $hash
-     * @param array       $args
+     * @param string $hash
+     * @param array $args
      *
      * @return bool|true
      */
@@ -504,7 +639,7 @@ class ByjunoBase extends Method
         $order->cBestellNr = getOrderHandler()->createOrderNo();
         // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
         $_SESSION["change_paid"] = true;
-       // exit();
+        // exit();
         //$args = func_get_args();
         //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$args', print_r($args,true).print_r($_POST,true));
 
@@ -535,7 +670,7 @@ class ByjunoBase extends Method
 //    return $oPlugin;
 
         $pluginID = PluginHelper::getIDByModuleID($this->moduleID);
-        $plugin   = PluginHelper::getLoaderByPluginID($pluginID)->init($pluginID);
+        $plugin = PluginHelper::getLoaderByPluginID($pluginID)->init($pluginID);
 
         return $plugin;
     }
@@ -554,11 +689,11 @@ class ByjunoBase extends Method
 //      $oPlugin = $this->getPluginObj($order);
 //    }
 //    if (!is_object($oPlugin)) return FALSE;
-        if (is_object($oPlugin)){
-            $plugin   = $oPlugin;
+        if (is_object($oPlugin)) {
+            $plugin = $oPlugin;
         } else {
             $pluginID = PluginHelper::getIDByModuleID($this->moduleID);
-            $plugin   = PluginHelper::getLoaderByPluginID($pluginID)->init($pluginID);
+            $plugin = PluginHelper::getLoaderByPluginID($pluginID)->init($pluginID);
         }
         $conf = $plugin->getConfig()->getAssoc();
         //echo '<pre>'.print_r($conf,true).'</pre>';
@@ -574,13 +709,13 @@ class ByjunoBase extends Method
         //echo $conf[$payConfKey.'_paytext']->value;
 
         //$conf                   = $oPlugin->oPluginEinstellungAssoc_arr;
-        $conf['plugin_url']     = $paths->getFrontendURL();
-        $conf['plugin_url']     = str_replace('frontend', 'mcpay', $conf['plugin_url']);
-        $conf['plugin_url']     = str_replace('http://', $_SERVER['REQUEST_SCHEME'].'://', $conf['plugin_url']);
-        $conf['plugin_path']    = $paths->getFrontendPath();
-        $conf['plugin_path']    = str_replace('frontend', 'mcpay', $conf['plugin_path']);
+        $conf['plugin_url'] = $paths->getFrontendURL();
+        $conf['plugin_url'] = str_replace('frontend', 'mcpay', $conf['plugin_url']);
+        $conf['plugin_url'] = str_replace('http://', $_SERVER['REQUEST_SCHEME'] . '://', $conf['plugin_url']);
+        $conf['plugin_path'] = $paths->getFrontendPath();
+        $conf['plugin_path'] = str_replace('frontend', 'mcpay', $conf['plugin_path']);
         $conf['plugin_shopurl'] = $paths->getShopURL();
-        $conf['plugin_shopurl'] = str_replace('http://', $_SERVER['REQUEST_SCHEME'].'://', $conf['plugin_shopurl']);
+        $conf['plugin_shopurl'] = str_replace('http://', $_SERVER['REQUEST_SCHEME'] . '://', $conf['plugin_shopurl']);
         if (empty($conf['payformid'])) {
             $conf['payformid'] = 'form_payment_extra'; // jtl default
         }
@@ -589,8 +724,7 @@ class ByjunoBase extends Method
         //echo '<pre>'.print_r($oPlugin,true).'</pre>';
         $lang = $_SESSION['cISOSprache'] == 'ger' ? 'DE' : 'EN';
 
-        $config = array(
-            /*
+        $config = array(/*
             'project'         => $conf['project_id']->value,
             'accessKey'       => $conf['accesskey']->value,
             'testMode'        => $conf['testmode']->value,
@@ -635,7 +769,7 @@ class ByjunoBase extends Method
 //    $texts = $oPlugin->oPluginSprachvariableAssoc_arr;
 
         $pluginID = PluginHelper::getIDByModuleID($this->moduleID);
-        $plugin   = PluginHelper::getLoaderByPluginID($pluginID)->init($pluginID);
+        $plugin = PluginHelper::getLoaderByPluginID($pluginID)->init($pluginID);
         $texts = $plugin->getLocalization()->getTranslations();
 
         //echo '<pre>'.print_r($texts,true).'</pre>';
@@ -680,16 +814,16 @@ class ByjunoBase extends Method
         header('Content-Type: text/css');
         $req = $_REQUEST;
         if (empty($req['sn'])) {
-            if ($this->debug) $this->McPay->log->debug(__CLASS__.'->'.__FUNCTION__.'->Req empty: '.print_r($req['sn'],true));
+            if ($this->debug) $this->McPay->log->debug(__CLASS__ . '->' . __FUNCTION__ . '->Req empty: ' . print_r($req['sn'], true));
             echo '403';
             return FALSE;
         }
 
         $config = $this->getPluginConf('', $oPlugin);
         //echo '<pre>'.print_r($config,true).'</pre>';
-        $filename = $config['plugin_pathcss'].$req['sn'].'';
+        $filename = $config['plugin_pathcss'] . $req['sn'] . '';
         if (!file_exists($filename)) {
-            if ($this->debug) $this->McPay->log->debug(__CLASS__.'->'.__FUNCTION__.'->File not found: '.print_r($filename,true));
+            if ($this->debug) $this->McPay->log->debug(__CLASS__ . '->' . __FUNCTION__ . '->File not found: ' . print_r($filename, true));
             echo '404';
             return FALSE;
         }
@@ -697,9 +831,9 @@ class ByjunoBase extends Method
         $content = file_get_contents($filename);
 
         if (strpos($filename, 'mcpay_formstyle_') !== FALSE) {
-            $repl    = array(
+            $repl = array(
                 //"url('../fonts/" => "url('".$config['plugin_urlfont'],
-                'url("../img/icon_' => 'url("'.$config['plugin_urlcss'].'../img/icon_',
+                'url("../img/icon_' => 'url("' . $config['plugin_urlcss'] . '../img/icon_',
             );
             $content = strtr($content, $repl);
         }
@@ -718,32 +852,32 @@ class ByjunoBase extends Method
         header('Content-Type: application/javascript');
         $req = $_REQUEST;
         if (empty($req['sn'])) {
-            if ($this->debug) $this->McPay->log->debug(__CLASS__.'->'.__FUNCTION__.'->Req empty: '.print_r($req['sn'],true));
+            if ($this->debug) $this->McPay->log->debug(__CLASS__ . '->' . __FUNCTION__ . '->Req empty: ' . print_r($req['sn'], true));
             echo '403';
             return FALSE;
         }
 
         $config = $this->getPluginConf('', $oPlugin);
         //echo '<pre>'.print_r($config,true).'</pre>';
-        $filename = $config['plugin_pathjs'].$req['sn'].'';
+        $filename = $config['plugin_pathjs'] . $req['sn'] . '';
         if (!file_exists($filename)) {
-            if ($this->debug) $this->McPay->log->debug(__CLASS__.'->'.__FUNCTION__.'->File not found: '.print_r($filename,true));
+            if ($this->debug) $this->McPay->log->debug(__CLASS__ . '->' . __FUNCTION__ . '->File not found: ' . print_r($filename, true));
             echo '404';
             return FALSE;
         }
 
         $content = file_get_contents($filename);
         if (strpos($filename, 'executer.js') !== FALSE) {
-            $repl    = array(
-                'dt_method_mcpay_ccard'                => $config['ccardformid'],
-                'dt_method_mcpay_sepa'                 => $config['sepaformid'],
-                '"/xxx/payment/getscript/sn/' => '"'.$config['plugin_urlshop'].'/xxx?sn=',
+            $repl = array(
+                'dt_method_mcpay_ccard' => $config['ccardformid'],
+                'dt_method_mcpay_sepa' => $config['sepaformid'],
+                '"/xxx/payment/getscript/sn/' => '"' . $config['plugin_urlshop'] . '/xxx?sn=',
             );
             $content = strtr($content, $repl);
         }
         if (strpos($filename, 'check.js') !== FALSE) {
-            $repl    = array(
-                'payformid'             => $config['payformid'],
+            $repl = array(
+                'payformid' => $config['payformid'],
                 'mcpay_card_token-form' => $config['payformid'],
             );
             $content = strtr($content, $repl);
@@ -776,23 +910,23 @@ class ByjunoBase extends Method
 
         // check if entry for paymethod and user already exists and update the old one
         $sql = 'SELECT * FROM xplugin_mcpay_mircopayment_paydata 
-            WHERE `user_id` = "'.(int)$userId.'" 
-            AND `paymethod` = "'.addslashes($paymethod).'"
+            WHERE `user_id` = "' . (int)$userId . '" 
+            AND `paymethod` = "' . addslashes($paymethod) . '"
             ';
         $res = Shop::Container()->getDB()->query($sql, 2);
         //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$res', print_r($res,true));
 
         if (!empty($res)) {
             $sql = 'UPDATE xplugin_mcpay_mircopayment_paydata 
-              SET `data` = "'.addslashes(serialize($paydata)).'" 
-              WHERE `user_id` = "'.(int)$userId.'" 
-              AND `paymethod` = "'.addslashes($paymethod).'"
+              SET `data` = "' . addslashes(serialize($paydata)) . '" 
+              WHERE `user_id` = "' . (int)$userId . '" 
+              AND `paymethod` = "' . addslashes($paymethod) . '"
             ';
         } else {
             $sql = 'INSERT INTO xplugin_mcpay_mircopayment_paydata 
-              SET `user_id` = "'.(int)$userId.'",
-              `paymethod` = "'.addslashes($paymethod).'",
-              `data` = "'.addslashes(serialize($paydata)).'" 
+              SET `user_id` = "' . (int)$userId . '",
+              `paymethod` = "' . addslashes($paymethod) . '",
+              `data` = "' . addslashes(serialize($paydata)) . '" 
             ';
         }
         //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$sql', print_r($sql,true));
@@ -809,9 +943,9 @@ class ByjunoBase extends Method
     function getPaydata($paymethod)
     {
         $userId = $_SESSION['Kunde']->kKunde;
-        $sql    = 'SELECT * FROM xplugin_mcpay_mircopayment_paydata 
-            WHERE `user_id` = "'.(int)$userId.'"
-            AND `paymethod` = "'.addslashes($paymethod).'" 
+        $sql = 'SELECT * FROM xplugin_mcpay_mircopayment_paydata 
+            WHERE `user_id` = "' . (int)$userId . '"
+            AND `paymethod` = "' . addslashes($paymethod) . '" 
             ';
         //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$sql', print_r($sql,true));
         $paydata = Shop::Container()->getDB()->query($sql, 9);
