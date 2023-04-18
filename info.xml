@@ -18,6 +18,144 @@
                 <VariableLocalized iso="GER">Byjuno</VariableLocalized>
                 <VariableLocalized iso="ENG">Byjuno</VariableLocalized>
             </Variable>
+            <Variable>
+                <Name>Year</Name>
+                <Description>Year</Description>
+                <VariableLocalized iso="GER">Jahr</VariableLocalized>
+                <VariableLocalized iso="ENG">Year</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Month</Name>
+                <Description>Month</Description>
+                <VariableLocalized iso="GER">Month</VariableLocalized>
+                <VariableLocalized iso="ENG">Month</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Day</Name>
+                <Description>Day</Description>
+                <VariableLocalized iso="GER">Day</VariableLocalized>
+                <VariableLocalized iso="ENG">Day</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Selectpaymentplan</Name>
+                <Description>Selectpaymentplan</Description>
+                <VariableLocalized iso="GER">Select payment plan</VariableLocalized>
+                <VariableLocalized iso="ENG">Select payment plan</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Selectinvoicedeliverymethod</Name>
+                <Description>Selectinvoicedeliverymethod</Description>
+                <VariableLocalized iso="GER">Select invoice delivery method</VariableLocalized>
+                <VariableLocalized iso="ENG">Select invoice delivery method</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Gender</Name>
+                <Description>Gender</Description>
+                <VariableLocalized iso="GER">Gender</VariableLocalized>
+                <VariableLocalized iso="ENG">Gender</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Male</Name>
+                <Description>Male</Description>
+                <VariableLocalized iso="GER">Male</VariableLocalized>
+                <VariableLocalized iso="ENG">Male</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Female</Name>
+                <Description>Female</Description>
+                <VariableLocalized iso="GER">Female</VariableLocalized>
+                <VariableLocalized iso="ENG">Female</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>DateofBirth</Name>
+                <Description>DateofBirth</Description>
+                <VariableLocalized iso="GER">Date of Birth</VariableLocalized>
+                <VariableLocalized iso="ENG">Date of Birth</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Iagreewithtermsandconditions</Name>
+                <Description>Iagreewithtermsandconditions</Description>
+                <VariableLocalized iso="GER">I agree with terms and conditions</VariableLocalized>
+                <VariableLocalized iso="ENG">I agree with terms and conditions</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Otherpaymentmethods</Name>
+                <Description>Otherpaymentmethods</Description>
+                <VariableLocalized iso="GER">"Other payment methods</VariableLocalized>
+                <VariableLocalized iso="ENG">"Other payment methods</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Iconfirmmyorder</Name>
+                <Description>Iconfirmmyorder</Description>
+                <VariableLocalized iso="GER">I confirm my order</VariableLocalized>
+                <VariableLocalized iso="ENG">I confirm my order</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Yourshoppingcartisempty</Name>
+                <Description>Yourshoppingcartisempty</Description>
+                <VariableLocalized iso="GER">Your shopping cart is empty.</VariableLocalized>
+                <VariableLocalized iso="ENG">Your shopping cart is empty.</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Byemail</Name>
+                <Description>Byemail</Description>
+                <VariableLocalized iso="GER">By email</VariableLocalized>
+                <VariableLocalized iso="ENG">By email</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Bypost</Name>
+                <Description>Bypost</Description>
+                <VariableLocalized iso="GER">By post</VariableLocalized>
+                <VariableLocalized iso="ENG">By post</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>Youmustagreetermsconditions</Name>
+                <Description>Youmustagreetermsconditions</Description>
+                <VariableLocalized iso="GER">You must agree terms conditions</VariableLocalized>
+                <VariableLocalized iso="ENG">You must agree terms conditions</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>ByjunoSingleInvoice</Name>
+                <Description>ByjunoSingleInvoice</Description>
+                <VariableLocalized iso="GER">Byjuno Single Invoice</VariableLocalized>
+                <VariableLocalized iso="ENG">Byjuno Single Invoice</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>ByjunoInvoice</Name>
+                <Description>ByjunoInvoice</Description>
+                <VariableLocalized iso="GER">Byjuno Invoice (With partial payment option)</VariableLocalized>
+                <VariableLocalized iso="ENG">Byjuno Invoice (With partial payment option)</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>3installments</Name>
+                <Description>3installments</Description>
+                <VariableLocalized iso="GER">3 installments</VariableLocalized>
+                <VariableLocalized iso="ENG">3 installments</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>36installments</Name>
+                <Description>36installments</Description>
+                <VariableLocalized iso="GER">36 installments</VariableLocalized>
+                <VariableLocalized iso="ENG">36 installments</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>12installments</Name>
+                <Description>12installments</Description>
+                <VariableLocalized iso="GER">12 installments</VariableLocalized>
+                <VariableLocalized iso="ENG">12 installments</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>24installments</Name>
+                <Description>24installments</Description>
+                <VariableLocalized iso="GER">24 installments</VariableLocalized>
+                <VariableLocalized iso="ENG">24 installments</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>4installmentsin12months</Name>
+                <Description>4installmentsin12months</Description>
+                <VariableLocalized iso="GER">4 installments in 12 months</VariableLocalized>
+                <VariableLocalized iso="ENG">4 installments in 12 months</VariableLocalized>
+            </Variable>
         </Locales>
 
         <Hooks>
