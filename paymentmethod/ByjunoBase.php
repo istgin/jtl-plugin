@@ -9,6 +9,7 @@ use JTL\Plugin\Payment\Method;
 use JTL\Shop;
 use stdClass;
 
+require_once(dirname(__FILE__).'/../api/byjuno.php');
 
 class ByjunoBase extends Method
 {
@@ -479,6 +480,7 @@ class ByjunoBase extends Method
      */
     public function finalizeOrder(Bestellung $order, string $hash, array $args): bool
     {
+        // S1 & S3 here
         $order->cBestellNr = getOrderHandler()->createOrderNo();
         // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
         $_SESSION["change_paid"] = true;

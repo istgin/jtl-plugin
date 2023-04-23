@@ -5,6 +5,7 @@ namespace Plugin\byjuno\paymentmethod;
 
 use JTL\Alert\Alert;
 use JTL\Checkout\Bestellung;
+use JTL\Session\Frontend;
 use JTL\Shop;
 use stdClass;
 use Exception;
@@ -34,6 +35,18 @@ class ByjunoInvoice extends ByjunoBase
   }
 
   public function isSelectable() : bool {
+    $cart = Frontend::getCart();
+    $customer = Frontend::getCustomer();
+    $delivery = Frontend::getDeliveryAddress();
+    $amount = $cart->gibGesamtsummeWaren(true);
+    try {
+      $request = CreateJTLCDPShopRequest($customer, $cart, $delivery, "CREDITCHECK");
+    } catch (Exception $e) {
+      return false;
+    }
+    echo '<pre>';
+    var_dump($request);
+    exit();
     //TODO CDP
     return true;
   }
@@ -41,22 +54,10 @@ class ByjunoInvoice extends ByjunoBase
   public function preparePaymentProcess(Bestellung $order): void
   {
     $config = $this->getPluginConf($order);
-    $linkHelper = Shop::Container()->getLinkService();
-    if (false) {
-      Shop::Container()->getAlertService()->addAlert(
-          Alert::TYPE_ERROR,
-          "XXXX",
-          'paymentFailed'
-      );
-      return;
-      \header('Location: ' . $linkHelper->getStaticRoute('bestellvorgang.php'), true, 303);
-      exit();
-    } else {
-      $hash = $this->generateHash($order);
-      $returUrl = $this->getNotificationURL($hash);
-      header('location:'.$returUrl);
-      exit();
-    }
+    $hash = $this->generateHash($order);
+    $returUrl = $this->getNotificationURL($hash);
+    header('location:'.$returUrl);
+    exit();
     //echo '<pre>'.print_r($config,true).'</pre>';
     //echo '<pre>'.print_r($order,true).'</pre>';
     //mail('webmaster@web-dezign.de', __CLASS__.'->'.__FUNCTION__.'->$order', print_r($order,true));
