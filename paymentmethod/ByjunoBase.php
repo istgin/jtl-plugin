@@ -82,7 +82,7 @@ class ByjunoBase extends Method
             $_SESSION["byjuno_error_msg"] = "Birthday is incorrect";
             return false;
         } else {
-            $_SESSION["byjuno_gender"] = $_POST["byjuno_year"] . '-' . $_POST["byjuno_month"] . '-' . $_POST["byjuno_day"];
+            $_SESSION["byjuno_bithday"] = $_POST["byjuno_year"] . '-' . $_POST["byjuno_month"] . '-' . $_POST["byjuno_day"];
         }
 
         if (empty($_POST["byjuno_payment"])) {
@@ -482,6 +482,19 @@ class ByjunoBase extends Method
     {
         // S1 & S3 here
         $order->cBestellNr = getOrderHandler()->createOrderNo();
+        try {
+            $s1 = CreateJTLS1ShopRequest($order,
+                "ORDERREQUEST",
+                $_SESSION["byjuno_payment"],
+                $_SESSION["byjuno_send_method"],
+                "",
+                "",
+                $_SESSION["byjuno_gender"],
+                $_SESSION["byjuno_bithday"]);
+            var_dump($_SESSION["byjuno_payment"], $_SESSION["byjuno_send_method"], $_SESSION["byjuno_gender"], $_SESSION["byjuno_bithday"], $s1);
+            exit();
+        } catch (\Exception $e) {
+        }
         // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
         $_SESSION["change_paid"] = true;
 

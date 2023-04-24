@@ -138,7 +138,7 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
     $request->setFirstName(html_entity_decode(($customer->cVorname), ENT_COMPAT, 'UTF-8'));
     $request->setLastName(html_entity_decode($customer->cNachname, ENT_COMPAT, 'UTF-8'));
     $request->setFirstLine(html_entity_decode(trim($customer->cStrasse), ENT_COMPAT, 'UTF-8'));
-    $request->setHouseNumber(html_entity_decode(trim($customer->cHausnummer.' '.$customer->AdressZusatz), ENT_COMPAT, 'UTF-8'));
+    $request->setHouseNumber(html_entity_decode(trim($customer->cHausnummer), ENT_COMPAT, 'UTF-8'));
     $request->setCountryCode(strtoupper($customer->cLand));
     $request->setPostCode($customer->cPLZ);
     $request->setTown(html_entity_decode($customer->cOrt, ENT_COMPAT, 'UTF-8'));
@@ -198,7 +198,7 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
     $request->setExtraInfo($extraInfo);
 
     $extraInfo["Name"] = 'DELIVERY_HOUSENUMBER';
-    $extraInfo["Value"] = html_entity_decode(trim($address->cHausnummer.' '.$address->AdressZusatz), ENT_COMPAT, 'UTF-8');
+    $extraInfo["Value"] = html_entity_decode(trim($address->cHausnummer), ENT_COMPAT, 'UTF-8');
     $request->setExtraInfo($extraInfo);
 
     $extraInfo["Name"] = 'DELIVERY_COUNTRYCODE';
@@ -219,6 +219,161 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
 
     if (!empty($address->cFirma)) {
         $request->setDeliveryCompanyName1($address->cFirma);
+    }
+
+    $extraInfo["Name"] = 'CONNECTIVTY_MODULE';
+    $extraInfo["Value"] = 'Byjuno JTL 5.2 module 1.0.0';
+    $request->setExtraInfo($extraInfo);
+
+    return $request;
+
+}
+
+
+/**
+ * @param JTL\Checkout\Bestellung $order
+ * @param $msgtype
+ * @param $repayment
+ * @param $invoiceDelivery
+ * @param $riskOwner
+ * @param $transaction
+ * @param $selected_gender
+ * @param $selected_birthday
+ * @return ByjunoRequest
+ * @throws Exception
+ */
+function CreateJTLS1ShopRequest($order, $msgType, $repayment, $invoiceDelivery, $riskOwner, $transaction, $selected_gender = "", $selected_birthday = "") {
+
+    $request = new ByjunoRequest();
+    $request->setClientId("XXX");
+    $request->setUserID("XXX");
+    $request->setPassword("XXX");
+    $request->setVersion("1.00");
+    try {
+        $request->setRequestEmail("XXX");
+    } catch (Exception $e) {
+
+    }
+    $custId = uniqid("customer_");
+    $request->setRequestId($custId);
+    $request->setCustomerReference($custId);
+    $request->setFirstName(html_entity_decode($order->oRechnungsadresse->cVorname, ENT_COMPAT, 'UTF-8'));
+    $request->setLastName(html_entity_decode($order->oRechnungsadresse->cNachname, ENT_COMPAT, 'UTF-8'));
+    $request->setFirstLine(html_entity_decode(trim($order->oRechnungsadresse->cStrasse), ENT_COMPAT, 'UTF-8'));
+    $request->setHouseNumber(html_entity_decode(trim($order->oRechnungsadresse->cHausnummer), ENT_COMPAT, 'UTF-8'));
+    $request->setCountryCode(strtoupper($order->oRechnungsadresse->cLand));
+    $request->setPostCode($order->oRechnungsadresse->cPLZ);
+    $request->setTown(html_entity_decode($order->oRechnungsadresse->cOrt, ENT_COMPAT, 'UTF-8'));
+    $request->setLanguage("DE"/*Context::getContext()->language->iso_code*/);
+    $request->setTelephonePrivate($order->oRechnungsadresse->cTel);
+    $request->setMobile($order->oRechnungsadresse->cMobil);
+    $request->setEmail($order->oRechnungsadresse->cMail);
+
+    if (!empty($order->oRechnungsadresse->cFirma)) {
+        $request->setCompanyName1($order->oRechnungsadresse->cFirma);
+    }
+    /**
+     * ask var if possible
+     */
+    /*
+    if (!empty($invoice_address->vat_number)) {
+        $request->setCompanyVatId($invoice_address->vat_number);
+    }
+    */
+    if ($selected_gender != "") {
+        $request->setGender($selected_gender);
+    }
+    if ($selected_birthday != "") {
+        $request->setDateOfBirth($selected_birthday);
+    }
+
+    $extraInfo["Name"] = 'ORDERCLOSED';
+    $extraInfo["Value"] = 'NO';
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'ORDERAMOUNT';
+    $extraInfo["Value"] = $order->fGesamtsumme;
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'ORDERCURRENCY';
+    $extraInfo["Value"] = $order->Waehrung->getCode();
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'IP';
+    $extraInfo["Value"] = byjunoGetClientIp();
+    $request->setExtraInfo($extraInfo);
+
+    /*
+    if (Configuration::get("INTRUM_ENABLETMX") == 'true' && Configuration::get("INTRUM_TMXORGID") != '' && !empty($cookie->intrumId)) {
+        $extraInfo["Name"] = 'DEVICE_FINGERPRINT_ID';
+        $extraInfo["Value"] = $cookie->intrumId;
+        $request->setExtraInfo($extraInfo);
+    }
+*/
+
+    /* shipping information */
+    $extraInfo["Name"] = 'DELIVERY_FIRSTNAME';
+    $extraInfo["Value"] = html_entity_decode($order->Lieferadresse->cVorname, ENT_COMPAT, 'UTF-8');
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'DELIVERY_LASTNAME';
+    $extraInfo["Value"] = html_entity_decode($order->Lieferadresse->cNachname, ENT_COMPAT, 'UTF-8');
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'DELIVERY_FIRSTLINE';
+    $extraInfo["Value"] = html_entity_decode(trim($order->Lieferadresse->cStrasse), ENT_COMPAT, 'UTF-8');
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'DELIVERY_HOUSENUMBER';
+    $extraInfo["Value"] = html_entity_decode(trim($order->Lieferadresse->cHausnummer), ENT_COMPAT, 'UTF-8');
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'DELIVERY_COUNTRYCODE';
+    $extraInfo["Value"] = strtoupper($order->Lieferadresse->cLand);
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'DELIVERY_POSTCODE';
+    $extraInfo["Value"] = $order->Lieferadresse->cPLZ;
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'DELIVERY_TOWN';
+    $extraInfo["Value"] = html_entity_decode($order->Lieferadresse->cOrt, ENT_COMPAT, 'UTF-8');
+    $request->setExtraInfo($extraInfo);
+
+    $extraInfo["Name"] = 'MESSAGETYPESPEC';
+    $extraInfo["Value"] = $msgType;//'ORDERREQUEST';
+    $request->setExtraInfo($extraInfo);
+
+    if (!empty($order->Lieferadresse->cFirma)) {
+        $request->setDeliveryCompanyName1($order->Lieferadresse->cFirma);
+    }
+
+    $extraInfo["Name"] = 'PAYMENTMETHOD';
+    $extraInfo["Value"] = mapMethod($repayment);
+    $request->setExtraInfo($extraInfo);
+
+    if ($repayment != "") {
+        $extraInfo["Name"] = 'REPAYMENTTYPE';
+        $extraInfo["Value"] = mapRepayment($repayment);
+        $request->setExtraInfo($extraInfo);
+    }
+
+    if ($invoiceDelivery == 'postal') {
+        $extraInfo["Name"] = 'PAPER_INVOICE';
+        $extraInfo["Value"] = 'YES';
+        $request->setExtraInfo($extraInfo);
+    }
+
+    if ($riskOwner != "") {
+        $extraInfo["Name"] = 'RISKOWNER';
+        $extraInfo["Value"] = $riskOwner;
+        $request->setExtraInfo($extraInfo);
+    }
+
+    if (!empty($transaction)) {
+        $extraInfo["Name"] = 'TRANSACTIONNUMBER';
+        $extraInfo["Value"] = $transaction;
+        $request->setExtraInfo($extraInfo);
     }
 
     $extraInfo["Name"] = 'CONNECTIVTY_MODULE';

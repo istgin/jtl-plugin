@@ -40,14 +40,11 @@ class ByjunoInvoice extends ByjunoBase
     $delivery = Frontend::getDeliveryAddress();
     $amount = $cart->gibGesamtsummeWaren(true);
     try {
+      //TODO CDP
       $request = CreateJTLCDPShopRequest($customer, $cart, $delivery, "CREDITCHECK");
     } catch (Exception $e) {
       return false;
     }
-    echo '<pre>';
-    var_dump($request);
-    exit();
-    //TODO CDP
     return true;
   }
 
