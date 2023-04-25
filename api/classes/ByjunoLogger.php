@@ -24,7 +24,7 @@ class ByjunoLogger
         return self::$instance;
     }
 
-    public function addS4Log($array)
+    public function addSOrderLog($array)
     {
         $byjunoOrder = new stdClass();
         $byjunoOrder->order_id = (string)$array['order_id'];// varchar(250) default NULL,

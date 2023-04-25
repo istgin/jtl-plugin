@@ -242,7 +242,7 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
  * @return ByjunoRequest
  * @throws Exception
  */
-function CreateJTLS1ShopRequest($order, $msgType, $repayment, $invoiceDelivery, $riskOwner, $transaction, $selected_gender = "", $selected_birthday = "") {
+function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDelivery, $riskOwner, $transaction, $selected_gender = "", $selected_birthday = "") {
 
     $request = new ByjunoRequest();
     $request->setClientId("XXX");

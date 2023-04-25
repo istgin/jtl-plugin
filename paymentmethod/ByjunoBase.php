@@ -464,7 +464,7 @@ class ByjunoBase extends Method
         // S1 & S3 here
         $order->cBestellNr = getOrderHandler()->createOrderNo();
         try {
-            $requestS1 = CreateJTLS1ShopRequest($order,
+            $requestS1 = CreateJTLOrderShopRequest($order,
                 "ORDERREQUEST",
                 $_SESSION["byjuno_payment"],
                 $_SESSION["byjuno_send_method"],
@@ -493,7 +493,7 @@ class ByjunoBase extends Method
                 $transaction = $byjunoResponse->getTransactionNumber();
             }
             $byjunoLogger = ByjunoLogger::getInstance();
-            $byjunoLogger->addS4Log(Array(
+            $byjunoLogger->addSOrderLog(Array(
                 "order_id" => $order->cBestellNr,
                 "request_type" => "S1",
                 "firstname" => $requestS1->getFirstName(),
@@ -517,17 +517,66 @@ class ByjunoBase extends Method
             if (byjunoIsStatusOk($status, "BYJUNO_S2_IJ_ACCEPT")) {
                 $accept = "IJ";
             }
-
+            $accept = 'CLIENT';
             if ($accept == "") {
                 return false;
             }
-            exit('aaanext');
-        } catch (\Exception $e) {
-        }
-        // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
-        $_SESSION["change_paid"] = true;
 
-        return true;
+            $requestS3 = CreateJTLOrderShopRequest($order,
+                "ORDERREQUEST",
+                $_SESSION["byjuno_payment"],
+                $_SESSION["byjuno_send_method"],
+                $accept,
+                $transaction,
+                $_SESSION["byjuno_gender"],
+                $_SESSION["byjuno_bithday"]);
+            $typeS3 = "S3 Request";
+            $b2b = true;
+            $xmlS3 = "";
+            if ($b2b && !empty($requestS1->getCompanyName1())) {
+                $typeS3 = "S3 Request B2B";
+                $xmlS3 = $requestS3->createRequestCompany();
+            } else {
+                $xmlS3 = $requestS3->createRequest();
+            }
+
+            $responseS3 = $byjunoCommunicator->sendRequest($xml, (int)30);
+            $statusS3 = 0;
+            if ($responseS3) {
+                $byjunoResponseS3 = new ByjunoResponse();
+                $byjunoResponseS3->setRawResponse($responseS3);
+                $byjunoResponseS3->processResponse();
+                $statusS3 = $byjunoResponseS3->getCustomerRequestStatus();
+            }
+            $byjunoLogger->addSOrderLog(Array(
+                "order_id" => $order->cBestellNr,
+                "request_type" => "S3",
+                "firstname" => $requestS1->getFirstName(),
+                "lastname" => $requestS1->getLastName(),
+                "town" => $requestS1->getTown(),
+                "postcode" => $requestS1->getPostCode(),
+                "street" => trim($requestS1->getFirstLine().' '.$requestS1->getHouseNumber()),
+                "country" => $requestS1->getCountryCode(),
+                "ip" => byjunoGetClientIp(),
+                "status" => $status,
+                "request_id" => $requestS1->getRequestId(),
+                "type" => $typeS3,
+                "error" => ($status == 0) ? "ERROR" : "",
+                "response" => $response,
+                "request" => $xmlS3
+            ));
+
+            if (byjunoIsStatusOk($statusS3, "BYJUNO_S3_ACCEPT")) {
+                $_SESSION["change_paid"] = true;
+                return true;
+            }
+            // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
+            return false;
+        } catch (\Exception $e) {
+
+            // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
+            return false;
+        }
     }
 
     /**
