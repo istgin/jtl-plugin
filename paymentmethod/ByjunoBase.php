@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Plugin\byjuno\paymentmethod;
 
+use ByjunoCommunicator;
+use ByjunoLogger;
+use ByjunoResponse;
 use JTL\Checkout\Bestellung;
 use JTL\Plugin\Helper as PluginHelper;
 use JTL\Plugin\Payment\Method;
@@ -396,32 +399,10 @@ class ByjunoBase extends Method
      * @return string|void
      */
 
-    public function addS4Log($orderId, $request_type)
-    {
-        $byjunoOrder = new stdClass();
-        $byjunoOrder->order_id = (string)$orderId;// varchar(250) default NULL,
-        $byjunoOrder->request_type = $request_type;// varchar(250) default NULL,
-        $byjunoOrder->firstname = '1';// varchar(250) default NULL,
-        $byjunoOrder->lastname = '1';// varchar(250) default NULL,
-        $byjunoOrder->town = '1';// varchar(250) default NULL,
-        $byjunoOrder->postcode = '1';// varchar(250) default NULL,
-        $byjunoOrder->street = '1';// varchar(250) default NULL,
-        $byjunoOrder->country = '1';// varchar(250) default NULL,
-        $byjunoOrder->ip = '1';// varchar(250) default NULL,
-        $byjunoOrder->status = '1';// varchar(250) default NULL,
-        $byjunoOrder->request_id = '1';// varchar(250) default NULL,
-        $byjunoOrder->type = '1';// varchar(250) default NULL,
-        $byjunoOrder->error = '1';// text default NULL,
-        $byjunoOrder->response = '1';// text default NULL,
-        $byjunoOrder->request = '1';// text default NULL,
-        // $byjunoOrder->dLetzterBlock = 'NOW()';
-        Shop::Container()->getDB()->insert('xplugin_byjyno_orders', $byjunoOrder);
-    }
-
     function handleNotification(Bestellung $order, string $paymentHash, array $args, bool $returnURL = FALSE): void
     {
         if (!empty($_SESSION["change_paid"])) {
-            $this->addS4Log($order->kBestellung, "S3");
+           // $this->addS4Log($order->kBestellung, "S3");
             return;
             //  $this->setOrderStatusToPaid($order);
         }
@@ -483,7 +464,7 @@ class ByjunoBase extends Method
         // S1 & S3 here
         $order->cBestellNr = getOrderHandler()->createOrderNo();
         try {
-            $s1 = CreateJTLS1ShopRequest($order,
+            $requestS1 = CreateJTLS1ShopRequest($order,
                 "ORDERREQUEST",
                 $_SESSION["byjuno_payment"],
                 $_SESSION["byjuno_send_method"],
@@ -491,8 +472,56 @@ class ByjunoBase extends Method
                 "",
                 $_SESSION["byjuno_gender"],
                 $_SESSION["byjuno_bithday"]);
-            var_dump($_SESSION["byjuno_payment"], $_SESSION["byjuno_send_method"], $_SESSION["byjuno_gender"], $_SESSION["byjuno_bithday"], $s1);
-            exit();
+            $type = "S1 Request";
+            $b2b = true; //TODO ettings
+            if ($b2b && !empty($requestS1->getCompanyName1())) {
+                $type = "S1 Request B2B";
+                $xml = $requestS1->createRequestCompany();
+            } else {
+                $xml = $requestS1->createRequest();
+            }
+            $byjunoCommunicator = new ByjunoCommunicator();
+            $byjunoCommunicator->setServer('test'); //TODO ettings
+            $response = $byjunoCommunicator->sendRequest($xml, (int)30); //TODO ettings
+
+            $transaction = "";
+            if ($response) {
+                $byjunoResponse = new ByjunoResponse();
+                $byjunoResponse->setRawResponse($response);
+                $byjunoResponse->processResponse();
+                $status = $byjunoResponse->getCustomerRequestStatus();
+                $transaction = $byjunoResponse->getTransactionNumber();
+            }
+            $byjunoLogger = ByjunoLogger::getInstance();
+            $byjunoLogger->addS4Log(Array(
+                "order_id" => $order->cBestellNr,
+                "request_type" => "S1",
+                "firstname" => $requestS1->getFirstName(),
+                "lastname" => $requestS1->getLastName(),
+                "town" => $requestS1->getTown(),
+                "postcode" => $requestS1->getPostCode(),
+                "street" => trim($requestS1->getFirstLine().' '.$requestS1->getHouseNumber()),
+                "country" => $requestS1->getCountryCode(),
+                "ip" => byjunoGetClientIp(),
+                "status" => $status,
+                "request_id" => $requestS1->getRequestId(),
+                "type" => $type,
+                "error" => ($status == 0) ? "ERROR" : "",
+                "response" => $response,
+                "request" => $xml
+            ));
+            $accept = "";
+            if (byjunoIsStatusOk($status, "BYJUNO_S2_MERCHANT_ACCEPT")) {
+                $accept = "CLIENT";
+            }
+            if (byjunoIsStatusOk($status, "BYJUNO_S2_IJ_ACCEPT")) {
+                $accept = "IJ";
+            }
+
+            if ($accept == "") {
+                return false;
+            }
+            exit('aaanext');
         } catch (\Exception $e) {
         }
         // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!

@@ -1,4 +1,7 @@
 <?php
+
+use JTL\Shop;
+
 /**
  * Created by Byjuno.
  * User: i.sutugins
@@ -21,40 +24,25 @@ class ByjunoLogger
         return self::$instance;
     }
 
-    public function log($array) {
-        $sql = '
-                INSERT INTO `'._DB_PREFIX_.'intrum_logs` (
-                  `firstname`,
-                  `lastname`,
-                  `town`,
-                  `postcode`,
-                  `street`,
-                  `country`,
-                  `ip`,
-                  `status`,
-                  `request_id`,
-                  `type`,
-                  `error`,
-                  `response`,
-                  `request`
-                )
-                VALUES
-                (
-                    \''.pSQL($array['firstname']).'\',
-                    \''.pSQL($array['lastname']).'\',
-                    \''.pSQL($array['town']).'\',
-                    \''.pSQL($array['postcode']).'\',
-                    \''.pSQL($array['street']).'\',
-                    \''.pSQL($array['country']).'\',
-                    \''.pSQL($array['ip']).'\',
-                    \''.pSQL($array['status']).'\',
-                    \''.pSQL($array['request_id']).'\',
-                    \''.pSQL($array['type']).'\',
-                    \''.pSQL($array['error'], true).'\',
-                    \''.pSQL($array['response'], true).'\',
-                    \''.pSQL($array['request'], true).'\'
-                )
-        ';
-        Db::getInstance()->Execute($sql);
+    public function addS4Log($array)
+    {
+        $byjunoOrder = new stdClass();
+        $byjunoOrder->order_id = (string)$array['order_id'];// varchar(250) default NULL,
+        $byjunoOrder->request_type = $array['request_type'];// varchar(250) default NULL,
+        $byjunoOrder->firstname = $array['firstname'];// varchar(250) default NULL,
+        $byjunoOrder->lastname = $array['lastname'];// varchar(250) default NULL,
+        $byjunoOrder->town = $array['town'];// varchar(250) default NULL,
+        $byjunoOrder->postcode = $array['postcode'];// varchar(250) default NULL,
+        $byjunoOrder->street = $array['street'];// varchar(250) default NULL,
+        $byjunoOrder->country =$array['country'];// varchar(250) default NULL,
+        $byjunoOrder->ip = $array['ip'];// varchar(250) default NULL,
+        $byjunoOrder->status = $array['status'];// varchar(250) default NULL,
+        $byjunoOrder->request_id = $array['request_id'];// varchar(250) default NULL,
+        $byjunoOrder->type =  $array['type'];// varchar(250) default NULL,
+        $byjunoOrder->error = $array['error'];// text default NULL,
+        $byjunoOrder->response = $array['response'];// text default NULL,
+        $byjunoOrder->request = $array['request'];// text default NULL,
+        // $byjunoOrder->dLetzterBlock = 'NOW()';
+        Shop::Container()->getDB()->insert('xplugin_byjyno_orders', $byjunoOrder);
     }
 };

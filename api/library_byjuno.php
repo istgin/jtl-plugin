@@ -387,12 +387,12 @@ function CreateJTLS1ShopRequest($order, $msgType, $repayment, $invoiceDelivery, 
 function byjunoIsStatusOk($status, $position)
 {
     try {
-        $config = trim(Configuration::get($position));
+        $config = trim('2'); // todo settings
         if ($config === "")
         {
             return false;
         }
-        $stateArray = explode(",", Configuration::get($position));
+        $stateArray = explode(",", '2');
         if (in_array($status, $stateArray)) {
             return true;
         }
