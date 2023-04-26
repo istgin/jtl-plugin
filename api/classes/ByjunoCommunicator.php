@@ -36,11 +36,11 @@ class ByjunoCommunicator
         }
         $url = 'https://secure.intrum.ch/';
         if ($this->server == 'test') {
-            $url .= 'services/creditCheckDACH_01_41_TEST/response.cfm';
+          //  $url .= 'services/creditCheckDACH_01_41_TEST/response.cfm';
         } else {
-            $url .= 'services/creditCheckDACH_01_41/response.cfm';
+          //  $url .= 'services/creditCheckDACH_01_41/response.cfm';
         }
-
+        $url .= 'services/creditCheckDACH_01_41_TEST/response.cfm';
         $request_data = urlencode("REQUEST") . "=" . urlencode($xmlRequest);
 
         $headers = [

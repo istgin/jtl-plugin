@@ -1,6 +1,8 @@
 <?php
 
 use JTL\Checkout\Lieferadresse;
+use JTL\Language\LanguageHelper;
+use JTL\Plugin\Helper;
 use JTL\Session\Frontend;
 
 function byjunoGetClientIp() {
@@ -109,6 +111,22 @@ function mapRepayment($type) {
     }
 }
 
+function byjunoMapLang($lang) {
+    if ($lang == 'ger') {
+        $lang = 'DE';
+    }
+    if ($lang == 'fra') {
+        $lang = 'FR';
+    }
+    if ($lang == 'ita') {
+        $lang = 'IT';
+    }
+    if ($lang == 'eng') {
+        $lang = 'EN';
+    }
+    return $lang
+}
+
 /**
  * @param JTL\Customer\Customer $customer
  * @param JTL\Cart\Cart $cart
@@ -133,6 +151,11 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
     if ($customer->nRegistriert == 1) {
         $custId =  uniqid("registered_");
     }
+    $langIso = LanguageHelper::getIsoFromLangID($customer->kSprache);
+    $lang = 'DE';
+    if (!empty($langIso->cISO)) {
+        $lang = byjunoMapLang($langIso->cISO);
+    }
     $request->setRequestId($custId);
     $request->setCustomerReference($custId);
     $request->setFirstName(html_entity_decode(($customer->cVorname), ENT_COMPAT, 'UTF-8'));
@@ -142,7 +165,7 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
     $request->setCountryCode(strtoupper($customer->cLand));
     $request->setPostCode($customer->cPLZ);
     $request->setTown(html_entity_decode($customer->cOrt, ENT_COMPAT, 'UTF-8'));
-    $request->setLanguage("DE"/*Context::getContext()->language->iso_code*/);
+    $request->setLanguage($lang);
     $request->setTelephonePrivate($customer->cTel);
     $request->setMobile($customer->cMobil);
     $request->setEmail($customer->cMail);
@@ -242,17 +265,24 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
  * @return ByjunoRequest
  * @throws Exception
  */
-function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDelivery, $riskOwner, $transaction, $selected_gender = "", $selected_birthday = "") {
+function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDelivery, $riskOwner, $transaction, $selected_gender = "", $selected_birthday = "", $orderClosed = "NO") {
 
+    /* @var $config JTL\Plugin\Data\Config */
+    $config = Helper::getPluginById('byjuno')->getConfig();
     $request = new ByjunoRequest();
-    $request->setClientId("XXX");
-    $request->setUserID("XXX");
-    $request->setPassword("XXX");
+    $request->setClientId($config->getOption("byjuno_client_id")->value);
+    $request->setUserID($config->getOption("byjuno_user_id")->value);
+    $request->setPassword($config->getOption("byjuno_password")->value);
     $request->setVersion("1.00");
     try {
-        $request->setRequestEmail("XXX");
+        $request->setRequestEmail($config->getOption("byjuno_tech_email")->value);
     } catch (Exception $e) {
 
+    }
+    $langIso = LanguageHelper::getIsoFromLangID($order->kSprache);
+    $lang = 'DE';
+    if (!empty($langIso->cISO)) {
+        $lang = byjunoMapLang($langIso->cISO);
     }
     $custId = uniqid("customer_");
     $request->setRequestId($custId);
@@ -264,7 +294,7 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
     $request->setCountryCode(strtoupper($order->oRechnungsadresse->cLand));
     $request->setPostCode($order->oRechnungsadresse->cPLZ);
     $request->setTown(html_entity_decode($order->oRechnungsadresse->cOrt, ENT_COMPAT, 'UTF-8'));
-    $request->setLanguage("DE"/*Context::getContext()->language->iso_code*/);
+    $request->setLanguage($lang);
     $request->setTelephonePrivate($order->oRechnungsadresse->cTel);
     $request->setMobile($order->oRechnungsadresse->cMobil);
     $request->setEmail($order->oRechnungsadresse->cMail);
@@ -288,7 +318,7 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
     }
 
     $extraInfo["Name"] = 'ORDERCLOSED';
-    $extraInfo["Value"] = 'NO';
+    $extraInfo["Value"] = $orderClosed;
     $request->setExtraInfo($extraInfo);
 
     $extraInfo["Name"] = 'ORDERAMOUNT';
@@ -340,9 +370,11 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
     $extraInfo["Value"] = html_entity_decode($order->Lieferadresse->cOrt, ENT_COMPAT, 'UTF-8');
     $request->setExtraInfo($extraInfo);
 
-    $extraInfo["Name"] = 'MESSAGETYPESPEC';
-    $extraInfo["Value"] = $msgType;//'ORDERREQUEST';
-    $request->setExtraInfo($extraInfo);
+    if ($msgType != "") {
+        $extraInfo["Name"] = 'MESSAGETYPESPEC';
+        $extraInfo["Value"] = $msgType;//'ORDERREQUEST';
+        $request->setExtraInfo($extraInfo);
+    }
 
     if (!empty($order->Lieferadresse->cFirma)) {
         $request->setDeliveryCompanyName1($order->Lieferadresse->cFirma);

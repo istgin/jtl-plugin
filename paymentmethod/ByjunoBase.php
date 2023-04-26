@@ -471,7 +471,8 @@ class ByjunoBase extends Method
                 "",
                 "",
                 $_SESSION["byjuno_gender"],
-                $_SESSION["byjuno_bithday"]);
+                $_SESSION["byjuno_bithday"],
+            "NO");
             $type = "S1 Request";
             $b2b = true; //TODO ettings
             if ($b2b && !empty($requestS1->getCompanyName1())) {
@@ -523,13 +524,14 @@ class ByjunoBase extends Method
             }
 
             $requestS3 = CreateJTLOrderShopRequest($order,
-                "ORDERREQUEST",
+                "",
                 $_SESSION["byjuno_payment"],
                 $_SESSION["byjuno_send_method"],
                 $accept,
                 $transaction,
                 $_SESSION["byjuno_gender"],
-                $_SESSION["byjuno_bithday"]);
+                $_SESSION["byjuno_bithday"],
+            "YES");
             $typeS3 = "S3 Request";
             $b2b = true;
             $xmlS3 = "";
