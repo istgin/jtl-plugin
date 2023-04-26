@@ -233,20 +233,293 @@
         <Adminmenu>
             <Settingslink sort="1">
                 <Name>Einstellungen</Name>
+
                 <Setting type="text" initialValue="Y" sort="10" conf="N">
                     <Name>Byjuno settings</Name>
                     <Description>Byjuno settings.</Description>
                     <ValueName>byjuno_headline</ValueName>
                 </Setting>
+
                 <Setting type="selectbox" initialValue="true" sort="20" conf="Y">
-                    <Name>Byjuno aktivieren</Name>
-                    <Description>Soll Byjuno aktiviert werden?</Description>
-                    <ValueName>byjuno_aktiv</ValueName>
+                    <Name>Byjuno plugin active</Name>
+                    <ValueName>byjuno_active</ValueName>
                     <SelectboxOptions>
-                        <Option value="true" sort="1">Ja</Option>
-                        <Option value="false" sort="2">Nein</Option>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
                     </SelectboxOptions>
                 </Setting>
+
+                <Setting type="selectbox" initialValue="test" sort="20" conf="Y">
+                    <Name>Mode</Name>
+                    <ValueName>byjuno_mode</ValueName>
+                    <SelectboxOptions>
+                        <Option value="test" sort="1">Test</Option>
+                        <Option value="live" sort="2">Live</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="30" conf="Y">
+                    <Name>Client ID</Name>
+                    <ValueName>byjuno_client_id</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="40" conf="Y">
+                    <Name>UIser ID</Name>
+                    <ValueName>byjuno_user_id</ValueName>
+                </Setting>
+
+                <Setting type="password" initialValue="" sort="50" conf="Y">
+                    <Name>Password</Name>
+                    <ValueName>byjuno_password</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="60" conf="Y">
+                    <Name>Technical Contact (E-mail)</Name>
+                    <ValueName>byjuno_tech_email</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="70" conf="Y">
+                    <Name>Connection timeout to Byjuno CDP server in seconds</Name>
+                    <ValueName>byjuno_timeout</ValueName>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="false" sort="80" conf="Y">
+                    <Name>Enable ThreatMetrix</Name>
+                    <ValueName>byjuno_threatmetrix</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="text" initialValue="lq866c5i" sort="90" conf="Y">
+                    <Name>ThreatMetrix orgid</Name>
+                    <ValueName>byjuno_threatmetrix_org</ValueName>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="false" sort="100" conf="Y">
+                    <Name>Allow postal delivery</Name>
+                    <ValueName>byjuno_postal</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="110" conf="Y">
+                    <Name>Enable gender &amp; birthday selection</Name>
+                    <ValueName>byjuno_gender_birthday</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="text" initialValue="10" sort="120" conf="Y">
+                    <Name>Mininmal amount for checkout (default 10)</Name>
+                    <ValueName>byjuno_min</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="1000" sort="130" conf="Y">
+                    <Name>Maximal amount for checkout (default 1000)</Name>
+                    <ValueName>byjuno_max</ValueName>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="false" sort="140" conf="Y">
+                    <Name>Credit check before show payments</Name>
+                    <ValueName>byjuno_cdp</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="150" conf="Y">
+                    <Name>Enable B2B check</Name>
+                    <ValueName>byjuno_b2b</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="160" conf="Y">
+                    <Name>Invoice S4 transactions (order changed from WAWI)</Name>
+                    <ValueName>byjuno_s4</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="170" conf="Y">
+                    <Name>S4 trigger order state (order changed from WAWI)</Name>
+                    <ValueName>byjuno_s4_trigger</ValueName>
+                    <SelectboxOptions>
+                        <Option value="processing" sort="1">processing</Option>
+                        <Option value="pending" sort="2">pending</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="180" conf="Y">
+                    <Name>Cancel S5 transactions (order changed from WAWI)</Name>
+                    <ValueName>byjuno_s5_cancel</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="190" conf="Y">
+                    <Name>S5 cancel trigger order state (order changed from WAWI)</Name>
+                    <ValueName>byjuno_s5_cancel_trigger</ValueName>
+                    <SelectboxOptions>
+                        <Option value="processing" sort="1">processing</Option>
+                        <Option value="pending" sort="2">pending</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="200" conf="Y">
+                    <Name>Refund S5 transactions (order changed from WAWI)</Name>
+                    <ValueName>byjuno_s5_refund</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="210" conf="Y">
+                    <Name>S5 refund trigger order state (order changed from WAWI)</Name>
+                    <ValueName>byjuno_s5_refund_trigger</ValueName>
+                    <SelectboxOptions>
+                        <Option value="processing" sort="1">processing</Option>
+                        <Option value="pending" sort="2">pending</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="text" initialValue="2" sort="220" conf="Y">
+                    <Name>Accepted CDP risks if credit check enabled (comma separated)</Name>
+                    <ValueName>byjuno_cdp_accept</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="2" sort="230" conf="Y">
+                    <Name> Accepted Byjuno Risk for S2 (comma separated)</Name>
+                    <ValueName>byjuno_s2_accept_ij</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="240" conf="Y">
+                    <Name>Accepted Merchant Risk for S2 (comma separated)</Name>
+                    <ValueName>byjuno_s2_accept_merchant</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="2" sort="250" conf="Y">
+                    <Name>Accepted statuses for S3 response (comma separated)</Name>
+                    <ValueName>byjuno_s3_accept</ValueName>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="260" conf="Y">
+                    <Name>Byjuno Invoice (with partial payment option)</Name>
+                    <ValueName>byjuno_invoice</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">yes</Option>
+                        <Option value="false" sort="2">no</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="false" sort="270" conf="Y">
+                    <Name>Single invoice</Name>
+                    <ValueName>byjuno_single_invoice</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">yes</Option>
+                        <Option value="false" sort="2">no</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="false" sort="280" conf="Y">
+                    <Name>3 installments</Name>
+                    <ValueName>byjuno_3_installments</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">yes</Option>
+                        <Option value="false" sort="2">no</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="false" sort="290" conf="Y">
+                    <Name>12 installments</Name>
+                    <ValueName>byjuno_12_installments</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">yes</Option>
+                        <Option value="false" sort="2">no</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="false" sort="300" conf="Y">
+                    <Name>24 installments</Name>
+                    <ValueName>byjuno_24_installments</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">yes</Option>
+                        <Option value="false" sort="2">no</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="false" sort="310" conf="Y">
+                    <Name>36 installments</Name>
+                    <ValueName>byjuno_36_installments</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">yes</Option>
+                        <Option value="false" sort="2">no</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="false" sort="320" conf="Y">
+                    <Name>4 installments in 12 months</Name>
+                    <ValueName>byjuno_4_installments_12_months</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">yes</Option>
+                        <Option value="false" sort="2">no</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="330" conf="Y">
+                    <Name>T&amp;C Byjuno Invoice (EN) link</Name>
+                    <ValueName>byjuno_toc_en_invoice</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="330" conf="Y">
+                    <Name>T&amp;C Byjuno Installment (EN) link</Name>
+                    <ValueName>byjuno_toc_en_installment</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="340" conf="Y">
+                    <Name>T&amp;C Byjuno Invoice (DE) link</Name>
+                    <ValueName>byjuno_toc_de_invoice</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="350" conf="Y">
+                    <Name>T&amp;C Byjuno Installment (DE) link</Name>
+                    <ValueName>byjuno_toc_de_installment</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="360" conf="Y">
+                    <Name>T&amp;C Byjuno Invoice (FR) link</Name>
+                    <ValueName>byjuno_toc_fr_invoice</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="370" conf="Y">
+                    <Name>T&amp;C Byjuno Installment (FR) link</Name>
+                    <ValueName>byjuno_toc_fr_installment</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="380" conf="Y">
+                    <Name>T&amp;C Byjuno Invoice (IT) link</Name>
+                    <ValueName>byjuno_toc_it_invoice</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="" sort="398" conf="Y">
+                    <Name>T&amp;C Byjuno Installment (IT) link</Name>
+                    <ValueName>byjuno_toc_it_installment</ValueName>
+                </Setting>
+
             </Settingslink>
 
             <Customlink sort="2">
