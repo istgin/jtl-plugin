@@ -173,14 +173,6 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
     if (!empty($customer->cFirma)) {
         $request->setCompanyName1($customer->cFirma);
     }
-    /**
-     * ask var if possible
-     */
-    /*
-    if (!empty($invoice_address->vat_number)) {
-        $request->setCompanyVatId($invoice_address->vat_number);
-    }
-    */
 
     $extraInfo["Name"] = 'ORDERCLOSED';
     $extraInfo["Value"] = 'NO';
