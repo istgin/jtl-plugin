@@ -31,6 +31,8 @@ class ByjunoInstallemnt extends ByjunoBase
    * @param array                    $args
    * @param bool                     $returnURL
    */
-
+    public function isSelectable() : bool {
+        return $this->CDPRequest();
+    }
 }
 ?>

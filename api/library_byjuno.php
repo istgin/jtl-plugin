@@ -124,7 +124,7 @@ function byjunoMapLang($lang) {
     if ($lang == 'eng') {
         $lang = 'EN';
     }
-    return $lang
+    return $lang;
 }
 
 /**
@@ -137,15 +137,15 @@ function byjunoMapLang($lang) {
  */
 function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
 
+    $config = Helper::getPluginById('byjuno')->getConfig();
     $request = new ByjunoRequest();
-    $request->setClientId("XXX");
-    $request->setUserID("XXX");
-    $request->setPassword("XXX");
+    $request->setClientId($config->getOption("byjuno_client_id")->value);
+    $request->setUserID($config->getOption("byjuno_user_id")->value);
+    $request->setPassword($config->getOption("byjuno_password")->value);
     $request->setVersion("1.00");
     try {
-        $request->setRequestEmail("XXX");
+        $request->setRequestEmail($config->getOption("byjuno_tech_email")->value);
     } catch (Exception $e) {
-
     }
     $custId = uniqid("guest_");
     if ($customer->nRegistriert == 1) {
@@ -192,7 +192,7 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
 
     $currency = $cart->Waehrung ?? Frontend::getCurrency();
     $extraInfo["Name"] = 'ORDERCURRENCY';
-    $extraInfo["Value"] = $currency;
+    $extraInfo["Value"] = $currency->getCode();
     $request->setExtraInfo($extraInfo);
 
     $extraInfo["Name"] = 'IP';
@@ -277,7 +277,6 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
     try {
         $request->setRequestEmail($config->getOption("byjuno_tech_email")->value);
     } catch (Exception $e) {
-
     }
     $langIso = LanguageHelper::getIsoFromLangID($order->kSprache);
     $lang = 'DE';

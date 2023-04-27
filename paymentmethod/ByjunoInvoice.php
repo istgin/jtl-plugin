@@ -35,17 +35,7 @@ class ByjunoInvoice extends ByjunoBase
   }
 
   public function isSelectable() : bool {
-    $cart = Frontend::getCart();
-    $customer = Frontend::getCustomer();
-    $delivery = Frontend::getDeliveryAddress();
-    $amount = $cart->gibGesamtsummeWaren(true);
-    try {
-      //TODO CDP
-      $request = CreateJTLCDPShopRequest($customer, $cart, $delivery, "CREDITCHECK");
-    } catch (Exception $e) {
-      return false;
-    }
-    return true;
+    return $this->CDPRequest();
   }
 
   public function preparePaymentProcess(Bestellung $order): void
