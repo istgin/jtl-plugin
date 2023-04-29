@@ -409,13 +409,15 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
 
 function byjunoIsStatusOk($status, $position)
 {
+    $config = Helper::getPluginById('byjuno')->getConfig();
+    $settings = $config->getOption($position)->value;
     try {
-        $config = trim('2'); // todo settings
+        $config = trim($settings); // todo settings
         if ($config === "")
         {
             return false;
         }
-        $stateArray = explode(",", '2');
+        $stateArray = explode(",", $settings);
         if (in_array($status, $stateArray)) {
             return true;
         }

@@ -35,4 +35,3 @@ class ByjunoInstallemnt extends ByjunoBase
         return $this->CDPRequest();
     }
 }
-?>

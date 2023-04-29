@@ -538,14 +538,15 @@ class ByjunoBase extends Method
                 "request" => $xml
             ));
             $accept = "";
-            if (byjunoIsStatusOk($status, "BYJUNO_S2_MERCHANT_ACCEPT")) {
+            if (byjunoIsStatusOk($status, "byjuno_s2_accept_merchant")) {
                 $accept = "CLIENT";
             }
-            if (byjunoIsStatusOk($status, "BYJUNO_S2_IJ_ACCEPT")) {
+            if (byjunoIsStatusOk($status, "byjuno_s2_accept_ij")) {
                 $accept = "IJ";
             }
             $accept = 'CLIENT';
             if ($accept == "") {
+                // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
                 return false;
             }
 
@@ -594,7 +595,7 @@ class ByjunoBase extends Method
                 "request" => $xmlS3
             ));
 
-            if (byjunoIsStatusOk($statusS3, "BYJUNO_S3_ACCEPT")) {
+            if (byjunoIsStatusOk($statusS3, "byjuno_s3_accept")) {
                 $_SESSION["change_paid"] = true;
                 $_SESSION["byjuno_cdp"] = null;
                 $_SESSION["byjuno_cdp_status"] = null;
@@ -603,7 +604,6 @@ class ByjunoBase extends Method
             // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
             return false;
         } catch (\Exception $e) {
-
             // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
             return false;
         }
@@ -627,11 +627,8 @@ class ByjunoBase extends Method
                 }
                 if (!empty($CDPStatus) && $this->isTheSame($requestCDP)) {
                     $accept = "";
-                    if (byjunoIsStatusOk($CDPStatus, "byjunocheckoutsettings/byjuno_setup/merchant_risk")) {
-                        $accept = "CLIENT";
-                    }
-                    if (byjunoIsStatusOk($CDPStatus, "byjunocheckoutsettings/byjuno_setup/byjuno_risk")) {
-                        $accept = "IJ";
+                    if (byjunoIsStatusOk($CDPStatus, "byjuno_cdp_accept")) {
+                        $accept = "OK";
                     }
                     if ($accept == "") {
                         return false;
@@ -724,11 +721,8 @@ class ByjunoBase extends Method
                     $_SESSION["byjuno_cdp_status"] = $status;
 
                     $accept = "";
-                    if (byjunoIsStatusOk($status, "byjunocheckoutsettings/byjuno_setup/merchant_risk")) {
-                        $accept = "CLIENT";
-                    }
-                    if (byjunoIsStatusOk($status, "byjunocheckoutsettings/byjuno_setup/byjuno_risk")) {
-                        $accept = "IJ";
+                    if (byjunoIsStatusOk($status, "byjuno_cdp_accept")) {
+                        $accept = "OK";
                     }
 
                     if ($accept == "") {
