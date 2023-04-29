@@ -40,7 +40,6 @@ class ByjunoInvoice extends ByjunoBase
 
   public function preparePaymentProcess(Bestellung $order): void
   {
-    $config = $this->getPluginConf($order);
     $hash = $this->generateHash($order);
     $returUrl = $this->getNotificationURL($hash);
     parent::preparePaymentProcess($order);

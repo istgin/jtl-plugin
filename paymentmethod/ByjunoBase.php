@@ -487,6 +487,7 @@ class ByjunoBase extends Method
      */
     public function finalizeOrder(Bestellung $order, string $hash, array $args): bool
     {
+        $_SESSION["BYJUNO_ERROR"] = null;
         // S1 & S3 here
         $order->cBestellNr = getOrderHandler()->createOrderNo();
         try {
@@ -546,6 +547,7 @@ class ByjunoBase extends Method
             }
             $accept = 'CLIENT';
             if ($accept == "") {
+                $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
                 // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
                 return false;
             }
@@ -601,10 +603,10 @@ class ByjunoBase extends Method
                 $_SESSION["byjuno_cdp_status"] = null;
                 return true;
             }
-            // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
+            $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
             return false;
         } catch (\Exception $e) {
-            // --  HOOK_BESTELLVORGANG_PAGE_STEPZAHLUNG on hook show error!!!
+            $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
             return false;
         }
     }
