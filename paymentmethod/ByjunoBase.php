@@ -8,6 +8,8 @@ use ByjunoLogger;
 use ByjunoRequest;
 use ByjunoResponse;
 use JTL\Checkout\Bestellung;
+use JTL\Plugin\Data\Config;
+use JTL\Plugin\Helper;
 use JTL\Plugin\Helper as PluginHelper;
 use JTL\Plugin\Payment\Method;
 use JTL\Session\Frontend;
@@ -22,6 +24,8 @@ class ByjunoBase extends Method
 
     var $paymethod = '';
     var $localeTexts = array();
+    /* @var $config Config */
+    var $config;
 
     protected $_savedUser = Array(
         "FirstName" => "",
@@ -69,20 +73,13 @@ class ByjunoBase extends Method
      */
     function __construct($moduleID = NULL, $nAgainCheckout = 0)
     {
-        $this->pageURL = 'http://' . $_SERVER['HTTP_HOST'] . '/';
-        if ($this->isHTTPS()) $this->pageURL = 'https://' . $_SERVER['HTTP_HOST'] . '/';
-
         if (!empty($moduleID)) {
             parent::__construct($moduleID, $nAgainCheckout);
         } else {
             $this->loadSettings();
             $this->init($nAgainCheckout);
         }
-
-        $pluginID = PluginHelper::getIDByModuleID($this->moduleID);
-        $plugin = PluginHelper::getLoaderByPluginID($pluginID)->init($pluginID);
-        $conf = $plugin->getConfig()->getAssoc();
-
+        $this->config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     }
 
     /**
@@ -282,10 +279,18 @@ class ByjunoBase extends Method
             $values['selected_payments_installment'] = $selected_payments_installment;
             $values['toc_url_installment'] = $tocUrl;
         }
-        $values["byjuno_iframe"] = true;
+        $tmx = $this->config->getOption("byjuno_threatmetrix")->value;
+        $values["byjuno_tmx"] = $tmx;
+        if ($tmx) {
+            $_SESSION["byjuno_session_id"] = session_id();
+            $values["byjuno_tmx_org_id"] = $tmx = $this->config->getOption("byjuno_threatmetrix_org")->value;
+            $values["byjuno_tmx_session_id"] = $_SESSION["byjuno_session_id"];
+        }
+
         $smarty->assign(
             $values
         );
+
         return $result;
     }
 
@@ -300,21 +305,6 @@ class ByjunoBase extends Method
         $sql = 'SELECT * FROM `tplugin` WHERE `cPluginID` = "mapa" ';
         $res = Shop::Container()->getDB()->query($sql, 1);
         return $res->nXMLVersion;
-    }
-
-    /**
-     * isHTTPS
-     *
-     * @return bool
-     */
-    function isHTTPS()
-    {
-        if (strpos($_SERVER['HTTP_HOST'], '.local') === FALSE) {
-            if (!isset($_SERVER['HTTPS']) || (strtolower($_SERVER['HTTPS']) != 'on' && $_SERVER['HTTPS'] != '1')) {
-                return FALSE;
-            }
-        }
-        return TRUE;
     }
 
     /**

@@ -4,6 +4,7 @@ use JTL\Checkout\Lieferadresse;
 use JTL\Language\LanguageHelper;
 use JTL\Plugin\Helper;
 use JTL\Session\Frontend;
+use Plugin\byjuno\paymentmethod\ByjunoBase;
 
 function byjunoGetClientIp() {
     $ipaddress = '';
@@ -137,7 +138,7 @@ function byjunoMapLang($lang) {
  */
 function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
 
-    $config = Helper::getPluginById('byjuno')->getConfig();
+    $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     $request = new ByjunoRequest();
     $request->setClientId($config->getOption("byjuno_client_id")->value);
     $request->setUserID($config->getOption("byjuno_user_id")->value);
@@ -191,14 +192,6 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
     $extraInfo["Value"] = byjunoGetClientIp();
     $request->setExtraInfo($extraInfo);
 
-    /*
-    if (Configuration::get("INTRUM_ENABLETMX") == 'true' && Configuration::get("INTRUM_TMXORGID") != '' && !empty($cookie->intrumId)) {
-        $extraInfo["Name"] = 'DEVICE_FINGERPRINT_ID';
-        $extraInfo["Value"] = $cookie->intrumId;
-        $request->setExtraInfo($extraInfo);
-    }
-*/
-
     /* shipping information */
     $extraInfo["Name"] = 'DELIVERY_FIRSTNAME';
     $extraInfo["Value"] = html_entity_decode($address->cVorname, ENT_COMPAT, 'UTF-8');
@@ -244,7 +237,6 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
 
 }
 
-
 /**
  * @param JTL\Checkout\Bestellung $order
  * @param $msgtype
@@ -260,7 +252,7 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
 function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDelivery, $riskOwner, $transaction, $selected_gender = "", $selected_birthday = "", $orderClosed = "NO") {
 
     /* @var $config JTL\Plugin\Data\Config */
-    $config = Helper::getPluginById('byjuno')->getConfig();
+    $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     $request = new ByjunoRequest();
     $request->setClientId($config->getOption("byjuno_client_id")->value);
     $request->setUserID($config->getOption("byjuno_user_id")->value);
@@ -324,13 +316,11 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
     $extraInfo["Value"] = byjunoGetClientIp();
     $request->setExtraInfo($extraInfo);
 
-    /*
-    if (Configuration::get("INTRUM_ENABLETMX") == 'true' && Configuration::get("INTRUM_TMXORGID") != '' && !empty($cookie->intrumId)) {
+    if ($config->getOption("byjuno_threatmetrix")->value &&  $config->getOption("byjuno_threatmetrix_org")->value != '' && !empty($_SESSION["byjuno_session_id"])) {
         $extraInfo["Name"] = 'DEVICE_FINGERPRINT_ID';
-        $extraInfo["Value"] = $cookie->intrumId;
+        $extraInfo["Value"] = $_SESSION["byjuno_session_id"];
         $request->setExtraInfo($extraInfo);
     }
-*/
 
     /* shipping information */
     $extraInfo["Name"] = 'DELIVERY_FIRSTNAME';
@@ -409,7 +399,7 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
 
 function byjunoIsStatusOk($status, $position)
 {
-    $config = Helper::getPluginById('byjuno')->getConfig();
+    $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     $settings = $config->getOption($position)->value;
     try {
         $config = trim($settings); // todo settings
