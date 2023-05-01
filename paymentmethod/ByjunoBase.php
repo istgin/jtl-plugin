@@ -116,6 +116,9 @@ class ByjunoBase extends Method
                 }
                 $_SESSION["byjuno_birthday"] = $_POST["byjuno_year"] . '-' . $_POST["byjuno_month"] . '-' . $_POST["byjuno_day"];
             }
+        } else {
+            $_SESSION["byjuno_birthday"]  = "";
+            $_SESSION["byjuno_gender"] = "";
         }
 
         if (empty($_POST["byjuno_payment"])) {
