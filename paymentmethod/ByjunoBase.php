@@ -92,47 +92,52 @@ class ByjunoBase extends Method
     {
         $_SESSION["byjuno_error_msg"] = "";
         $_SESSION["byjuno_gender"] = "";
-        $_SESSION["byjuno_bithday"] = "";
+        $_SESSION["byjuno_birthday"] = "";
         $_SESSION["byjuno_payment"] = "";
         $_SESSION["byjuno_send_method"] = "";
         $_SESSION["byjyno_terms"] = "";
         if (!isset($_POST["byjuno_form"])) {
             return true;
         }
-        if (empty($_POST["byjuno_gender"])) {
-            $_SESSION["byjuno_error_msg"] = "Gender is required";
-            return false;
-        } else {
-            $_SESSION["byjuno_gender"] = $_POST["byjuno_gender"];
-        }
-        if (empty($_POST["byjuno_year"]) || empty($_POST["byjuno_month"]) || empty($_POST["byjuno_day"])) {
-            $_SESSION["byjuno_error_msg"] = "Birthday is incorrect";
-            return false;
-        } else {
-
-            if (!checkdate(intval($_POST["byjuno_month"]), intval($_POST["byjuno_day"]), intval($_POST["byjuno_year"]))) {
-                $_SESSION["byjuno_error_msg"] = "Birthday is incorrect";
+        if ($this->config->getOption("byjuno_gender_birthday")->value == 'true') {
+            if (empty($_POST["byjuno_gender"])) {
+                $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_gender_message", "Please select gender");
                 return false;
+            } else {
+                $_SESSION["byjuno_gender"] = $_POST["byjuno_gender"];
             }
-            $_SESSION["byjuno_bithday"] = $_POST["byjuno_year"] . '-' . $_POST["byjuno_month"] . '-' . $_POST["byjuno_day"];
+            if (empty($_POST["byjuno_year"]) || empty($_POST["byjuno_month"]) || empty($_POST["byjuno_day"])) {
+                $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_birthday_message", "Birthday is incorrect");
+                return false;
+            } else {
+                if (!checkdate(intval($_POST["byjuno_month"]), intval($_POST["byjuno_day"]), intval($_POST["byjuno_year"]))) {
+                    $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_birthday_message", "Birthday is incorrect");
+                    return false;
+                }
+                $_SESSION["byjuno_birthday"] = $_POST["byjuno_year"] . '-' . $_POST["byjuno_month"] . '-' . $_POST["byjuno_day"];
+            }
         }
 
         if (empty($_POST["byjuno_payment"])) {
-            $_SESSION["byjuno_error_msg"] = "Please select repayment";
+            $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_repayment_message", "Please select payment plan");
             return false;
         } else {
             $_SESSION["byjuno_payment"] = $_POST["byjuno_payment"];
         }
 
-        if (empty($_POST["byjuno_send_method"])) {
-            $_SESSION["byjuno_error_msg"] = "Please select invoice delivery method";
-            return false;
+        if ($this->config->getOption("byjuno_postal")->value == 'false') {
+            $_SESSION["byjuno_send_method"] = 'email';
         } else {
-            $_SESSION["byjuno_send_method"] = $_POST["byjuno_send_method"];
+            if (empty($_POST["byjuno_send_method"])) {
+                $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_send_method_message", "Please select invoice delivery method");
+                return false;
+            } else {
+                $_SESSION["byjuno_send_method"] = $_POST["byjuno_send_method"];
+            }
         }
 
         if (empty($_POST["byjyno_terms"]) || $_POST["byjyno_terms"] != "terms_conditions") {
-            $_SESSION["byjuno_error_msg"] = "You must agree with byjuno terms and conditions";
+            $_SESSION["byjuno_error_msg"] =  $this->getText("byjuno_fail_agree_message", "You must agree with byjuno terms and conditions");
             return false;
         } else {
             $_SESSION["byjyno_terms"] = $_POST["byjyno_terms"];
@@ -203,8 +208,8 @@ class ByjunoBase extends Method
             $days[] = $i;
         }
         $tm = strtotime("1990-01-01");
-        if (!empty($_SESSION["byjuno_bithday"])) {
-            $tm = strtotime($_SESSION["byjuno_bithday"]);
+        if (!empty($_SESSION["byjuno_birthday"])) {
+            $tm = strtotime($_SESSION["byjuno_birthday"]);
         }
         $invoice_send = "email";
         if (!empty($_SESSION["byjuno_send_method"] )) {
@@ -222,8 +227,8 @@ class ByjunoBase extends Method
             'byjuno_installment' => $this->getText("byjuno_installment", "Byjuno Installment"),
             'byjuno_error' => $byjuno_error,
             'invoice_send' => $invoice_send,
-            'byjuno_allowpostal' => 1,
-            'byjuno_gender_birthday' => 1,
+            'byjuno_allowpostal' =>  $this->config->getOption("byjuno_postal")->value == "true",
+            'byjuno_gender_birthday' => $this->config->getOption("byjuno_gender_birthday")->value == "true",
             'email' => $customer->cMail,
             'address' =>  $customer->cOrt.', '.$customer->cStrasse.' '.$customer->cHausnummer,
             'l_year' => $this->getText("Year", "Year"),
@@ -402,7 +407,7 @@ class ByjunoBase extends Method
                 "",
                 "",
                 $_SESSION["byjuno_gender"],
-                $_SESSION["byjuno_bithday"],
+                $_SESSION["byjuno_birthday"],
             "NO");
             $type = "S1 Request";
             $b2b = true; //TODO ettings
@@ -462,7 +467,7 @@ class ByjunoBase extends Method
                 $accept,
                 $transaction,
                 $_SESSION["byjuno_gender"],
-                $_SESSION["byjuno_bithday"],
+                $_SESSION["byjuno_birthday"],
             "YES");
             $typeS3 = "S3 Request";
             $b2b = true;
@@ -506,7 +511,7 @@ class ByjunoBase extends Method
                 $_SESSION["byjuno_cdp_status"] = null;
                 $_SESSION["byjuno_error_msg"] = "";
                 $_SESSION["byjuno_gender"] = "";
-                $_SESSION["byjuno_bithday"] = "";
+                $_SESSION["byjuno_birthday"] = "";
                 $_SESSION["byjuno_payment"] = "";
                 $_SESSION["byjuno_send_method"] = "";
                 $_SESSION["byjyno_terms"] = "";

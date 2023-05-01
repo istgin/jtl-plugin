@@ -176,6 +176,47 @@
                 <VariableLocalized iso="IFA">L?operatore del servizio di pagamento ha rifiutato la modalità di pagamento da Lei scelta. La preghiamo di scegliere un?altra modalità di pagamento.</VariableLocalized>
                 <VariableLocalized iso="FRA">Le prestataire de ce type de paiement a rejeté la méthode de paiement choisie. Veuillez choisir un autre mode de paiement.</VariableLocalized>
             </Variable>
+            <Variable>
+                <Name>byjuno_fail_gender_message</Name>
+                <Description>byjuno_fail_gender_message</Description>
+                <VariableLocalized iso="GER">Please select gender</VariableLocalized>
+                <VariableLocalized iso="ENG">Please select gender</VariableLocalized>
+                <VariableLocalized iso="IFA">Please select gender</VariableLocalized>
+                <VariableLocalized iso="FRA">Please select gender</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>byjuno_fail_birthday_message</Name>
+                <Description>byjuno_fail_birthday_message</Description>
+                <VariableLocalized iso="GER">Birthday is incorrect</VariableLocalized>
+                <VariableLocalized iso="ENG">Birthday is incorrect</VariableLocalized>
+                <VariableLocalized iso="IFA">Birthday is incorrect</VariableLocalized>
+                <VariableLocalized iso="FRA">Birthday is incorrect</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>byjuno_fail_repayment_message</Name>
+                <Description>byjuno_fail_repayment_message</Description>
+                <VariableLocalized iso="GER">Please select payment plan</VariableLocalized>
+                <VariableLocalized iso="ENG">Please select payment plan</VariableLocalized>
+                <VariableLocalized iso="IFA">Please select payment plan</VariableLocalized>
+                <VariableLocalized iso="FRA">Please select payment plan</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>byjuno_fail_send_method_message</Name>
+                <Description>byjuno_fail_send_method_message</Description>
+                <VariableLocalized iso="GER">Please select invoice delivery method</VariableLocalized>
+                <VariableLocalized iso="ENG">Please select invoice delivery method</VariableLocalized>
+                <VariableLocalized iso="IFA">Please select invoice delivery method</VariableLocalized>
+                <VariableLocalized iso="FRA">Please select invoice delivery method</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>byjuno_fail_agree_message</Name>
+                <Description>byjuno_fail_agree_message</Description>
+                <VariableLocalized iso="GER">You must agree with byjuno terms and conditions</VariableLocalized>
+                <VariableLocalized iso="ENG">You must agree with byjuno terms and conditions</VariableLocalized>
+                <VariableLocalized iso="IFA">You must agree with byjuno terms and conditions</VariableLocalized>
+                <VariableLocalized iso="FRA">You must agree with byjuno terms and conditions</VariableLocalized>
+            </Variable>
+
 
 
         </Locales>

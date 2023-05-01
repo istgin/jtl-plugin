@@ -11,17 +11,23 @@ class ByjunoInstallemnt extends ByjunoBase
   var $pm = 'byjyno_installment'; // important for event url
   var $paymethod = 'byjyno_installment_api';
 
-  /**
-   * preparePaymentProcess
-   *
-   * @param \JTL\Checkout\Bestellung $order
-   *
-   * @throws \Exception
-   */
-  public function preparePaymentProcess(Bestellung $order): void
-  {
-    global $smarty;
-  }
+
+    public function redirectOnPaymentSuccess(): bool
+    {
+        //$args = func_get_args();
+        return true;
+    }
+
+    /**
+     * redirectOnCancel
+     *
+     * @return bool
+     */
+    public function redirectOnCancel(): bool
+    {
+        //$args = func_get_args();
+        return true;
+    }
 
   /**
    * handleNotification
@@ -46,4 +52,14 @@ class ByjunoInstallemnt extends ByjunoBase
         }
         return $this->CDPRequest();
     }
+
+    public function preparePaymentProcess(Bestellung $order): void
+    {
+        $hash = $this->generateHash($order);
+        $returUrl = $this->getNotificationURL($hash);
+        parent::preparePaymentProcess($order);
+        header('location:'.$returUrl);
+        exit();
+    }
+
 }
