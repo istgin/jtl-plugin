@@ -32,6 +32,18 @@ class ByjunoInstallemnt extends ByjunoBase
    * @param bool                     $returnURL
    */
     public function isSelectable() : bool {
+        $byjuno_installment = false;
+        if ($this->config->getOption("byjuno_3_installments")->value == "true"
+            || $this->config->getOption("byjuno_36_installments")->value == "true"
+            || $this->config->getOption("byjuno_12_installments")->value == "true"
+            || $this->config->getOption("byjuno_24_installments")->value == "true"
+            || $this->config->getOption("byjuno_4_installments_12_months")->value == "true"
+        ) {
+            $byjuno_installment = true;
+        }
+        if (!$byjuno_installment) {
+            return $byjuno_installment;
+        }
         return $this->CDPRequest();
     }
 }

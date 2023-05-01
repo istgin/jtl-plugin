@@ -35,6 +35,13 @@ class ByjunoInvoice extends ByjunoBase
   }
 
   public function isSelectable() : bool {
+    $byjuno_invoice = false;
+    if ($this->config->getOption("byjuno_invoice")->value == 'true' || $this->config->getOption("byjuno_single_invoice")->value == 'true') {
+      $byjuno_invoice = true;
+    }
+    if (!$byjuno_invoice) {
+      return $byjuno_invoice;
+    }
     return $this->CDPRequest();
   }
 
@@ -47,5 +54,3 @@ class ByjunoInvoice extends ByjunoBase
     exit();
   }
 }
-
-?>

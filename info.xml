@@ -19,6 +19,18 @@
                 <VariableLocalized iso="ENG">Byjuno</VariableLocalized>
             </Variable>
             <Variable>
+                <Name>byjuno_invoice</Name>
+                <Description>Byjuno Invoice</Description>
+                <VariableLocalized iso="GER">Byjuno Invoice</VariableLocalized>
+                <VariableLocalized iso="ENG">Byjuno Invoice</VariableLocalized>
+            </Variable>
+            <Variable>
+                <Name>byjuno_installment</Name>
+                <Description>Byjuno Installment</Description>
+                <VariableLocalized iso="GER">Byjuno Installment</VariableLocalized>
+                <VariableLocalized iso="ENG">Byjuno Installment</VariableLocalized>
+            </Variable>
+            <Variable>
                 <Name>Year</Name>
                 <Description>Year</Description>
                 <VariableLocalized iso="GER">Jahr</VariableLocalized>
@@ -200,11 +212,16 @@
                     <ChargeName>Byjuno Invoice</ChargeName>
                     <InfoText>Byjuno Invoice infotext</InfoText>
                 </MethodLanguage>
-                <Setting type="text" initialValue="Bestellung {$orderid}" sort="20" conf="Y">
-                    <Name>Buchungstext</Name>
-                    <Description>ID der Bestellung. {$orderid} ist Platzhalter für die BestellNr.</Description>
-                    <ValueName>paytext</ValueName>z
-                </Setting>
+                <MethodLanguage iso="ITA">
+                    <Name>Byjuno Invoice</Name>
+                    <ChargeName>Byjuno Invoice</ChargeName>
+                    <InfoText>Byjuno Invoice infotext</InfoText>
+                </MethodLanguage>
+                <MethodLanguage iso="FRA">
+                    <Name>Byjuno Invoice</Name>
+                    <ChargeName>Byjuno Invoice</ChargeName>
+                    <InfoText>Byjuno Invoice infotext</InfoText>
+                </MethodLanguage>
             </Method>
 
             <Method>
@@ -228,15 +245,20 @@
                     <InfoText>Byjuno Installemnt infotext</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="ENG">
-                    <Name>Byjuno Invoice</Name>
+                    <Name>Byjuno Installemnt</Name>
                     <ChargeName>Byjuno Installemnt</ChargeName>
                     <InfoText>Byjuno Installemnt infotext</InfoText>
                 </MethodLanguage>
-                <Setting type="text" initialValue="Bestellung {$orderid}" sort="20" conf="Y">
-                    <Name>Buchungstext</Name>
-                    <Description>ID der Bestellung. {$orderid} ist Platzhalter für die BestellNr.</Description>
-                    <ValueName>paytext</ValueName>
-                </Setting>
+                <MethodLanguage iso="ITA">
+                    <Name>Byjuno Installemnt</Name>
+                    <ChargeName>Byjuno Installemnt</ChargeName>
+                    <InfoText>Byjuno Installemnt infotext</InfoText>
+                </MethodLanguage>
+                <MethodLanguage iso="FRA">
+                    <Name>Byjuno Installemnt</Name>
+                    <ChargeName>Byjuno Installemnt</ChargeName>
+                    <InfoText>Byjuno Installemnt infotext</InfoText>
+                </MethodLanguage>
             </Method>
 
         </PaymentMethod>

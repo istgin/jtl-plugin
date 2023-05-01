@@ -113,19 +113,20 @@ function mapRepayment($type) {
 }
 
 function byjunoMapLang($lang) {
+    $lng = "DE";
     if ($lang == 'ger') {
-        $lang = 'DE';
+        $lng = 'DE';
     }
     if ($lang == 'fra') {
-        $lang = 'FR';
+        $lng = 'FR';
     }
     if ($lang == 'ita') {
-        $lang = 'IT';
+        $lng = 'IT';
     }
     if ($lang == 'eng') {
-        $lang = 'EN';
+        $lng = 'EN';
     }
-    return $lang;
+    return $lng;
 }
 
 /**

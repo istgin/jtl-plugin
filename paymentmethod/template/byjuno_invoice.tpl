@@ -27,7 +27,7 @@
     <div class="row ">
         <div class="col col-12">
             <div class="h2">
-                Byjuno Invoice
+                {$byjuno_invoice}
             </div>
         </div>
         {if (count($selected_payments_invoice) > 1)}
@@ -53,7 +53,7 @@
             </div>
         {/if}
         {if (count($selected_payments_invoice) == 1)}
-            <input type="hidden" name="selected_plan" value="{$selected_payments_invoice[0].id}">
+            <input type="hidden" name="byjuno_payment" value="{$selected_payments_invoice[0].id}">
         {/if}
 
         {if ($byjuno_allowpostal == 1)}
@@ -69,7 +69,7 @@
                         <input type="radio" name="byjuno_send_method" {if $invoice_send == "email"} checked="checked"{/if}
                                value="email"> &nbsp;{$l_by_email}: {$email}<br/>
                         <input type="radio"
-                               name="invoice_send" {if $invoice_send == "postal"} checked="checked"{/if}
+                               name="byjuno_send_method" {if $invoice_send == "postal"} checked="checked"{/if}
                                value="postal"> &nbsp;{$l_by_post}: {$address}<br/>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
                             <div class="d-flex flex-column-reverse">
                                 <select id="byjuno_month" name="byjuno_month" class="form-control">
                                     {foreach from=$months key=k item=month}
-                                        <option value="{$k|escape:'html':'UTF-8'}" {if $sl_month == $k} selected="selected"{/if}>{$month}
+                                        <option value="{$month|escape:'html':'UTF-8'}" {if $sl_month == $month} selected="selected"{/if}>{$month}
                                             &nbsp;
                                         </option>
                                     {/foreach}
