@@ -17,204 +17,224 @@
                 <Description>Byjuno</Description>
                 <VariableLocalized iso="GER">Byjuno</VariableLocalized>
                 <VariableLocalized iso="ENG">Byjuno</VariableLocalized>
+                <VariableLocalized iso="ITA">Byjuno</VariableLocalized>
+                <VariableLocalized iso="FRA">Byjuno</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_invoice</Name>
                 <Description>Byjuno Invoice</Description>
-                <VariableLocalized iso="GER">Byjuno Invoice</VariableLocalized>
+                <VariableLocalized iso="GER">Byjuno Rechnung</VariableLocalized>
                 <VariableLocalized iso="ENG">Byjuno Invoice</VariableLocalized>
+                <VariableLocalized iso="ITA">Fattura Byjuno</VariableLocalized>
+                <VariableLocalized iso="FRA">Facture Byjuno</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_installment</Name>
                 <Description>Byjuno Installment</Description>
-                <VariableLocalized iso="GER">Byjuno Installment</VariableLocalized>
+                <VariableLocalized iso="GER">Byjuno Ratenzahlung</VariableLocalized>
                 <VariableLocalized iso="ENG">Byjuno Installment</VariableLocalized>
+                <VariableLocalized iso="ITA">Byjuno Pagamento rateale</VariableLocalized>
+                <VariableLocalized iso="FRA">Paiement échelonné Byjuno</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Year</Name>
                 <Description>Year</Description>
                 <VariableLocalized iso="GER">Jahr</VariableLocalized>
                 <VariableLocalized iso="ENG">Year</VariableLocalized>
+                <VariableLocalized iso="ITA">Anno</VariableLocalized>
+                <VariableLocalized iso="FRA">Année</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Month</Name>
                 <Description>Month</Description>
-                <VariableLocalized iso="GER">Month</VariableLocalized>
+                <VariableLocalized iso="GER">Monat</VariableLocalized>
                 <VariableLocalized iso="ENG">Month</VariableLocalized>
+                <VariableLocalized iso="ITA">Mese</VariableLocalized>
+                <VariableLocalized iso="FRA">Mois</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Day</Name>
                 <Description>Day</Description>
-                <VariableLocalized iso="GER">Day</VariableLocalized>
+                <VariableLocalized iso="GER">Tag</VariableLocalized>
                 <VariableLocalized iso="ENG">Day</VariableLocalized>
+                <VariableLocalized iso="ITA">Giorno</VariableLocalized>
+                <VariableLocalized iso="FRA">Jour</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Selectpaymentplan</Name>
                 <Description>Selectpaymentplan</Description>
-                <VariableLocalized iso="GER">Select payment plan</VariableLocalized>
+                <VariableLocalized iso="GER">Zahlungsplan auswählen</VariableLocalized>
                 <VariableLocalized iso="ENG">Select payment plan</VariableLocalized>
+                <VariableLocalized iso="ITA">Selezionare il piano di pagamento</VariableLocalized>
+                <VariableLocalized iso="FRA">Sélectionnez le plan de paiement</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Selectinvoicedeliverymethod</Name>
                 <Description>Selectinvoicedeliverymethod</Description>
-                <VariableLocalized iso="GER">Select invoice delivery method</VariableLocalized>
+                <VariableLocalized iso="GER">Rechnungsversand auswähle</VariableLocalized>
                 <VariableLocalized iso="ENG">Select invoice delivery method</VariableLocalized>
+                <VariableLocalized iso="ITA">Selezionare la consegna della fattura</VariableLocalized>
+                <VariableLocalized iso="FRA">Sélectionnez la méthode de livraison de vos factures</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Gender</Name>
                 <Description>Gender</Description>
-                <VariableLocalized iso="GER">Gender</VariableLocalized>
+                <VariableLocalized iso="GER">Geschlecht</VariableLocalized>
                 <VariableLocalized iso="ENG">Gender</VariableLocalized>
+                <VariableLocalized iso="ITA">Sesso</VariableLocalized>
+                <VariableLocalized iso="FRA">Sexe</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Male</Name>
                 <Description>Male</Description>
-                <VariableLocalized iso="GER">Male</VariableLocalized>
+                <VariableLocalized iso="GER">Männlich</VariableLocalized>
                 <VariableLocalized iso="ENG">Male</VariableLocalized>
+                <VariableLocalized iso="ITA">Maschio</VariableLocalized>
+                <VariableLocalized iso="FRA">Masculin</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Female</Name>
                 <Description>Female</Description>
-                <VariableLocalized iso="GER">Female</VariableLocalized>
+                <VariableLocalized iso="GER">Weiblich</VariableLocalized>
                 <VariableLocalized iso="ENG">Female</VariableLocalized>
+                <VariableLocalized iso="ITA">Femminile</VariableLocalized>
+                <VariableLocalized iso="FRA">Féminin</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>DateofBirth</Name>
                 <Description>DateofBirth</Description>
-                <VariableLocalized iso="GER">Date of Birth</VariableLocalized>
+                <VariableLocalized iso="GER">Geburtsdatum</VariableLocalized>
                 <VariableLocalized iso="ENG">Date of Birth</VariableLocalized>
+                <VariableLocalized iso="ITA">Data di nascita</VariableLocalized>
+                <VariableLocalized iso="FRA">Date de naîssance</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Iagreewithtermsandconditions</Name>
                 <Description>Iagreewithtermsandconditions</Description>
-                <VariableLocalized iso="GER">I agree with terms and conditions</VariableLocalized>
+                <VariableLocalized iso="GER">Ich akzeptiere die AGB</VariableLocalized>
                 <VariableLocalized iso="ENG">I agree with terms and conditions</VariableLocalized>
-            </Variable>
-            <Variable>
-                <Name>Otherpaymentmethods</Name>
-                <Description>Otherpaymentmethods</Description>
-                <VariableLocalized iso="GER">"Other payment methods</VariableLocalized>
-                <VariableLocalized iso="ENG">"Other payment methods</VariableLocalized>
-            </Variable>
-            <Variable>
-                <Name>Iconfirmmyorder</Name>
-                <Description>Iconfirmmyorder</Description>
-                <VariableLocalized iso="GER">I confirm my order</VariableLocalized>
-                <VariableLocalized iso="ENG">I confirm my order</VariableLocalized>
-            </Variable>
-            <Variable>
-                <Name>Yourshoppingcartisempty</Name>
-                <Description>Yourshoppingcartisempty</Description>
-                <VariableLocalized iso="GER">Your shopping cart is empty.</VariableLocalized>
-                <VariableLocalized iso="ENG">Your shopping cart is empty.</VariableLocalized>
+                <VariableLocalized iso="ITA">Accetto i termini e le condizioni</VariableLocalized>
+                <VariableLocalized iso="FRA">J'accepte les termes et conditions</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Byemail</Name>
                 <Description>Byemail</Description>
-                <VariableLocalized iso="GER">By email</VariableLocalized>
-                <VariableLocalized iso="ENG">By email</VariableLocalized>
+                <VariableLocalized iso="GER">Rechnungsversand via E-Mail an</VariableLocalized>
+                <VariableLocalized iso="ENG">Send invoice via E-Mail to</VariableLocalized>
+                <VariableLocalized iso="ITA">Invio fattura tramite e-mail (senza spese aggiuntive) a</VariableLocalized>
+                <VariableLocalized iso="FRA">Envoi des factures par courrier électronique à (gratuit)</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Bypost</Name>
                 <Description>Bypost</Description>
-                <VariableLocalized iso="GER">By post</VariableLocalized>
-                <VariableLocalized iso="ENG">By post</VariableLocalized>
-            </Variable>
-            <Variable>
-                <Name>Youmustagreetermsconditions</Name>
-                <Description>Youmustagreetermsconditions</Description>
-                <VariableLocalized iso="GER">You must agree terms conditions</VariableLocalized>
-                <VariableLocalized iso="ENG">You must agree terms conditions</VariableLocalized>
+                <VariableLocalized iso="GER">Rechnungsversand in Papierform via Post (gegen Gebühr von CHF 3.95 pro Brief) an</VariableLocalized>
+                <VariableLocalized iso="ENG">Send invoice via mail to (Fee of CHF 3.95 per Letter)</VariableLocalized>
+                <VariableLocalized iso="ITA">Invio fattura cartacea tramite posta (spese aggiuntive di CHF 3.95) a</VariableLocalized>
+                <VariableLocalized iso="FRA">Envoi des facture par courrier à (Frais de CHF 3.95 par lettre)</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>ByjunoSingleInvoice</Name>
                 <Description>ByjunoSingleInvoice</Description>
-                <VariableLocalized iso="GER">Byjuno Single Invoice</VariableLocalized>
+                <VariableLocalized iso="GER">Byjuno Einmalrechnung</VariableLocalized>
                 <VariableLocalized iso="ENG">Byjuno Single Invoice</VariableLocalized>
+                <VariableLocalized iso="ITA">Byjuno fattura singola</VariableLocalized>
+                <VariableLocalized iso="FRA">Facture unique Byjuno</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>ByjunoInvoice</Name>
                 <Description>ByjunoInvoice</Description>
-                <VariableLocalized iso="GER">Byjuno Invoice (With partial payment option)</VariableLocalized>
-                <VariableLocalized iso="ENG">Byjuno Invoice (With partial payment option)</VariableLocalized>
+                <VariableLocalized iso="GER">Byjuno Rechnung mit Teilzahlungsoption</VariableLocalized>
+                <VariableLocalized iso="ENG">Byjuno invoice with partial payment option</VariableLocalized>
+                <VariableLocalized iso="ITA">Byjuno fattura con opzione di pagamento parziale</VariableLocalized>
+                <VariableLocalized iso="FRA">Facture Byjuno avec option de paiement partiel</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>3installments</Name>
                 <Description>3installments</Description>
-                <VariableLocalized iso="GER">3 installments</VariableLocalized>
+                <VariableLocalized iso="GER">3 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">3 installments</VariableLocalized>
+                <VariableLocalized iso="ITA">3 rate</VariableLocalized>
+                <VariableLocalized iso="FRA">3 échéances</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>36installments</Name>
                 <Description>36installments</Description>
-                <VariableLocalized iso="GER">36 installments</VariableLocalized>
+                <VariableLocalized iso="GER">36 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">36 installments</VariableLocalized>
+                <VariableLocalized iso="ITA">36 rate</VariableLocalized>
+                <VariableLocalized iso="FRA">36 échéances</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>12installments</Name>
                 <Description>12installments</Description>
-                <VariableLocalized iso="GER">12 installments</VariableLocalized>
+                <VariableLocalized iso="GER">12 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">12 installments</VariableLocalized>
+                <VariableLocalized iso="ITA">12 rate</VariableLocalized>
+                <VariableLocalized iso="FRA">12 échéances</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>24installments</Name>
                 <Description>24installments</Description>
-                <VariableLocalized iso="GER">24 installments</VariableLocalized>
+                <VariableLocalized iso="GER">24 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">24 installments</VariableLocalized>
+                <VariableLocalized iso="ITA">24 rate</VariableLocalized>
+                <VariableLocalized iso="FRA">24 échéances</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>4installmentsin12months</Name>
                 <Description>4installmentsin12months</Description>
-                <VariableLocalized iso="GER">4 installments in 12 months</VariableLocalized>
+                <VariableLocalized iso="GER">4 Raten innerhalb von 12 Monaten</VariableLocalized>
                 <VariableLocalized iso="ENG">4 installments in 12 months</VariableLocalized>
+                <VariableLocalized iso="ITA">4 rate in 12 mesi</VariableLocalized>
+                <VariableLocalized iso="FRA">4 échéances en 12 mois</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_fail_message</Name>
                 <Description>byjuno_fail_message</Description>
                 <VariableLocalized iso="GER">Der Anbieter dieser Zahlungsart hat die gewählte Bezahlmethode abgelehnt. Bitte wählen Sie eine andere Zahlungsart.</VariableLocalized>
                 <VariableLocalized iso="ENG">Payment Method Provider have refused selected payment method, please select different payment method.</VariableLocalized>
-                <VariableLocalized iso="IFA">L?operatore del servizio di pagamento ha rifiutato la modalità di pagamento da Lei scelta. La preghiamo di scegliere un?altra modalità di pagamento.</VariableLocalized>
+                <VariableLocalized iso="ITA">L?operatore del servizio di pagamento ha rifiutato la modalità di pagamento da Lei scelta. La preghiamo di scegliere un?altra modalità di pagamento.</VariableLocalized>
                 <VariableLocalized iso="FRA">Le prestataire de ce type de paiement a rejeté la méthode de paiement choisie. Veuillez choisir un autre mode de paiement.</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_fail_gender_message</Name>
                 <Description>byjuno_fail_gender_message</Description>
-                <VariableLocalized iso="GER">Please select gender</VariableLocalized>
+                <VariableLocalized iso="GER">Bitte wähle ein Geschlecht</VariableLocalized>
                 <VariableLocalized iso="ENG">Please select gender</VariableLocalized>
-                <VariableLocalized iso="IFA">Please select gender</VariableLocalized>
-                <VariableLocalized iso="FRA">Please select gender</VariableLocalized>
+                <VariableLocalized iso="ITA">Seleziona il sessor</VariableLocalized>
+                <VariableLocalized iso="FRA">Veuillez sélectionner le sexe</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_fail_birthday_message</Name>
                 <Description>byjuno_fail_birthday_message</Description>
-                <VariableLocalized iso="GER">Birthday is incorrect</VariableLocalized>
+                <VariableLocalized iso="GER">Geburtstag ist falsch</VariableLocalized>
                 <VariableLocalized iso="ENG">Birthday is incorrect</VariableLocalized>
-                <VariableLocalized iso="IFA">Birthday is incorrect</VariableLocalized>
-                <VariableLocalized iso="FRA">Birthday is incorrect</VariableLocalized>
+                <VariableLocalized iso="ITA">Il compleanno non è corretto</VariableLocalized>
+                <VariableLocalized iso="FRA">L'anniversaire est incorrect</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_fail_repayment_message</Name>
                 <Description>byjuno_fail_repayment_message</Description>
-                <VariableLocalized iso="GER">Please select payment plan</VariableLocalized>
+                <VariableLocalized iso="GER">Bitte Zahlungsplan auswählen</VariableLocalized>
                 <VariableLocalized iso="ENG">Please select payment plan</VariableLocalized>
-                <VariableLocalized iso="IFA">Please select payment plan</VariableLocalized>
-                <VariableLocalized iso="FRA">Please select payment plan</VariableLocalized>
+                <VariableLocalized iso="ITA">Seleziona il piano di pagamento</VariableLocalized>
+                <VariableLocalized iso="FRA">Veuillez sélectionner le plan de paiement</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_fail_send_method_message</Name>
                 <Description>byjuno_fail_send_method_message</Description>
-                <VariableLocalized iso="GER">Please select invoice delivery method</VariableLocalized>
+                <VariableLocalized iso="GER">Bitte wählen Sie die Rechnungsversandmethode</VariableLocalized>
                 <VariableLocalized iso="ENG">Please select invoice delivery method</VariableLocalized>
-                <VariableLocalized iso="IFA">Please select invoice delivery method</VariableLocalized>
-                <VariableLocalized iso="FRA">Please select invoice delivery method</VariableLocalized>
+                <VariableLocalized iso="ITA">Si prega di selezionare il metodo di consegna della fattura</VariableLocalized>
+                <VariableLocalized iso="FRA">Veuillez sélectionner le mode de livraison de la facture</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_fail_agree_message</Name>
                 <Description>byjuno_fail_agree_message</Description>
-                <VariableLocalized iso="GER">You must agree with byjuno terms and conditions</VariableLocalized>
+                <VariableLocalized iso="GER">Sie müssen die AGB akzeptieren</VariableLocalized>
                 <VariableLocalized iso="ENG">You must agree with byjuno terms and conditions</VariableLocalized>
-                <VariableLocalized iso="IFA">You must agree with byjuno terms and conditions</VariableLocalized>
-                <VariableLocalized iso="FRA">You must agree with byjuno terms and conditions</VariableLocalized>
+                <VariableLocalized iso="ITA">Vogliate accettare i termini e condizioni</VariableLocalized>
+                <VariableLocalized iso="FRA">Veuillez accepter les termes et conditions</VariableLocalized>
             </Variable>
 
 
@@ -244,29 +264,29 @@
                 <TemplateFile>template/byjuno_invoice.tpl</TemplateFile>
                 <AdditionalTemplateFile>template/byjuno_invoice.tpl</AdditionalTemplateFile>
                 <MethodLanguage iso="GER">
-                    <Name>Byjuno Invoice</Name>
-                    <ChargeName>Byjuno Invoice</ChargeName>
-                    <InfoText>Byjuno Invoice infotext</InfoText>
+                    <Name>Byjuno Rechnung</Name>
+                    <ChargeName>Byjuno Rechnung</ChargeName>
+                    <InfoText>Mit Byjuno Rechnung bezahlen</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="ENG">
                     <Name>Byjuno Invoice</Name>
                     <ChargeName>Byjuno Invoice</ChargeName>
-                    <InfoText>Byjuno Invoice infotext</InfoText>
+                    <InfoText>Pay by Byjuno Invoice</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="ITA">
-                    <Name>Byjuno Invoice</Name>
-                    <ChargeName>Byjuno Invoice</ChargeName>
-                    <InfoText>Byjuno Invoice infotext</InfoText>
+                    <Name>Fattura Byjuno</Name>
+                    <ChargeName>Fattura Byjuno</ChargeName>
+                    <InfoText>Pagare la fattura con Byjuno</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="FRA">
-                    <Name>Byjuno Invoice</Name>
-                    <ChargeName>Byjuno Invoice</ChargeName>
-                    <InfoText>Byjuno Invoice infotext</InfoText>
+                    <Name>Facture Byjuno</Name>
+                    <ChargeName>Facture Byjuno</ChargeName>
+                    <InfoText>Payer par facture Byjuno</InfoText>
                 </MethodLanguage>
             </Method>
 
             <Method>
-                <Name>Byjuno Installemnt</Name>
+                <Name>Byjuno Installment</Name>
                 <PictureURL>../mcpay/logos/sepa2.png</PictureURL>
                 <Sort>20</Sort>
                 <SendMail>0</SendMail>
@@ -276,29 +296,29 @@
                 <Soap>0</Soap>
                 <Curl>1</Curl>
                 <Sockets>0</Sockets>
-                <ClassFile>ByjunoInstallemnt.php</ClassFile>
-                <ClassName>ByjunoInstallemnt</ClassName>
+                <ClassFile>ByjunoInstallment.php</ClassFile>
+                <ClassName>ByjunoInstallment</ClassName>
                 <TemplateFile>template/byjuno_installment.tpl</TemplateFile>
                 <AdditionalTemplateFile>template/byjuno_installment.tpl</AdditionalTemplateFile>
                 <MethodLanguage iso="GER">
-                    <Name>Byjuno Installemnt</Name>
-                    <ChargeName>Byjuno Installemnt</ChargeName>
-                    <InfoText>Byjuno Installemnt infotext</InfoText>
+                    <Name>Byjuno Ratenzahlung</Name>
+                    <ChargeName>Byjuno Ratenzahlung</ChargeName>
+                    <InfoText>Mit Byjuno Ratenzahlung bezahlen</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="ENG">
-                    <Name>Byjuno Installemnt</Name>
-                    <ChargeName>Byjuno Installemnt</ChargeName>
-                    <InfoText>Byjuno Installemnt infotext</InfoText>
+                    <Name>Byjuno Installment</Name>
+                    <ChargeName>Byjuno Installment</ChargeName>
+                    <InfoText>Byjuno Installment infotext</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="ITA">
-                    <Name>Byjuno Installemnt</Name>
-                    <ChargeName>Byjuno Installemnt</ChargeName>
-                    <InfoText>Byjuno Installemnt infotext</InfoText>
+                    <Name>Byjuno Pagamento rateale</Name>
+                    <ChargeName>Byjuno Pagamento rateale</ChargeName>
+                    <InfoText>Pagare a rate con Byjuno</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="FRA">
-                    <Name>Byjuno Installemnt</Name>
-                    <ChargeName>Byjuno Installemnt</ChargeName>
-                    <InfoText>Byjuno Installemnt infotext</InfoText>
+                    <Name>Paiement échelonné Byjuno</Name>
+                    <ChargeName>Paiement échelonné Byjuno</ChargeName>
+                    <InfoText>Paiement échelonné Byjuno</InfoText>
                 </MethodLanguage>
             </Method>
 
@@ -352,7 +372,7 @@
                     <ValueName>byjuno_tech_email</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="" sort="70" conf="Y">
+                <Setting type="text" initialValue="30" sort="70" conf="Y">
                     <Name>Connection timeout to Byjuno CDP server in seconds</Name>
                     <ValueName>byjuno_timeout</ValueName>
                 </Setting>
@@ -554,42 +574,42 @@
                     </SelectboxOptions>
                 </Setting>
 
-                <Setting type="text" initialValue="" sort="330" conf="Y">
+                <Setting type="text" initialValue="https://byjuno.ch/en/2b/terms" sort="330" conf="Y">
                     <Name>T&amp;C Byjuno Invoice (EN) link</Name>
                     <ValueName>byjuno_toc_en_invoice</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="" sort="330" conf="Y">
+                <Setting type="text" initialValue="https://byjuno.ch/en/3a/terms/" sort="330" conf="Y">
                     <Name>T&amp;C Byjuno Installment (EN) link</Name>
                     <ValueName>byjuno_toc_en_installment</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="" sort="340" conf="Y">
+                <Setting type="text" initialValue="https://byjuno.ch/de/2b/terms" sort="340" conf="Y">
                     <Name>T&amp;C Byjuno Invoice (DE) link</Name>
                     <ValueName>byjuno_toc_de_invoice</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="" sort="350" conf="Y">
+                <Setting type="text" initialValue="https://byjuno.ch/de/3a/terms/" sort="350" conf="Y">
                     <Name>T&amp;C Byjuno Installment (DE) link</Name>
                     <ValueName>byjuno_toc_de_installment</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="" sort="360" conf="Y">
+                <Setting type="text" initialValue="https://byjuno.ch/fr/2b/terms" sort="360" conf="Y">
                     <Name>T&amp;C Byjuno Invoice (FR) link</Name>
                     <ValueName>byjuno_toc_fr_invoice</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="" sort="370" conf="Y">
+                <Setting type="text" initialValue="https://byjuno.ch/fr/3a/terms/" sort="370" conf="Y">
                     <Name>T&amp;C Byjuno Installment (FR) link</Name>
                     <ValueName>byjuno_toc_fr_installment</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="" sort="380" conf="Y">
+                <Setting type="text" initialValue="https://byjuno.ch/it/2b/terms" sort="380" conf="Y">
                     <Name>T&amp;C Byjuno Invoice (IT) link</Name>
                     <ValueName>byjuno_toc_it_invoice</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="" sort="398" conf="Y">
+                <Setting type="text" initialValue="https://byjuno.ch/it/3a/terms/" sort="398" conf="Y">
                     <Name>T&amp;C Byjuno Installment (IT) link</Name>
                     <ValueName>byjuno_toc_it_installment</ValueName>
                 </Setting>

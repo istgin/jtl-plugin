@@ -251,12 +251,8 @@ class ByjunoBase extends Method
             'l_female' => $this->getText("Female", "Female"),
             'l_date_of_birth' => $this->getText("DateofBirth", "Date of Birth"),
             'l_i_agree_with_terms_and_conditions' => $this->getText("Iagreewithtermsandconditions", "I agree with terms and conditions"),
-            'l_other_payment_methods' => $this->getText("Otherpaymentmethods", "Other payment methods"),
-            'l_i_confirm_my_order' => $this->getText("Iconfirmmyorder", "I confirm my order"),
-            'l_your_shopping_cart_is_empty' => $this->getText("Yourshoppingcartisempty.", "Your shopping cart is empty."),
             'l_by_email' => $this->getText("Byemail", "By email"),
-            'l_by_post' => $this->getText("Bypost", "By post"),
-            'l_you_must_agree_terms_conditions' => $this->getText("Youmustagreetermsconditions", "You must agree terms conditions"),
+            'l_by_post' => $this->getText("Bypost", "By post")
         );
         if ($byjuno_invoice) {
             if ($b2b && !empty($customer->cFirma)) {

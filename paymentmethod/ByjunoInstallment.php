@@ -6,7 +6,7 @@ namespace Plugin\byjuno\paymentmethod;
 use JTL\Checkout\Bestellung;
 use stdClass;
 
-class ByjunoInstallemnt extends ByjunoBase
+class ByjunoInstallment extends ByjunoBase
 {
   var $pm = 'byjyno_installment'; // important for event url
   var $paymethod = 'byjyno_installment_api';

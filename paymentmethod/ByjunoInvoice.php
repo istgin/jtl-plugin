@@ -42,7 +42,8 @@ class ByjunoInvoice extends ByjunoBase
     if (!$byjuno_invoice) {
       return $byjuno_invoice;
     }
-    return $this->CDPRequest();
+    $response = $this->CDPRequest();
+    return $response;
   }
 
   public function preparePaymentProcess(Bestellung $order): void
