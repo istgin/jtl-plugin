@@ -250,7 +250,7 @@
 
             <Method>
                 <Name>Byjuno Invoice</Name>
-                <PictureURL>../mcpay/logos/ccard2.png</PictureURL>
+                <PictureURL>BJ_Rechnung_BLK.gif</PictureURL>
                 <Sort>10</Sort>
                 <SendMail>0</SendMail>
                 <Provider>Byjuno</Provider>
@@ -287,7 +287,7 @@
 
             <Method>
                 <Name>Byjuno Installment</Name>
-                <PictureURL>../mcpay/logos/sepa2.png</PictureURL>
+                <PictureURL>BJ_Ratenzahlung_BLK.gif</PictureURL>
                 <Sort>20</Sort>
                 <SendMail>0</SendMail>
                 <Provider>Byjuno</Provider>
