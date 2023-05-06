@@ -58,20 +58,21 @@ try {
         if (!empty($order->kBestellung)) {
             $byjunoOrder = Shop::Container()->getDB()->select('xplugin_byjyno_orders', ['order_id', 'request_type'], [$order->cBestellNr, 'S3']);
             if (!empty($byjunoOrder) && $byjunoOrder->request_type == 'S3') {
-                if ($order->cStatus != $byjunoOrder->order_status) {
+                if ($order->cStatus != $arr["status"]) {
+                    $invoiceNum = $order->cBestellNr;
+                    $currency = new Currency($order->kWaehrung);
+                    $amount = $order->fGesamtsumme;
+                    if (!empty($order->kKunde)) {
+                        $customerId = $order->kKunde;
+                    } else {
+                        $customerId = "guest";
+                    }
+                    $time = time();
+                    $dt = date("Y-m-d", $time);
+
                     if ($byjunoConfig->getOption("byjuno_s4")->value == "true") {
                         $s4TriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s4_trigger")->value);
-                        if (!empty($s4TriggerStatus) && $s4TriggerStatus == $order->cStatus) {
-                            $invoiceNum = $order->cBestellNr;
-                            $currency = new Currency($order->kWaehrung);
-                            $amount = $order->fGesamtsumme;
-                            if (!empty($order->kKunde)) {
-                                $customerId = $order->kKunde;
-                            } else {
-                                $customerId = "guest";
-                            }
-                            $time = time();
-                            $dt = date("Y-m-d", $time);
+                        if (!empty($s4TriggerStatus) && $s4TriggerStatus == $arr["status"]) {
                             $requestInvoice = CreateShopRequestS4($invoiceNum, $amount, $amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
                             $xmlRequestS4 = $requestInvoice->createRequest();
                             $byjunoCommunicator = new ByjunoCommunicator();
@@ -88,7 +89,7 @@ try {
                             $byjunoLogger = ByjunoLogger::getInstance();
                             $byjunoLogger->addSOrderLog(Array(
                                 "order_id" => $order->cBestellNr,
-                                "order_status" => $order->cStatus,
+                                "order_status" => $arr["status"],
                                 "request_type" => "S4",
                                 "firstname" => "",
                                 "lastname" =>  "",
@@ -108,23 +109,81 @@ try {
                     }
                     if ($byjunoConfig->getOption("byjuno_s5_refund")->value == "true") {
                         $s5RefundTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_refund_trigger")->value);
-                        if (!empty($s5RefundTriggerStatus) && $s5RefundTriggerStatus == $order->cStatus) {
-                            // S5 refund
+                        if (!empty($s5RefundTriggerStatus) && $s5RefundTriggerStatus == $arr["status"]) {
+                            $requestInvoice = CreateShopRequestS5Refund($invoiceNum, $amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
+                            $xmlRequestS5Refund = $requestInvoice->createRequest();
+                            $byjunoCommunicator = new ByjunoCommunicator();
+                            $byjunoCommunicator->setServer("test");
+                            $responseS5Refund = $byjunoCommunicator->sendS4Request($xmlRequestS5Refund);
+                            $statusLog = "S5 Refund Request";
+                            $statusS5Refund = "ERR";
+                            if (isset($responseS5Refund)) {
+                                $byjunoResponseS5Refund = new ByjunoS4Response();
+                                $byjunoResponseS5Refund->setRawResponse($responseS5Refund);
+                                $byjunoResponseS5Refund->processResponse();
+                                $statusS5Refund = $byjunoResponseS5Refund->getProcessingInfoClassification();
+                            }
+                            $byjunoLogger = ByjunoLogger::getInstance();
+                            $byjunoLogger->addSOrderLog(Array(
+                                "order_id" => $order->cBestellNr,
+                                "order_status" => $arr["status"],
+                                "request_type" => "S5 Refund",
+                                "firstname" => "",
+                                "lastname" =>  "",
+                                "town" => "",
+                                "postcode" =>  "",
+                                "street" => "",
+                                "country" =>  "",
+                                "ip" => byjunoGetClientIp(),
+                                "status" => $statusS5Refund,
+                                "request_id" => $requestInvoice->getRequestId(),
+                                "type" => $statusLog,
+                                "error" => $statusS5Refund,
+                                "response" => $responseS5Refund,
+                                "request" => $xmlRequestS5Refund
+                            ));
                         }
                     }
                     if ($byjunoConfig->getOption("byjuno_s5_cancel")->value == "true") {
                         $s5CancelTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_cancel_trigger")->value);
-                        if (!empty($s5CancelTriggerStatus) && $s5CancelTriggerStatus == $order->cStatus) {
-                            // S5 cancel
+                        if (!empty($s5CancelTriggerStatus) && $s5CancelTriggerStatus == $arr["status"]) {
+                            $requestInvoice = CreateShopRequestS5Cancel($amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
+                            $xmlRequestS5Cancel = $requestInvoice->createRequest();
+                            $byjunoCommunicator = new ByjunoCommunicator();
+                            $byjunoCommunicator->setServer("test");
+                            $responseS5Cancel = $byjunoCommunicator->sendS4Request($xmlRequestS5Cancel);
+                            $statusLog = "S5 Cancel Request";
+                            $statusS5Cancel = "ERR";
+                            if (isset($responseS5Cancel)) {
+                                $byjunoResponseS5Cancel = new ByjunoS4Response();
+                                $byjunoResponseS5Cancel->setRawResponse($responseS5Cancel);
+                                $byjunoResponseS5Cancel->processResponse();
+                                $statusS5Cancel = $byjunoResponseS5Cancel->getProcessingInfoClassification();
+                            }
+                            $byjunoLogger = ByjunoLogger::getInstance();
+                            $byjunoLogger->addSOrderLog(Array(
+                                "order_id" => $order->cBestellNr,
+                                "order_status" => $arr["status"],
+                                "request_type" => "S5 Cancel",
+                                "firstname" => "",
+                                "lastname" =>  "",
+                                "town" => "",
+                                "postcode" =>  "",
+                                "street" => "",
+                                "country" =>  "",
+                                "ip" => byjunoGetClientIp(),
+                                "status" => $statusS5Cancel,
+                                "request_id" => $requestInvoice->getRequestId(),
+                                "type" => $statusLog,
+                                "error" => $statusS5Cancel,
+                                "response" => $responseS5Cancel,
+                                "request" => $xmlRequestS5Cancel
+                            ));
                         }
                     }
                 }
-             //   $debug = var_export($order, true);
-               // file_put_contents("/tmp/xxx1.txt", $debug);
-                // TODO S4 S5 here
             }
         }
     }
 } catch (Exception $e) {
 }
-exit();

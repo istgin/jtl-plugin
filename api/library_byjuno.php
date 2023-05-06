@@ -439,6 +439,7 @@ function CreateShopRequestS4($doucmentId, $amount, $orderAmount, $orderCurrency,
     } catch (Exception $e) {
 
     }
+
     $request->setRequestId(uniqid((String)$orderId . "_"));
     $request->setOrderId($orderId);
     $request->setClientRef($customerId);
@@ -450,15 +451,17 @@ function CreateShopRequestS4($doucmentId, $amount, $orderAmount, $orderCurrency,
     $request->setOpenBalance(number_format($orderAmount, 2, '.', ''));
     return $request;
 }
+
 function CreateShopRequestS5Refund($documentId, $amount, $orderCurrency, $orderId, $customerId, $date)
 {
+    $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     $request = new ByjunoS5Request();
-    $request->setClientId(Configuration::get("INTRUM_CLIENT_ID"));
-    $request->setUserID(Configuration::get("INTRUM_USER_ID"));
-    $request->setPassword(Configuration::get("INTRUM_PASSWORD"));
+    $request->setClientId($config->getOption("byjuno_client_id")->value);
+    $request->setUserID($config->getOption("byjuno_user_id")->value);
+    $request->setPassword($config->getOption("byjuno_password")->value);
     $request->setVersion("1.00");
     try {
-        $request->setRequestEmail(Configuration::get("INTRUM_TECH_EMAIL"));
+        $request->setRequestEmail($config->getOption("byjuno_tech_email")->value);
     } catch (Exception $e) {
 
     }
@@ -474,13 +477,14 @@ function CreateShopRequestS5Refund($documentId, $amount, $orderCurrency, $orderI
 }
 function CreateShopRequestS5Cancel($amount, $orderCurrency, $orderId, $customerId, $date)
 {
+    $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     $request = new ByjunoS5Request();
-    $request->setClientId(Configuration::get("INTRUM_CLIENT_ID"));
-    $request->setUserID(Configuration::get("INTRUM_USER_ID"));
-    $request->setPassword(Configuration::get("INTRUM_PASSWORD"));
+    $request->setClientId($config->getOption("byjuno_client_id")->value);
+    $request->setUserID($config->getOption("byjuno_user_id")->value);
+    $request->setPassword($config->getOption("byjuno_password")->value);
     $request->setVersion("1.00");
     try {
-        $request->setRequestEmail(Configuration::get("INTRUM_TECH_EMAIL"));
+        $request->setRequestEmail($config->getOption("byjuno_tech_email")->value);
     } catch (Exception $e) {
 
     }

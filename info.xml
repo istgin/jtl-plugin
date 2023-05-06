@@ -243,6 +243,7 @@
 
         <Hooks>
             <Hook id="181">ByjunoOrderStatusChange.php</Hook>
+            <Hook id="210">ByjunoOrderStorno.php</Hook>
             <Hook id="8">ByjunoErrorOrder.php</Hook>
         </Hooks>
 
