@@ -196,9 +196,11 @@ class ByjunoBase extends Method
         $selected_payments_invoice = Array();
         $selected_payments_installment = Array();
         $langtoc = "de";
-        $langIso = LanguageHelper::getIsoFromLangID($customer->kSprache);
-        if (!empty($langIso->cISO)) {
-            $langtoc = strtolower(byjunoMapLang($langIso->cISO));
+        if (!empty($customer->kSprache)) {
+            $langIso = LanguageHelper::getIsoFromLangID($customer->kSprache);
+            if (!empty($langIso->cISO)) {
+                $langtoc = strtolower(byjunoMapLang($langIso->cISO));
+            }
         }
         $year = date("Y");
         for ($i = $year - 100; $i <= $year; $i++) {

@@ -26,51 +26,6 @@ function byjunoGetClientIp() {
     return $ipaddress;
 }
 
-function mapPaymentMethodToSpecs($method){
-    $method = strtolower(str_replace(" ", "", $method));
-    $IntrumMapping = array(
-        'cashondelivery'	=> 'CASH-ON-DELIVERY',
-        'checkmo'			=> 'INVOICE',
-        'banktransfer'		=> 'PRE-PAY',
-        'ccsave'			=> 'CREDIT-CARD',
-        'paypal'			=> 'E-PAYMENT',
-        'bankwire'			=> 'INVOICE',
-        'bill'			    => 'INVOICE',
-        'invoice'			=> 'INVOICE',
-        'invoicepayment'	=> 'INVOICE',
-        'visa'	            => 'CREDIT-CARD',
-        'maestro'	        => 'CREDIT-CARD',
-        'mastercard'	    => 'CREDIT-CARD',
-		'bezahlenperrechnung' => 'INVOICE'
-    );
-
-    if(strpos($method, 'paypal')!==false){
-        if(array_key_exists('paypal', $IntrumMapping)){
-            return $IntrumMapping['paypal'];
-        }
-    }
-    if(strpos($method, 'invoice')!==false){
-        return $IntrumMapping['invoice'];
-    }
-    if(strpos($method, 'maestro')!==false){
-        return $IntrumMapping['maestro'];
-    }
-    if(strpos($method, 'mastercard')!==false){
-        return $IntrumMapping['mastercard'];
-    }
-    if(strpos($method, 'visa')!==false){
-        return $IntrumMapping['visa'];
-    }
-    if(strpos($method, 'rechnung')!==false){
-        return $IntrumMapping['bezahlenperrechnung'];
-    }
-    if(array_key_exists($method, $IntrumMapping)){
-
-        return $IntrumMapping[$method];
-    }
-    return $method;
-}
-
 function mapMethod($method) {
     if ($method == 'installment_3') {
         return "INSTALLMENT";
@@ -153,10 +108,12 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
     if ($customer->nRegistriert == 1) {
         $custId =  uniqid("registered_");
     }
-    $langIso = LanguageHelper::getIsoFromLangID($customer->kSprache);
     $lang = 'DE';
-    if (!empty($langIso->cISO)) {
-        $lang = byjunoMapLang($langIso->cISO);
+    if (!empty($customer->kSprache)) {
+        $langIso = LanguageHelper::getIsoFromLangID($customer->kSprache);
+        if (!empty($langIso->cISO)) {
+            $lang = byjunoMapLang($langIso->cISO);
+        }
     }
     $request->setRequestId($custId);
     $request->setCustomerReference($custId);
@@ -263,10 +220,12 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
         $request->setRequestEmail($config->getOption("byjuno_tech_email")->value);
     } catch (Exception $e) {
     }
-    $langIso = LanguageHelper::getIsoFromLangID($order->kSprache);
     $lang = 'DE';
-    if (!empty($langIso->cISO)) {
-        $lang = byjunoMapLang($langIso->cISO);
+    if (!empty($order->kSprache)) {
+        $langIso = LanguageHelper::getIsoFromLangID($order->kSprache);
+        if (!empty($langIso->cISO)) {
+            $lang = byjunoMapLang($langIso->cISO);
+        }
     }
     $custId = uniqid("customer_");
     $request->setRequestId($custId);
@@ -304,6 +263,12 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
     $extraInfo["Name"] = 'ORDERCLOSED';
     $extraInfo["Value"] = $orderClosed;
     $request->setExtraInfo($extraInfo);
+
+    if ($orderClosed == "YES") {
+        $extraInfo["Name"] = 'ORDERID';
+        $extraInfo["Value"] = $order->cBestellNr;
+        $request->setExtraInfo($extraInfo);
+    }
 
     $extraInfo["Name"] = 'ORDERAMOUNT';
     $extraInfo["Value"] = $order->fGesamtsumme;
@@ -354,7 +319,7 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
 
     if ($msgType != "") {
         $extraInfo["Name"] = 'MESSAGETYPESPEC';
-        $extraInfo["Value"] = $msgType;//'ORDERREQUEST';
+        $extraInfo["Value"] = $msgType;
         $request->setExtraInfo($extraInfo);
     }
 
