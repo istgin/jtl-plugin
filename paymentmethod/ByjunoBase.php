@@ -533,7 +533,7 @@ class ByjunoBase extends Method
         $cart = Frontend::getCart();
         $customer = Frontend::getCustomer();
         $delivery = Frontend::getDeliveryAddress();
-        if (true) {
+        if ($this->config->getOption("byjuno_cdp")->value == 'true') {
             $theSame = (!empty($_SESSION["byjuno_cdp"])) ? $_SESSION["byjuno_cdp"] : null;
             if (!empty($theSame) && is_array($theSame)) {
                 $this->_savedUser = $theSame;

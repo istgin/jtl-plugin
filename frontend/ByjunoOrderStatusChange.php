@@ -108,47 +108,50 @@ try {
                         }
                     }
                     if ($byjunoConfig->getOption("byjuno_s5_refund")->value == "true") {
-                        $s5RefundTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_refund_trigger")->value);
-                        if (!empty($s5RefundTriggerStatus) && $s5RefundTriggerStatus == $arr["status"]) {
-                            $requestInvoice = CreateShopRequestS5Refund($invoiceNum, $amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
-                            $xmlRequestS5Refund = $requestInvoice->createRequest();
-                            $byjunoCommunicator = new ByjunoCommunicator();
-                            $byjunoCommunicator->setServer("test");
-                            $responseS5Refund = $byjunoCommunicator->sendS4Request($xmlRequestS5Refund);
-                            $statusLog = "S5 Refund Request";
-                            $statusS5Refund = "ERR";
-                            if (isset($responseS5Refund)) {
-                                $byjunoResponseS5Refund = new ByjunoS4Response();
-                                $byjunoResponseS5Refund->setRawResponse($responseS5Refund);
-                                $byjunoResponseS5Refund->processResponse();
-                                $statusS5Refund = $byjunoResponseS5Refund->getProcessingInfoClassification();
+                        $byjunoOrderS4 = Shop::Container()->getDB()->select('xplugin_byjyno_orders', ['order_id', 'request_type'], [$order->cBestellNr, 'S4']);
+                        if (!empty($byjunoOrderS4)) {
+                            $s5RefundTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_refund_trigger")->value);
+                            if (!empty($s5RefundTriggerStatus) && $s5RefundTriggerStatus == $arr["status"]) {
+                                $requestS5Refund = CreateShopRequestS5Refund($invoiceNum, $amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
+                                $xmlRequestS5Refund = $requestS5Refund->createRequest();
+                                $byjunoCommunicator = new ByjunoCommunicator();
+                                $byjunoCommunicator->setServer("test");
+                                $responseS5Refund = $byjunoCommunicator->sendS4Request($xmlRequestS5Refund);
+                                $statusLog = "S5 Refund Request";
+                                $statusS5Refund = "ERR";
+                                if (isset($responseS5Refund)) {
+                                    $byjunoResponseS5Refund = new ByjunoS4Response();
+                                    $byjunoResponseS5Refund->setRawResponse($responseS5Refund);
+                                    $byjunoResponseS5Refund->processResponse();
+                                    $statusS5Refund = $byjunoResponseS5Refund->getProcessingInfoClassification();
+                                }
+                                $byjunoLogger = ByjunoLogger::getInstance();
+                                $byjunoLogger->addSOrderLog(Array(
+                                    "order_id" => $order->cBestellNr,
+                                    "order_status" => $arr["status"],
+                                    "request_type" => "S5 Refund",
+                                    "firstname" => "",
+                                    "lastname" => "",
+                                    "town" => "",
+                                    "postcode" => "",
+                                    "street" => "",
+                                    "country" => "",
+                                    "ip" => byjunoGetClientIp(),
+                                    "status" => $statusS5Refund,
+                                    "request_id" => $requestS5Refund->getRequestId(),
+                                    "type" => $statusLog,
+                                    "error" => $statusS5Refund,
+                                    "response" => $responseS5Refund,
+                                    "request" => $xmlRequestS5Refund
+                                ));
                             }
-                            $byjunoLogger = ByjunoLogger::getInstance();
-                            $byjunoLogger->addSOrderLog(Array(
-                                "order_id" => $order->cBestellNr,
-                                "order_status" => $arr["status"],
-                                "request_type" => "S5 Refund",
-                                "firstname" => "",
-                                "lastname" =>  "",
-                                "town" => "",
-                                "postcode" =>  "",
-                                "street" => "",
-                                "country" =>  "",
-                                "ip" => byjunoGetClientIp(),
-                                "status" => $statusS5Refund,
-                                "request_id" => $requestInvoice->getRequestId(),
-                                "type" => $statusLog,
-                                "error" => $statusS5Refund,
-                                "response" => $responseS5Refund,
-                                "request" => $xmlRequestS5Refund
-                            ));
                         }
                     }
                     if ($byjunoConfig->getOption("byjuno_s5_cancel")->value == "true") {
                         $s5CancelTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_cancel_trigger")->value);
                         if (!empty($s5CancelTriggerStatus) && $s5CancelTriggerStatus == $arr["status"]) {
-                            $requestInvoice = CreateShopRequestS5Cancel($amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
-                            $xmlRequestS5Cancel = $requestInvoice->createRequest();
+                            $requestS5Cancel = CreateShopRequestS5Cancel($amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
+                            $xmlRequestS5Cancel = $requestS5Cancel->createRequest();
                             $byjunoCommunicator = new ByjunoCommunicator();
                             $byjunoCommunicator->setServer("test");
                             $responseS5Cancel = $byjunoCommunicator->sendS4Request($xmlRequestS5Cancel);
@@ -173,7 +176,7 @@ try {
                                 "country" =>  "",
                                 "ip" => byjunoGetClientIp(),
                                 "status" => $statusS5Cancel,
-                                "request_id" => $requestInvoice->getRequestId(),
+                                "request_id" => $requestS5Cancel->getRequestId(),
                                 "type" => $statusLog,
                                 "error" => $statusS5Cancel,
                                 "response" => $responseS5Cancel,
