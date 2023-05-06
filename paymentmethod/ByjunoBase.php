@@ -8,6 +8,7 @@ use ByjunoLogger;
 use ByjunoRequest;
 use ByjunoResponse;
 use JTL\Checkout\Bestellung;
+use JTL\Customer\Customer;
 use JTL\Language\LanguageHelper;
 use JTL\Plugin\Data\Config;
 use JTL\Plugin\Helper;
@@ -398,7 +399,6 @@ class ByjunoBase extends Method
     public function finalizeOrder(Bestellung $order, string $hash, array $args): bool
     {
         $_SESSION["BYJUNO_ERROR"] = null;
-        // S1 & S3 here
         $order->cBestellNr = getOrderHandler()->createOrderNo();
         try {
             $requestS1 = CreateJTLOrderShopRequest($order,

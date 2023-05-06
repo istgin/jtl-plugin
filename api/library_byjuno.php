@@ -227,8 +227,14 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
             $lang = byjunoMapLang($langIso->cISO);
         }
     }
-    $custId = uniqid("customer_");
-    $request->setRequestId($custId);
+    $customerRef = $order->Lieferadresse->kKunde;
+    $requestId = uniqid("customer_");
+    if (!empty($customerRef)) {
+        $custId = $customerRef;
+    } else {
+        $custId = $requestId;
+    }
+    $request->setRequestId($requestId);
     $request->setCustomerReference($custId);
     $request->setFirstName(html_entity_decode($order->oRechnungsadresse->cVorname, ENT_COMPAT, 'UTF-8'));
     $request->setLastName(html_entity_decode($order->oRechnungsadresse->cNachname, ENT_COMPAT, 'UTF-8'));
@@ -383,15 +389,53 @@ function byjunoIsStatusOk($status, $position)
     }
 }
 
+/**
+ * @param $status
+ * @return
+void|nullconst BESTELLUNG_STATUS_STORNO                 = -1;
+const BESTELLUNG_STATUS_OFFEN                  = 1;
+const BESTELLUNG_STATUS_IN_BEARBEITUNG         = 2;
+const BESTELLUNG_STATUS_BEZAHLT                = 3;
+const BESTELLUNG_STATUS_VERSANDT               = 4;
+const BESTELLUNG_STATUS_TEILVERSANDT           = 5;
+ */
+function byjunoOrderMapStatus($status)
+{
+    switch ($status) {
+        case "open":
+            return BESTELLUNG_STATUS_OFFEN;
+            break;
+        case "in_progress":
+            return BESTELLUNG_STATUS_IN_BEARBEITUNG;
+            break;
+        case "paid":
+            return BESTELLUNG_STATUS_BEZAHLT;
+            break;
+        case "shipped":
+            return BESTELLUNG_STATUS_VERSANDT;
+            break;
+        case "partially_shipped":
+            return BESTELLUNG_STATUS_TEILVERSANDT;
+            break;
+        case "cancelled":
+            return BESTELLUNG_STATUS_STORNO;
+            break;
+        default:
+            return null;
+
+    }
+}
+
 function CreateShopRequestS4($doucmentId, $amount, $orderAmount, $orderCurrency, $orderId, $customerId, $date)
 {
+    $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     $request = new ByjunoS4Request();
-    $request->setClientId(Configuration::get("INTRUM_CLIENT_ID"));
-    $request->setUserID(Configuration::get("INTRUM_USER_ID"));
-    $request->setPassword(Configuration::get("INTRUM_PASSWORD"));
+    $request->setClientId($config->getOption("byjuno_client_id")->value);
+    $request->setUserID($config->getOption("byjuno_user_id")->value);
+    $request->setPassword($config->getOption("byjuno_password")->value);
     $request->setVersion("1.00");
     try {
-        $request->setRequestEmail(Configuration::get("INTRUM_TECH_EMAIL"));
+        $request->setRequestEmail($config->getOption("byjuno_tech_email")->value);
     } catch (Exception $e) {
 
     }
