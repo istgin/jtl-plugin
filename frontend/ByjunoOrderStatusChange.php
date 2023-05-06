@@ -53,7 +53,7 @@ try {
             $byjunoOrder = Shop::Container()->getDB()->select('xplugin_byjyno_orders', ['order_id', 'request_type'], [$order->kBestellung, 'S3']);
             if (!empty($byjunoOrder) && $byjunoOrder->request_type == 'S3') {
                 $debug = var_export($order, true);
-                file_put_contents("/tmp/xx5.txt", $debug);
+                file_put_contents("/tmp/xxx1.txt", $debug);
                 // TODO S4 S5 here
             }
         }

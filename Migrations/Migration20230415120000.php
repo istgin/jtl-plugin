@@ -13,6 +13,7 @@ class Migration20230415120000 extends Migration implements IMigration
          CREATE TABLE IF NOT EXISTS `xplugin_byjyno_orders` (
                   `byjuno_id` int(10) unsigned NOT NULL auto_increment,
                   `order_id` varchar(250) default NULL,
+                  `order_status` int(10) default 0,
                   `request_type` varchar(250) default NULL,
                   `firstname` varchar(250) default NULL,
                   `lastname` varchar(250) default NULL,

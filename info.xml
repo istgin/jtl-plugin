@@ -446,12 +446,16 @@
                     </SelectboxOptions>
                 </Setting>
 
-                <Setting type="selectbox" initialValue="true" sort="170" conf="Y">
+                <Setting type="selectbox" initialValue="paid" sort="170" conf="Y">
                     <Name>S4 trigger order state (order changed from WAWI)</Name>
                     <ValueName>byjuno_s4_trigger</ValueName>
                     <SelectboxOptions>
-                        <Option value="processing" sort="1">processing</Option>
-                        <Option value="pending" sort="2">pending</Option>
+                        <Option value="open" sort="1">open (BESTELLUNG_STATUS_OFFEN)</Option>
+                        <Option value="in_progress" sort="2">in progress (BESTELLUNG_STATUS_IN_BEARBEITUNG)</Option>
+                        <Option value="paid" sort="3">paid (BESTELLUNG_STATUS_BEZAHLT)</Option>
+                        <Option value="shipped" sort="4">shipped (BESTELLUNG_STATUS_VERSANDT)</Option>
+                        <Option value="partially_shipped" sort="5">partially shipped (BESTELLUNG_STATUS_TEILVERSANDT)</Option>
+                        <Option value="cancelled" sort="6">cancelled (BESTELLUNG_STATUS_STORNO)</Option>
                     </SelectboxOptions>
                 </Setting>
 
@@ -464,12 +468,16 @@
                     </SelectboxOptions>
                 </Setting>
 
-                <Setting type="selectbox" initialValue="true" sort="190" conf="Y">
+                <Setting type="selectbox" initialValue="cancelled" sort="190" conf="Y">
                     <Name>S5 cancel trigger order state (order changed from WAWI)</Name>
                     <ValueName>byjuno_s5_cancel_trigger</ValueName>
                     <SelectboxOptions>
-                        <Option value="processing" sort="1">processing</Option>
-                        <Option value="pending" sort="2">pending</Option>
+                        <Option value="open" sort="1">open (BESTELLUNG_STATUS_OFFEN)</Option>
+                        <Option value="in_progress" sort="2">in progress (BESTELLUNG_STATUS_IN_BEARBEITUNG)</Option>
+                        <Option value="paid" sort="3">paid (BESTELLUNG_STATUS_BEZAHLT)</Option>
+                        <Option value="shipped" sort="4">shipped (BESTELLUNG_STATUS_VERSANDT)</Option>
+                        <Option value="partially_shipped" sort="5">partially shipped (BESTELLUNG_STATUS_TEILVERSANDT)</Option>
+                        <Option value="cancelled" sort="6">cancelled (BESTELLUNG_STATUS_STORNO)</Option>
                     </SelectboxOptions>
                 </Setting>
 
@@ -482,12 +490,16 @@
                     </SelectboxOptions>
                 </Setting>
 
-                <Setting type="selectbox" initialValue="true" sort="210" conf="Y">
+                <Setting type="selectbox" initialValue="cancelled" sort="210" conf="Y">
                     <Name>S5 refund trigger order state (order changed from WAWI)</Name>
                     <ValueName>byjuno_s5_refund_trigger</ValueName>
                     <SelectboxOptions>
-                        <Option value="processing" sort="1">processing</Option>
-                        <Option value="pending" sort="2">pending</Option>
+                        <Option value="open" sort="1">open (BESTELLUNG_STATUS_OFFEN)</Option>
+                        <Option value="in_progress" sort="2">in progress (BESTELLUNG_STATUS_IN_BEARBEITUNG)</Option>
+                        <Option value="paid" sort="3">paid (BESTELLUNG_STATUS_BEZAHLT)</Option>
+                        <Option value="shipped" sort="4">shipped (BESTELLUNG_STATUS_VERSANDT)</Option>
+                        <Option value="partially_shipped" sort="5">partially shipped (BESTELLUNG_STATUS_TEILVERSANDT)</Option>
+                        <Option value="cancelled" sort="6">cancelled (BESTELLUNG_STATUS_STORNO)</Option>
                     </SelectboxOptions>
                 </Setting>
 

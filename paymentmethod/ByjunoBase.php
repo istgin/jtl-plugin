@@ -433,6 +433,7 @@ class ByjunoBase extends Method
             $byjunoLogger = ByjunoLogger::getInstance();
             $byjunoLogger->addSOrderLog(Array(
                 "order_id" => $order->cBestellNr,
+                "order_status" => $order->cStatus,
                 "request_type" => "S1",
                 "firstname" => $requestS1->getFirstName(),
                 "lastname" => $requestS1->getLastName(),
@@ -490,6 +491,7 @@ class ByjunoBase extends Method
             }
             $byjunoLogger->addSOrderLog(Array(
                 "order_id" => $order->cBestellNr,
+                "order_status" => $order->cStatus,
                 "request_type" => "S3",
                 "firstname" => $requestS1->getFirstName(),
                 "lastname" => $requestS1->getLastName(),
@@ -575,6 +577,7 @@ class ByjunoBase extends Method
                         }
                         $byjunoLogger->addSOrderLog(Array(
                             "order_id" => -1,
+                            "order_status" => -1,
                             "request_type" => "CDP",
                             "firstname" => $requestCDP->getFirstName(),
                             "lastname" => $requestCDP->getLastName(),
@@ -593,6 +596,7 @@ class ByjunoBase extends Method
                     } else {
                         $byjunoLogger->addSOrderLog(Array(
                             "order_id" => -1,
+                            "order_status" => -1,
                             "request_type" => "CDP",
                             "firstname" => $requestCDP->getFirstName(),
                             "lastname" => $requestCDP->getLastName(),

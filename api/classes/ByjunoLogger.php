@@ -42,6 +42,7 @@ class ByjunoLogger
         $byjunoOrder->error = $array['error'];// text default NULL,
         $byjunoOrder->response = $array['response'];// text default NULL,
         $byjunoOrder->request = $array['request'];// text default NULL,
+        $byjunoOrder->order_status = $array['order_status'];// text default NULL,
         // $byjunoOrder->dLetzterBlock = 'NOW()';
         Shop::Container()->getDB()->insert('xplugin_byjyno_orders', $byjunoOrder);
     }
