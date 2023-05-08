@@ -631,7 +631,6 @@
 
             <Customlink sort="2">
                 <Name>Logs</Name>
-                <Filename>logs.php</Filename>
             </Customlink>
 
         </Adminmenu>

@@ -14,6 +14,7 @@ use JTL\Link\LinkInterface;
 use JTL\Plugin\Bootstrapper;
 use JTL\Shop;
 use JTL\Smarty\JTLSmarty;
+use Plugin\byjuno\adminmenu\ByjunoBackendTabRenderer;
 
 /**
  * Class Bootstrap
@@ -26,9 +27,19 @@ class Bootstrap extends Bootstrapper
    */
   public function prepareFrontend(LinkInterface $link, JTLSmarty $smarty): bool
   {
-    parent::prepareFrontend($link, $smarty);
-      return false;
-
-    return true;
+        parent::prepareFrontend($link, $smarty);
+        return false;
   }
+
+    /**
+     * @param string    $tabName
+     * @param int       $menuID
+     * @param JTLSmarty $smarty
+     * @return string
+     */
+    public function renderAdminMenuTab(string $tabName, int $menuID, JTLSmarty $smarty): string
+    {
+        $backendRenderer = new ByjunoBackendTabRenderer($this->getPlugin(), $this->getDB());
+        return $backendRenderer->renderByjunoTabs($tabName, $menuID, $smarty);
+    }
 }
