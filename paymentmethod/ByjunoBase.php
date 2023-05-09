@@ -722,4 +722,17 @@ class ByjunoBase extends Method
         return $this->localeTexts[$textName];
     }
 
+    protected function sumIsInRange() {
+        $cart = Frontend::getCart();
+        if ($cart == null) {
+            return false;
+        }
+        $amount = $cart->gibGesamtsummeWaren(true);
+        if (floatval($this->config->getOption("byjuno_min")->value) > $amount ||
+            floatval($this->config->getOption("byjuno_max")->value) < $amount) {
+            return false;
+        }
+        return true;
+    }
+
 }
