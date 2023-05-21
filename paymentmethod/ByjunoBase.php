@@ -448,7 +448,7 @@ class ByjunoBase extends Method
                 "street" => trim($requestS1->getFirstLine().' '.$requestS1->getHouseNumber()),
                 "country" => $requestS1->getCountryCode(),
                 "ip" => byjunoGetClientIp(),
-                "status" => $status,
+                "status" => intval($status),
                 "request_id" => $requestS1->getRequestId(),
                 "type" => $type,
                 "error" => ($status == 0) ? "ERROR" : "",
@@ -462,7 +462,6 @@ class ByjunoBase extends Method
             if (byjunoIsStatusOk($status, "byjuno_s2_accept_ij")) {
                 $accept = "IJ";
             }
-            $accept = 'CLIENT';
             if ($accept == "") {
                 $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
                 return false;
@@ -487,7 +486,7 @@ class ByjunoBase extends Method
                 $xmlS3 = $requestS3->createRequest();
             }
 
-            $responseS3 = $byjunoCommunicator->sendRequest($xml, intval($this->config->getOption("byjuno_timeout")->value));
+            $responseS3 = $byjunoCommunicator->sendRequest($xmlS3, intval($this->config->getOption("byjuno_timeout")->value));
             $statusS3 = 0;
             if ($responseS3) {
                 $byjunoResponseS3 = new ByjunoResponse();
@@ -499,18 +498,18 @@ class ByjunoBase extends Method
                 "order_id" => $order->cBestellNr,
                 "order_status" => $order->cStatus,
                 "request_type" => "S3",
-                "firstname" => $requestS1->getFirstName(),
-                "lastname" => $requestS1->getLastName(),
-                "town" => $requestS1->getTown(),
-                "postcode" => $requestS1->getPostCode(),
-                "street" => trim($requestS1->getFirstLine().' '.$requestS1->getHouseNumber()),
-                "country" => $requestS1->getCountryCode(),
+                "firstname" => $requestS3->getFirstName(),
+                "lastname" => $requestS3->getLastName(),
+                "town" => $requestS3->getTown(),
+                "postcode" => $requestS3->getPostCode(),
+                "street" => trim($requestS3->getFirstLine().' '.$requestS3->getHouseNumber()),
+                "country" => $requestS3->getCountryCode(),
                 "ip" => byjunoGetClientIp(),
-                "status" => $status,
-                "request_id" => $requestS1->getRequestId(),
+                "status" => intval($statusS3),
+                "request_id" => $requestS3->getRequestId(),
                 "type" => $typeS3,
-                "error" => ($status == 0) ? "ERROR" : "",
-                "response" => $response,
+                "error" => ($statusS3 == 0) ? "ERROR" : "",
+                "response" => $responseS3,
                 "request" => $xmlS3
             ));
 
