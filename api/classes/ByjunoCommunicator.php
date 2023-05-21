@@ -35,12 +35,11 @@ class ByjunoCommunicator
             return "";
         }
         $url = 'https://secure.intrum.ch/';
-        if ($this->server == 'test') {
-          //  $url .= 'services/creditCheckDACH_01_41_TEST/response.cfm';
+        if ($this->server == 'live') {
+            $url .= 'services/creditCheckDACH_01_41/response.cfm';
         } else {
-          //  $url .= 'services/creditCheckDACH_01_41/response.cfm';
+            $url .= 'services/creditCheckDACH_01_41_TEST/response.cfm';
         }
-        $url .= 'services/creditCheckDACH_01_41_TEST/response.cfm';
         $request_data = urlencode("REQUEST") . "=" . urlencode($xmlRequest);
 
         $headers = [
@@ -68,7 +67,7 @@ class ByjunoCommunicator
         if (intval($timeout) < 0) {
             $timeout = 30;
         }
-        if ($this->server == 'test') {
+        if ($this->server == 'live') {
             $sslsock = fsockopen("ssl://secure.intrum.ch", 443, $errno, $errstr, $timeout);
         } else {
             $sslsock = fsockopen("ssl://secure.intrum.ch", 443, $errno, $errstr, $timeout);
@@ -78,10 +77,10 @@ class ByjunoCommunicator
             $request_data	= urlencode("REQUEST")."=".urlencode($xmlRequest);
             $request_length	= strlen($request_data);
 
-            if ($this->server == 'test') {
-                fputs($sslsock, "POST /services/creditCheckDACH_01_41_TEST/sendTransaction.cfm HTTP/1.0\r\n");
-            } else {
+            if ($this->server == 'live') {
                 fputs($sslsock, "POST /services/creditCheckDACH_01_41/sendTransaction.cfm HTTP/1.0\r\n");
+            } else {
+                fputs($sslsock, "POST /services/creditCheckDACH_01_41_TEST/sendTransaction.cfm HTTP/1.0\r\n");
             }
 
             fputs($sslsock, "Host: byjuno.com\r\n");

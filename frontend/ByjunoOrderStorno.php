@@ -78,8 +78,12 @@ try {
                             $requestS5Refund = CreateShopRequestS5Refund($invoiceNum, $amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
                             $xmlRequestS5Refund = $requestS5Refund->createRequest();
                             $byjunoCommunicator = new ByjunoCommunicator();
-                            $byjunoCommunicator->setServer("test");
-                            $responseS5Refund = $byjunoCommunicator->sendS4Request($xmlRequestS5Refund);
+                            if ($byjunoConfig->getOption("byjuno_mode")->value == 'live') {
+                                $byjunoCommunicator->setServer("live");
+                            } else {
+                                $byjunoCommunicator->setServer("test");
+                            }
+                            $responseS5Refund = $byjunoCommunicator->sendS4Request($xmlRequestS5Refund, intval($byjunoConfig->getOption("byjuno_timeout")->value));
                             $statusLog = "S5 Refund Request";
                             $statusS5Refund = "ERR";
                             if (isset($responseS5Refund)) {
@@ -117,8 +121,12 @@ try {
                         $requestS5Cancel= CreateShopRequestS5Cancel($amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
                         $xmlRequestS5Cancel = $requestS5Cancel->createRequest();
                         $byjunoCommunicator = new ByjunoCommunicator();
-                        $byjunoCommunicator->setServer("test");
-                        $responseS5Cancel = $byjunoCommunicator->sendS4Request($xmlRequestS5Cancel);
+                        if ($byjunoConfig->getOption("byjuno_mode")->value == 'live') {
+                            $byjunoCommunicator->setServer("live");
+                        } else {
+                            $byjunoCommunicator->setServer("test");
+                        }
+                        $responseS5Cancel = $byjunoCommunicator->sendS4Request($xmlRequestS5Cancel, intval($byjunoConfig->getOption("byjuno_timeout")->value));
                         $statusLog = "S5 Cancel Request";
                         $statusS5Cancel = "ERR";
                         if (isset($responseS5Cancel)) {

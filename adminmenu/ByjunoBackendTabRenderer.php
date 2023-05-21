@@ -113,13 +113,28 @@ class ByjunoBackendTabRenderer
             exit();
         } else if (!empty($_GET["byjuno_viewxml"])) {
             $byjunoOrder = $this->db->selectSingleRow('xplugin_byjyno_orders', ["byjuno_id"], [$_GET["byjuno_viewxml"]]);
-            $doc = new DomDocument('1.0');
-            $doc->preserveWhiteSpace = false;
-            $doc->formatOutput = true;
-            $doc->loadXML($byjunoOrder->request);
-            $xml_request = $doc->saveXML();
-            $doc->loadXML($byjunoOrder->response);
-            $xml_response = $doc->saveXML();
+            $docRequest = new DomDocument('1.0');
+            $docRequest->preserveWhiteSpace = false;
+            $docRequest->formatOutput = true;
+            $docResponse = new DomDocument('1.0');
+            $docResponse->preserveWhiteSpace = false;
+            $docResponse->formatOutput = true;
+            try {
+                $docRequest->loadXML($byjunoOrder->request);
+                $xml_request = $docRequest->saveXML();
+            } catch (\Exception $e) {
+                $xml_request = $byjunoOrder->request;
+            }
+            try {
+                if (empty($byjunoOrder->response)) {
+                    $xml_response = "empty";
+                } else {
+                    $docResponse->loadXML($byjunoOrder->response);
+                    $xml_response = $docResponse->saveXML();
+                }
+            } catch (\Exception $e) {
+                $xml_response = $byjunoOrder->response;
+            }
             echo '<table class="table-logs-byjuno">
             <tr>
                 <td>Request</td>

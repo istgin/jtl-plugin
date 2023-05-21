@@ -43,7 +43,6 @@ class ByjunoInvoice extends ByjunoBase
         if (!$this->sumIsInRange()) {
             return false;
         }
-
         $response = $this->CDPRequest();
         return $response;
     }

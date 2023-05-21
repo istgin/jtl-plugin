@@ -28,6 +28,7 @@ class ByjunoBase extends Method
     var $localeTexts = array();
     /* @var $config Config */
     var $config;
+    public static $SEND_MAIL = false;
 
     protected $_savedUser = Array(
         "FirstName" => "",
@@ -398,6 +399,7 @@ class ByjunoBase extends Method
      */
     public function finalizeOrder(Bestellung $order, string $hash, array $args): bool
     {
+        ByjunoBase::$SEND_MAIL = true;
         $_SESSION["BYJUNO_ERROR"] = null;
         $order->cBestellNr = getOrderHandler()->createOrderNo();
         try {
@@ -419,8 +421,12 @@ class ByjunoBase extends Method
                 $xml = $requestS1->createRequest();
             }
             $byjunoCommunicator = new ByjunoCommunicator();
-            $byjunoCommunicator->setServer('test'); //TODO ettings
-            $response = $byjunoCommunicator->sendRequest($xml, (int)30); //TODO ettings
+            if ($this->config->getOption("byjuno_mode")->value == 'live') {
+                $byjunoCommunicator->setServer("live");
+            } else {
+                $byjunoCommunicator->setServer("test");
+            }
+            $response = $byjunoCommunicator->sendRequest($xml, intval($this->config->getOption("byjuno_timeout")->value)); //TODO ettings
 
             $transaction = "";
             if ($response) {
@@ -481,7 +487,7 @@ class ByjunoBase extends Method
                 $xmlS3 = $requestS3->createRequest();
             }
 
-            $responseS3 = $byjunoCommunicator->sendRequest($xml, (int)30);
+            $responseS3 = $byjunoCommunicator->sendRequest($xml, intval($this->config->getOption("byjuno_timeout")->value));
             $statusS3 = 0;
             if ($responseS3) {
                 $byjunoResponseS3 = new ByjunoResponse();
@@ -565,8 +571,12 @@ class ByjunoBase extends Method
 
                     $byjunoLogger = ByjunoLogger::getInstance();
                     $byjunoCommunicator = new ByjunoCommunicator();
-                    $byjunoCommunicator->setServer('test'); //TODO ettings
-                    $responseCDP = $byjunoCommunicator->sendRequest($xmlCDP, (int)30); //TODO ettings
+                    if ($this->config->getOption("byjuno_mode")->value == 'live') {
+                        $byjunoCommunicator->setServer("live");
+                    } else {
+                        $byjunoCommunicator->setServer("test");
+                    }
+                    $responseCDP = $byjunoCommunicator->sendRequest($xmlCDP, intval($this->config->getOption("byjuno_timeout")->value));
                     if ($responseCDP) {
                         $byjunoResponse = new ByjunoResponse();
                         $byjunoResponse->setRawResponse($responseCDP);
