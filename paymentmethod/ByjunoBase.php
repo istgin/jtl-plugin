@@ -273,7 +273,7 @@ class ByjunoBase extends Method
                 }
                 $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
 
-                $selected_payments_invoice[0]["selected"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : 1;
+                $values["selected_payment"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_invoice[0]["id"];
                 $values['selected_payments_invoice'] = $selected_payments_invoice;
                 $values['toc_url_invoice'] = $tocUrl;
             }
@@ -296,7 +296,7 @@ class ByjunoBase extends Method
                 $selected_payments_installment[] = Array('name' => $this->getText('4installmentsin12months', "4 installments in 12 months"), 'id' => 'installment_4x12', "selected" => 0);
             }
             $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
-            $selected_payments_installment[0]["selected"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : 1;
+            $values["selected_payment"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_installment[0]["id"];
 
             $values['selected_payments_installment'] = $selected_payments_installment;
             $values['toc_url_installment'] = $tocUrl;
