@@ -354,14 +354,15 @@
                     </SelectboxOptions>
                 </Setting>
 
+
                 <Setting type="text" initialValue="" sort="30" conf="Y">
-                    <Name>Client ID</Name>
-                    <ValueName>byjuno_client_id</ValueName>
+                    <Name>UIser ID</Name>
+                    <ValueName>byjuno_user_id</ValueName>
                 </Setting>
 
                 <Setting type="text" initialValue="" sort="40" conf="Y">
-                    <Name>UIser ID</Name>
-                    <ValueName>byjuno_user_id</ValueName>
+                    <Name>Client ID</Name>
+                    <ValueName>byjuno_client_id</ValueName>
                 </Setting>
 
                 <Setting type="password" initialValue="" sort="50" conf="Y">

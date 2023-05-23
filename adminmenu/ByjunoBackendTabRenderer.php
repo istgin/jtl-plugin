@@ -121,6 +121,9 @@ class ByjunoBackendTabRenderer
             $docResponse->formatOutput = true;
             try {
                 $docRequest->loadXML($byjunoOrder->request);
+                $elem = $docRequest->getElementsByTagName('Request');
+                $elem->item(0)->removeAttribute("UserID");
+                $elem->item(0)->removeAttribute("Password");
                 $xml_request = $docRequest->saveXML();
             } catch (\Exception $e) {
                 $xml_request = $byjunoOrder->request;
@@ -136,6 +139,9 @@ class ByjunoBackendTabRenderer
                 $xml_response = $byjunoOrder->response;
             }
             echo '<table class="table-logs-byjuno">
+            <tr>
+                <td colspan="2">UserID &amp; Password attributes are removed</td>
+            </tr>
             <tr>
                 <td>Request</td>
                 <td>Response</td>
