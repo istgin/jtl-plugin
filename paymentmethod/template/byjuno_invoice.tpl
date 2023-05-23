@@ -42,7 +42,7 @@
                     <div class="col col-12">
                         {foreach from=$selected_payments_invoice item=s_payment}
                             <input type="radio" name="byjuno_payment"
-                                   value="{$s_payment.id}" {if $s_payment.id == $selected_payment} checked="checked"{/if}>
+                                   value="{$s_payment.id}" {if $s_payment.id == $selected_payment_invoice} checked="checked"{/if}>
                             &nbsp;{$s_payment.name}
                             <br/>
                         {/foreach}

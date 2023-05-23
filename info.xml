@@ -356,7 +356,7 @@
 
 
                 <Setting type="text" initialValue="" sort="30" conf="Y">
-                    <Name>UIser ID</Name>
+                    <Name>User ID</Name>
                     <ValueName>byjuno_user_id</ValueName>
                 </Setting>
 
