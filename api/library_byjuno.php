@@ -288,7 +288,7 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
     $extraInfo["Value"] = byjunoGetClientIp();
     $request->setExtraInfo($extraInfo);
 
-    if ($config->getOption("byjuno_threatmetrix")->value &&  $config->getOption("byjuno_threatmetrix_org")->value != '' && !empty($_SESSION["byjuno_session_id"])) {
+    if ($config->getOption("byjuno_threatmetrix")->value == "true" &&  $config->getOption("byjuno_threatmetrix_org")->value != '' && !empty($_SESSION["byjuno_session_id"])) {
         $extraInfo["Name"] = 'DEVICE_FINGERPRINT_ID';
         $extraInfo["Value"] = $_SESSION["byjuno_session_id"];
         $request->setExtraInfo($extraInfo);
@@ -374,7 +374,7 @@ function byjunoIsStatusOk($status, $position)
     $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     $settings = $config->getOption($position)->value;
     try {
-        $config = trim($settings); // todo settings
+        $config = trim($settings);
         if ($config === "")
         {
             return false;

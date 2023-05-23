@@ -101,7 +101,7 @@ class ByjunoBase extends Method
         if (!isset($_POST["byjuno_form"])) {
             return true;
         }
-        if ($this->config->getOption("byjuno_gender_birthday")->value == 'true') {
+        if ($this->config->getOption("byjuno_gender_birthday")->value == "true") {
             if (empty($_POST["byjuno_gender"])) {
                 $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_gender_message", "Please select gender");
                 return false;
@@ -167,7 +167,7 @@ class ByjunoBase extends Method
         $b2b =  $this->config->getOption("byjuno_b2b")->value == "true";
         $byjuno_invoice = false;
         $byjuno_installment = false;
-        if ($this->config->getOption("byjuno_invoice")->value == 'true' || $this->config->getOption("byjuno_single_invoice")->value == 'true') {
+        if ($this->config->getOption("byjuno_invoice")->value == "true" || $this->config->getOption("byjuno_single_invoice")->value == "true") {
             $byjuno_invoice = true;
         }
 
@@ -301,11 +301,11 @@ class ByjunoBase extends Method
             $values['selected_payments_installment'] = $selected_payments_installment;
             $values['toc_url_installment'] = $tocUrl;
         }
-        $tmx = $this->config->getOption("byjuno_threatmetrix")->value;
+        $tmx = $this->config->getOption("byjuno_threatmetrix")->value == "true";
         $values["byjuno_tmx"] = $tmx;
         if ($tmx) {
             $_SESSION["byjuno_session_id"] = session_id();
-            $values["byjuno_tmx_org_id"] = $tmx = $this->config->getOption("byjuno_threatmetrix_org")->value;
+            $values["byjuno_tmx_org_id"] = $this->config->getOption("byjuno_threatmetrix_org")->value;
             $values["byjuno_tmx_session_id"] = $_SESSION["byjuno_session_id"];
         }
         $smarty->assign(
@@ -413,7 +413,7 @@ class ByjunoBase extends Method
                 $_SESSION["byjuno_birthday"],
             "NO");
             $type = "S1 Request";
-            $b2b = true; //TODO ettings
+            $b2b = $this->config->getOption("byjuno_b2b")->value == "true";
             if ($b2b && !empty($requestS1->getCompanyName1())) {
                 $type = "S1 Request B2B";
                 $xml = $requestS1->createRequestCompany();
@@ -426,7 +426,7 @@ class ByjunoBase extends Method
             } else {
                 $byjunoCommunicator->setServer("test");
             }
-            $response = $byjunoCommunicator->sendRequest($xml, intval($this->config->getOption("byjuno_timeout")->value)); //TODO ettings
+            $response = $byjunoCommunicator->sendRequest($xml, intval($this->config->getOption("byjuno_timeout")->value));
 
             $transaction = "";
             if ($response) {
@@ -477,7 +477,6 @@ class ByjunoBase extends Method
                 $_SESSION["byjuno_birthday"],
             "YES");
             $typeS3 = "S3 Request";
-            $b2b = true;
             $xmlS3 = "";
             if ($b2b && !empty($requestS1->getCompanyName1())) {
                 $typeS3 = "S3 Request B2B";
@@ -538,7 +537,7 @@ class ByjunoBase extends Method
         $cart = Frontend::getCart();
         $customer = Frontend::getCustomer();
         $delivery = Frontend::getDeliveryAddress();
-        if ($this->config->getOption("byjuno_cdp")->value == 'true') {
+        if ($this->config->getOption("byjuno_cdp")->value == "true") {
             $theSame = (!empty($_SESSION["byjuno_cdp"])) ? $_SESSION["byjuno_cdp"] : null;
             if (!empty($theSame) && is_array($theSame)) {
                 $this->_savedUser = $theSame;

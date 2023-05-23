@@ -55,7 +55,6 @@ try {
     $arr = isset($args_arr) ? $args_arr : [];
     if (!empty($arr) && is_array($arr) && !empty($arr["oBestellung"])) {
         $order = $arr["oBestellung"];
-        $debug = var_export($order, true);
         if (!empty($order->kBestellung)) {
             $byjunoOrder = Shop::Container()->getDB()->select('xplugin_byjyno_orders', ['order_id', 'request_type'], [$order->cBestellNr, 'S3']);
             if (!empty($byjunoOrder) && $byjunoOrder->request_type == 'S3') {
@@ -74,7 +73,7 @@ try {
                     $byjunoOrderS4 = Shop::Container()->getDB()->select('xplugin_byjyno_orders', ['order_id', 'request_type'], [$order->cBestellNr, 'S4']);
                     if (!empty($byjunoOrderS4)) {
                         $s5RefundTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_refund_trigger")->value);
-                        if (!empty($s5RefundTriggerStatus) && $s5RefundTriggerStatus == $order->cStatus) {
+                        if (!empty($s5RefundTriggerStatus) && $s5RefundTriggerStatus == '-1') {
                             $requestS5Refund = CreateShopRequestS5Refund($invoiceNum, $amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
                             $xmlRequestS5Refund = $requestS5Refund->createRequest();
                             $byjunoCommunicator = new ByjunoCommunicator();
@@ -117,7 +116,7 @@ try {
 
                 if ($byjunoConfig->getOption("byjuno_s5_cancel")->value == "true") {
                     $s5CancelTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_cancel_trigger")->value);
-                    if (!empty($s5CancelTriggerStatus) && $s5CancelTriggerStatus == $order->cStatus) {
+                    if (!empty($s5CancelTriggerStatus) && $s5CancelTriggerStatus == '-1') {
                         $requestS5Cancel= CreateShopRequestS5Cancel($amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
                         $xmlRequestS5Cancel = $requestS5Cancel->createRequest();
                         $byjunoCommunicator = new ByjunoCommunicator();

@@ -13,7 +13,7 @@ $byjunoConfig = $byjunoPlugin->getConfig();
 $arr = isset($args_arr) ? $args_arr : [];
 /* @var $mail MailInterface */
 $mail = $arr["mail"];
-if (!empty($mail) && $mail instanceof MailInterface && $byjunoConfig->getOption("byjuno_mail_send")->value == 'true' && ByjunoBase::$SEND_MAIL) {
+if (!empty($mail) && $mail instanceof MailInterface && $byjunoConfig->getOption("byjuno_mail_send")->value == "true" && ByjunoBase::$SEND_MAIL) {
     if ($byjunoConfig->getOption("byjuno_mode")->value == 'test') {
         $mail->addCopyRecipient($byjunoConfig->getOption("byjuno_mail_test_box")->value);
     } else {

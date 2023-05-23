@@ -476,7 +476,6 @@
                         <Option value="paid" sort="3">paid (BESTELLUNG_STATUS_BEZAHLT)</Option>
                         <Option value="shipped" sort="4">shipped (BESTELLUNG_STATUS_VERSANDT)</Option>
                         <Option value="partially_shipped" sort="5">partially shipped (BESTELLUNG_STATUS_TEILVERSANDT)</Option>
-                        <Option value="cancelled" sort="6">cancelled (BESTELLUNG_STATUS_STORNO)</Option>
                     </SelectboxOptions>
                 </Setting>
 
