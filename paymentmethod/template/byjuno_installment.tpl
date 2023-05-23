@@ -78,7 +78,7 @@
             </div>
         {/if}
 
-        {if ($byjuno_gender_birthday == 1)}
+        {if ($byjuno_gender_show == 1)}
             <div class="col col-12">
                 <hr>
             </div>
@@ -103,6 +103,8 @@
                     </div>
                 </div>
             </div>
+        {/if}
+        {if ($byjuno_birthday_show == 1)}
             <div class="col col-12">
                 <hr>
             </div>

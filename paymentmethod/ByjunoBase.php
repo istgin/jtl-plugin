@@ -101,13 +101,18 @@ class ByjunoBase extends Method
         if (!isset($_POST["byjuno_form"])) {
             return true;
         }
-        if ($this->config->getOption("byjuno_gender_birthday")->value == "true") {
+        if ($this->config->getOption("byjuno_gender_show")->value == "true") {
             if (empty($_POST["byjuno_gender"])) {
                 $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_gender_message", "Please select gender");
                 return false;
             } else {
                 $_SESSION["byjuno_gender"] = $_POST["byjuno_gender"];
             }
+        } else {
+            $_SESSION["byjuno_gender"] = "";
+        }
+
+        if ($this->config->getOption("byjuno_birthday_show")->value == "true") {
             if (empty($_POST["byjuno_year"]) || empty($_POST["byjuno_month"]) || empty($_POST["byjuno_day"])) {
                 $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_birthday_message", "Birthday is incorrect");
                 return false;
@@ -120,7 +125,6 @@ class ByjunoBase extends Method
             }
         } else {
             $_SESSION["byjuno_birthday"]  = "";
-            $_SESSION["byjuno_gender"] = "";
         }
 
         if (empty($_POST["byjuno_payment"])) {
@@ -235,7 +239,8 @@ class ByjunoBase extends Method
             'byjuno_error' => $byjuno_error,
             'invoice_send' => $invoice_send,
             'byjuno_allowpostal' =>  $this->config->getOption("byjuno_postal")->value == "true",
-            'byjuno_gender_birthday' => $this->config->getOption("byjuno_gender_birthday")->value == "true",
+            'byjuno_gender_show' => $this->config->getOption("byjuno_gender_show")->value == "true",
+            'byjuno_birthday_show' => $this->config->getOption("byjuno_birthday_show")->value == "true",
             'email' => $customer->cMail,
             'address' =>  $customer->cOrt.', '.$customer->cStrasse.' '.$customer->cHausnummer,
             'l_year' => $this->getText("Year", "Year"),

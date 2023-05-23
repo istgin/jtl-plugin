@@ -259,10 +259,10 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
         $request->setCompanyVatId($invoice_address->vat_number);
     }
     */
-    if ($selected_gender != "") {
+    if (!empty($selected_gender)) {
         $request->setGender($selected_gender);
     }
-    if ($selected_birthday != "") {
+    if (!empty($selected_birthday)) {
         $request->setDateOfBirth($selected_birthday);
     }
 

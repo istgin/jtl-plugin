@@ -404,8 +404,17 @@
                 </Setting>
 
                 <Setting type="selectbox" initialValue="true" sort="110" conf="Y">
-                    <Name>Enable gender &amp; birthday selection</Name>
-                    <ValueName>byjuno_gender_birthday</ValueName>
+                    <Name>Enable gender</Name>
+                    <ValueName>byjuno_gender_show</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="true" sort="115" conf="Y">
+                    <Name>Enable birthday selection</Name>
+                    <ValueName>byjuno_birthday_show</ValueName>
                     <SelectboxOptions>
                         <Option value="true" sort="1">Yes</Option>
                         <Option value="false" sort="2">No</Option>
