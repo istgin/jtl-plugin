@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding="ISO-8859-1"?>
 <jtlshopplugin>
-    <Name>Byjuno Plugin</Name>
-    <Description><![CDATA[Byjuno Plugin für JTL Shop 5]]></Description>
-    <Author>Byjuno AG</Author>
-    <URL>http://www.byjuno.ch</URL>
+    <Name>Cembrapay Plugin</Name>
+    <Description><![CDATA[Cembrapay Plugin für JTL Shop 5]]></Description>
+    <Author>Cembrapay</Author>
+    <URL>https://www.cembrapay.ch</URL>
     <XMLVersion>100</XMLVersion>
     <MinShopVersion>5.2.0</MinShopVersion>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <PluginID>byjuno</PluginID>
     <CreateDate>2023-04-10</CreateDate>
     <Install>
@@ -14,27 +14,27 @@
         <Locales>
             <Variable>
                 <Name>byjuno</Name>
-                <Description>Byjuno</Description>
-                <VariableLocalized iso="GER">Byjuno</VariableLocalized>
-                <VariableLocalized iso="ENG">Byjuno</VariableLocalized>
-                <VariableLocalized iso="ITA">Byjuno</VariableLocalized>
-                <VariableLocalized iso="FRA">Byjuno</VariableLocalized>
+                <Description>Cembrapay</Description>
+                <VariableLocalized iso="GER">Cembrapay</VariableLocalized>
+                <VariableLocalized iso="ENG">Cembrapay</VariableLocalized>
+                <VariableLocalized iso="ITA">Cembrapay</VariableLocalized>
+                <VariableLocalized iso="FRA">Cembrapay</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_invoice</Name>
-                <Description>Byjuno Invoice</Description>
-                <VariableLocalized iso="GER">Byjuno Rechnung</VariableLocalized>
-                <VariableLocalized iso="ENG">Byjuno Invoice</VariableLocalized>
-                <VariableLocalized iso="ITA">Fattura Byjuno</VariableLocalized>
-                <VariableLocalized iso="FRA">Facture Byjuno</VariableLocalized>
+                <Description>Cembrapay Invoice</Description>
+                <VariableLocalized iso="GER">Cembrapay Rechnung</VariableLocalized>
+                <VariableLocalized iso="ENG">Cembrapay Invoice</VariableLocalized>
+                <VariableLocalized iso="ITA">Fattura Cembrapay</VariableLocalized>
+                <VariableLocalized iso="FRA">Facture Cembrapay</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_installment</Name>
-                <Description>Byjuno Installment</Description>
-                <VariableLocalized iso="GER">Byjuno Ratenzahlung</VariableLocalized>
-                <VariableLocalized iso="ENG">Byjuno Installment</VariableLocalized>
-                <VariableLocalized iso="ITA">Byjuno Pagamento rateale</VariableLocalized>
-                <VariableLocalized iso="FRA">Paiement échelonné Byjuno</VariableLocalized>
+                <Description>Cembrapay Installment</Description>
+                <VariableLocalized iso="GER">Cembrapay Ratenzahlung</VariableLocalized>
+                <VariableLocalized iso="ENG">Cembrapay Installment</VariableLocalized>
+                <VariableLocalized iso="ITA">Cembrapay Pagamento rateale</VariableLocalized>
+                <VariableLocalized iso="FRA">Paiement échelonné Cembrapay</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Year</Name>
@@ -134,19 +134,19 @@
             </Variable>
             <Variable>
                 <Name>ByjunoSingleInvoice</Name>
-                <Description>ByjunoSingleInvoice</Description>
-                <VariableLocalized iso="GER">Byjuno Einmalrechnung</VariableLocalized>
-                <VariableLocalized iso="ENG">Byjuno Single Invoice</VariableLocalized>
-                <VariableLocalized iso="ITA">Byjuno fattura singola</VariableLocalized>
-                <VariableLocalized iso="FRA">Facture unique Byjuno</VariableLocalized>
+                <Description>CembrapaySingleInvoice</Description>
+                <VariableLocalized iso="GER">Cembrapay Einmalrechnung</VariableLocalized>
+                <VariableLocalized iso="ENG">Cembrapay Single Invoice</VariableLocalized>
+                <VariableLocalized iso="ITA">Cembrapay fattura singola</VariableLocalized>
+                <VariableLocalized iso="FRA">Facture unique Cembrapay</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>ByjunoInvoice</Name>
-                <Description>ByjunoInvoice</Description>
-                <VariableLocalized iso="GER">Byjuno Rechnung mit Teilzahlungsoption</VariableLocalized>
-                <VariableLocalized iso="ENG">Byjuno invoice with partial payment option</VariableLocalized>
-                <VariableLocalized iso="ITA">Byjuno fattura con opzione di pagamento parziale</VariableLocalized>
-                <VariableLocalized iso="FRA">Facture Byjuno avec option de paiement partiel</VariableLocalized>
+                <Description>CembrapayInvoice</Description>
+                <VariableLocalized iso="GER">Cembrapay Rechnung mit Teilzahlungsoption</VariableLocalized>
+                <VariableLocalized iso="ENG">Cembrapay invoice with partial payment option</VariableLocalized>
+                <VariableLocalized iso="ITA">Cembrapay fattura con opzione di pagamento parziale</VariableLocalized>
+                <VariableLocalized iso="FRA">Facture Cembrapay avec option de paiement partiel</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>3installments</Name>
@@ -232,7 +232,7 @@
                 <Name>byjuno_fail_agree_message</Name>
                 <Description>byjuno_fail_agree_message</Description>
                 <VariableLocalized iso="GER">Sie müssen die AGB akzeptieren</VariableLocalized>
-                <VariableLocalized iso="ENG">You must agree with byjuno terms and conditions</VariableLocalized>
+                <VariableLocalized iso="ENG">You must agree with Cembrapay terms and conditions</VariableLocalized>
                 <VariableLocalized iso="ITA">Vogliate accettare i termini e condizioni</VariableLocalized>
                 <VariableLocalized iso="FRA">Veuillez accepter les termes et conditions</VariableLocalized>
             </Variable>
@@ -251,11 +251,11 @@
         <PaymentMethod>
 
             <Method>
-                <Name>Byjuno Invoice</Name>
-                <PictureURL>BJ_Rechnung_BLK.gif</PictureURL>
+                <Name>Cembrapay Invoice</Name>
+                <PictureURL>Cembrapay.gif</PictureURL>
                 <Sort>10</Sort>
                 <SendMail>0</SendMail>
-                <Provider>Byjuno</Provider>
+                <Provider>Cembrapay</Provider>
                 <TSCode>INVOICE</TSCode>
                 <PreOrder>1</PreOrder>
                 <Soap>0</Soap>
@@ -266,14 +266,14 @@
                 <TemplateFile>template/byjuno_invoice.tpl</TemplateFile>
                 <AdditionalTemplateFile>template/byjuno_invoice.tpl</AdditionalTemplateFile>
                 <MethodLanguage iso="GER">
-                    <Name>Byjuno Rechnung</Name>
-                    <ChargeName>Byjuno Rechnung</ChargeName>
-                    <InfoText>Mit Byjuno Rechnung bezahlen</InfoText>
+                    <Name>Cembrapay Rechnung</Name>
+                    <ChargeName>Cembrapay Rechnung</ChargeName>
+                    <InfoText>Mit Cembrapay Rechnung bezahlen</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="ENG">
-                    <Name>Byjuno Invoice</Name>
-                    <ChargeName>Byjuno Invoice</ChargeName>
-                    <InfoText>Pay by Byjuno Invoice</InfoText>
+                    <Name>Cembrapay Invoice</Name>
+                    <ChargeName>Cembrapay Invoice</ChargeName>
+                    <InfoText>Pay by Cembrapay Invoice</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="ITA">
                     <Name>Fattura Byjuno</Name>
@@ -281,18 +281,18 @@
                     <InfoText>Pagare la fattura con Byjuno</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="FRA">
-                    <Name>Facture Byjuno</Name>
-                    <ChargeName>Facture Byjuno</ChargeName>
-                    <InfoText>Payer par facture Byjuno</InfoText>
+                    <Name>Facture Cembrapay</Name>
+                    <ChargeName>Facture Cembrapay</ChargeName>
+                    <InfoText>Payer par facture Cembrapay</InfoText>
                 </MethodLanguage>
             </Method>
 
             <Method>
-                <Name>Byjuno Installment</Name>
-                <PictureURL>BJ_Ratenzahlung_BLK.gif</PictureURL>
+                <Name>Cembrapay Installment</Name>
+                <PictureURL>Cembrapay.gif</PictureURL>
                 <Sort>20</Sort>
                 <SendMail>0</SendMail>
-                <Provider>Byjuno</Provider>
+                <Provider>Cembrapay</Provider>
                 <TSCode>INVOICE</TSCode>
                 <PreOrder>1</PreOrder>
                 <Soap>0</Soap>
@@ -303,24 +303,24 @@
                 <TemplateFile>template/byjuno_installment.tpl</TemplateFile>
                 <AdditionalTemplateFile>template/byjuno_installment.tpl</AdditionalTemplateFile>
                 <MethodLanguage iso="GER">
-                    <Name>Byjuno Ratenzahlung</Name>
-                    <ChargeName>Byjuno Ratenzahlung</ChargeName>
-                    <InfoText>Mit Byjuno Ratenzahlung bezahlen</InfoText>
+                    <Name>Cembrapay Ratenzahlung</Name>
+                    <ChargeName>Cembrapay Ratenzahlung</ChargeName>
+                    <InfoText>Mit Cembrapay Ratenzahlung bezahlen</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="ENG">
-                    <Name>Byjuno Installment</Name>
-                    <ChargeName>Byjuno Installment</ChargeName>
-                    <InfoText>Byjuno Installment infotext</InfoText>
+                    <Name>Cembrapay Installment</Name>
+                    <ChargeName>Cembrapay Installment</ChargeName>
+                    <InfoText>Cembrapay Installment infotext</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="ITA">
-                    <Name>Byjuno Pagamento rateale</Name>
-                    <ChargeName>Byjuno Pagamento rateale</ChargeName>
-                    <InfoText>Pagare a rate con Byjuno</InfoText>
+                    <Name>Cembrapay Pagamento rateale</Name>
+                    <ChargeName>Cembrapay Pagamento rateale</ChargeName>
+                    <InfoText>Pagare a rate con Cembrapay</InfoText>
                 </MethodLanguage>
                 <MethodLanguage iso="FRA">
-                    <Name>Paiement échelonné Byjuno</Name>
-                    <ChargeName>Paiement échelonné Byjuno</ChargeName>
-                    <InfoText>Paiement échelonné Byjuno</InfoText>
+                    <Name>Paiement échelonné Cembrapay</Name>
+                    <ChargeName>Paiement échelonné Cembrapay</ChargeName>
+                    <InfoText>Paiement échelonné Cembrapay</InfoText>
                 </MethodLanguage>
             </Method>
 
@@ -331,13 +331,13 @@
                 <Name>Einstellungen</Name>
 
                 <Setting type="text" initialValue="Y" sort="10" conf="N">
-                    <Name>Byjuno settings</Name>
-                    <Description>Byjuno settings.</Description>
+                    <Name>Cembrapay settings</Name>
+                    <Description>Cembrapay settings.</Description>
                     <ValueName>byjuno_headline</ValueName>
                 </Setting>
 
                 <Setting type="selectbox" initialValue="true" sort="20" conf="Y">
-                    <Name>Byjuno plugin active</Name>
+                    <Name>Cembrapay plugin active</Name>
                     <ValueName>byjuno_active</ValueName>
                     <SelectboxOptions>
                         <Option value="true" sort="1">Yes</Option>
@@ -376,7 +376,7 @@
                 </Setting>
 
                 <Setting type="text" initialValue="30" sort="70" conf="Y">
-                    <Name>Connection timeout to Byjuno CDP server in seconds</Name>
+                    <Name>Connection timeout to Cembrapay CDP server in seconds</Name>
                     <ValueName>byjuno_timeout</ValueName>
                 </Setting>
 
@@ -450,7 +450,7 @@
                 </Setting>
 
                 <Setting type="selectbox" initialValue="true" sort="152" conf="Y">
-                    <Name>Enable order confirmation copy to Byjuno</Name>
+                    <Name>Enable order confirmation copy to Cembrapay</Name>
                     <ValueName>byjuno_mail_send</ValueName>
                     <SelectboxOptions>
                         <Option value="true" sort="1">Yes</Option>
@@ -459,12 +459,12 @@
                 </Setting>
 
                 <Setting type="text" initialValue="test-invoices@byjuno.ch" sort="154" conf="Y">
-                    <Name>Byjuno test mode email</Name>
+                    <Name>Cembrapay test mode email</Name>
                     <ValueName>byjuno_mail_test_box</ValueName>
                 </Setting>
 
                 <Setting type="text" initialValue="invoices@byjuno.ch" sort="156" conf="Y">
-                    <Name>Byjuno live mode email</Name>
+                    <Name>Cembrapay live mode email</Name>
                     <ValueName>byjuno_mail_live_box</ValueName>
                 </Setting>
 
@@ -539,7 +539,7 @@
                 </Setting>
 
                 <Setting type="text" initialValue="2" sort="230" conf="Y">
-                    <Name> Accepted Byjuno Risk for S2 (comma separated)</Name>
+                    <Name> Accepted Cembrapay Risk for S2 (comma separated)</Name>
                     <ValueName>byjuno_s2_accept_ij</ValueName>
                 </Setting>
 
@@ -554,7 +554,7 @@
                 </Setting>
 
                 <Setting type="selectbox" initialValue="true" sort="260" conf="Y">
-                    <Name>Byjuno Invoice (with partial payment option)</Name>
+                    <Name>Cembrapay Invoice (with partial payment option)</Name>
                     <ValueName>byjuno_invoice</ValueName>
                     <SelectboxOptions>
                         <Option value="true" sort="1">yes</Option>
@@ -616,43 +616,43 @@
                     </SelectboxOptions>
                 </Setting>
 
-                <Setting type="text" initialValue="https://byjuno.ch/en/2b/terms" sort="330" conf="Y">
-                    <Name>T&amp;C Byjuno Invoice (EN) link</Name>
+                <Setting type="text" initialValue="https://cembrapay.ch/en/terms" sort="330" conf="Y">
+                    <Name>T&amp;C Cembrapay Invoice (EN) link</Name>
                     <ValueName>byjuno_toc_en_invoice</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="https://byjuno.ch/en/3a/terms/" sort="330" conf="Y">
-                    <Name>T&amp;C Byjuno Installment (EN) link</Name>
+                <Setting type="text" initialValue="https://cembrapay.ch/en/terms/" sort="330" conf="Y">
+                    <Name>T&amp;C Cembrapay Installment (EN) link</Name>
                     <ValueName>byjuno_toc_en_installment</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="https://byjuno.ch/de/2b/terms" sort="340" conf="Y">
-                    <Name>T&amp;C Byjuno Invoice (DE) link</Name>
+                <Setting type="text" initialValue="https://cembrapay.ch/de/terms" sort="340" conf="Y">
+                    <Name>T&amp;C Cembrapay Invoice (DE) link</Name>
                     <ValueName>byjuno_toc_de_invoice</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="https://byjuno.ch/de/3a/terms/" sort="350" conf="Y">
-                    <Name>T&amp;C Byjuno Installment (DE) link</Name>
+                <Setting type="text" initialValue="https://cembrapay.ch/de/terms/" sort="350" conf="Y">
+                    <Name>T&amp;C Cembrapay Installment (DE) link</Name>
                     <ValueName>byjuno_toc_de_installment</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="https://byjuno.ch/fr/2b/terms" sort="360" conf="Y">
-                    <Name>T&amp;C Byjuno Invoice (FR) link</Name>
+                <Setting type="text" initialValue="https://cembrapay.ch/fr/terms" sort="360" conf="Y">
+                    <Name>T&amp;C Cembrapay Invoice (FR) link</Name>
                     <ValueName>byjuno_toc_fr_invoice</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="https://byjuno.ch/fr/3a/terms/" sort="370" conf="Y">
-                    <Name>T&amp;C Byjuno Installment (FR) link</Name>
+                <Setting type="text" initialValue="https://cembrapay.ch/fr/terms/" sort="370" conf="Y">
+                    <Name>T&amp;C Cembrapay Installment (FR) link</Name>
                     <ValueName>byjuno_toc_fr_installment</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="https://byjuno.ch/it/2b/terms" sort="380" conf="Y">
-                    <Name>T&amp;C Byjuno Invoice (IT) link</Name>
+                <Setting type="text" initialValue="https://cembrapay.ch/it/terms" sort="380" conf="Y">
+                    <Name>T&amp;C Cembrapay Invoice (IT) link</Name>
                     <ValueName>byjuno_toc_it_invoice</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="https://byjuno.ch/it/3a/terms/" sort="398" conf="Y">
-                    <Name>T&amp;C Byjuno Installment (IT) link</Name>
+                <Setting type="text" initialValue="https://cembrapay.ch/it/terms/" sort="398" conf="Y">
+                    <Name>T&amp;C Cembrapay Installment (IT) link</Name>
                     <ValueName>byjuno_toc_it_installment</ValueName>
                 </Setting>
 
