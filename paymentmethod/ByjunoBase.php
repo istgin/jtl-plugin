@@ -8,6 +8,7 @@ use ByjunoLogger;
 use ByjunoRequest;
 use ByjunoResponse;
 use JTL\Checkout\Bestellung;
+use JTL\Checkout\OrderHandler;
 use JTL\Customer\Customer;
 use JTL\Language\LanguageHelper;
 use JTL\Plugin\Data\Config;
@@ -29,6 +30,7 @@ class ByjunoBase extends Method
     /* @var $config Config */
     var $config;
     public static $SEND_MAIL = false;
+    var $info;
 
     protected $_savedUser = Array(
         "FirstName" => "",
@@ -405,7 +407,8 @@ class ByjunoBase extends Method
     {
         ByjunoBase::$SEND_MAIL = true;
         $_SESSION["BYJUNO_ERROR"] = null;
-        $order->cBestellNr = getOrderHandler()->createOrderNo();
+        $handler = new OrderHandler(Shop::Container()->getDB(), Frontend::getCustomer(), Frontend::getCart());
+        $order->cBestellNr = $handler->createOrderNo();
         try {
             $requestS1 = CreateJTLOrderShopRequest($order,
                 "ORDERREQUEST",
