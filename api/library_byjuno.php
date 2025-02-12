@@ -188,7 +188,7 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
     }
 
     $extraInfo["Name"] = 'CONNECTIVTY_MODULE';
-    $extraInfo["Value"] = 'Byjuno JTL 5.2 module 1.1.0';
+    $extraInfo["Value"] = 'Byjuno JTL 5.2 module 1.2.0';
     $request->setExtraInfo($extraInfo);
 
     return $request;
@@ -362,7 +362,7 @@ function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDeliver
     }
 
     $extraInfo["Name"] = 'CONNECTIVTY_MODULE';
-    $extraInfo["Value"] = 'Byjuno JTL 5.2 module 1.1.0';
+    $extraInfo["Value"] = 'Byjuno JTL 5.2 module 1.2.0';
     $request->setExtraInfo($extraInfo);
 
     return $request;
