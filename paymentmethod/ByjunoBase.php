@@ -19,7 +19,7 @@ use JTL\Session\Frontend;
 use JTL\Shop;
 use stdClass;
 
-require_once(dirname(__FILE__).'/../api/byjuno.php');
+require_once(dirname(__FILE__).'/../api/cembrapay.php');
 
 class ByjunoBase extends Method
 {

@@ -6,7 +6,7 @@
  * Time: 16:42
  */
 
-class ByjunoCommunicator
+class
 {
     private $server;
 
