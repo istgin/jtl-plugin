@@ -174,6 +174,116 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address, $msgtype) {
     $request->merchantDetails->integrationModule = "Byjuno JTL 5.4 module 2.0.0";
 }
 
+
+function CreateJTLAuthShopRequest($order, $msgType, $repayment, $invoiceDelivery, $riskOwner, $selected_gender = "", $selected_birthday = "", $orderClosed = "NO") {
+
+    /* @var $config JTL\Plugin\Data\Config */
+    $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
+
+    $request = new CembraPayCheckoutAutRequest();
+    $request->requestMsgType = CembraPayConstants::$MESSAGE_AUTH;
+    $request->requestMsgId = CembraPayCheckoutAutRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutAutRequest::Date();
+    $request->merchantOrderRef = $order->cBestellNr;
+    $request->amount = number_format($order->fGesamtsumme, 2, '.', '') * 100;
+    $request->currency = $order->Waehrung->getCode();
+
+    $customerRef = $order->Lieferadresse->kKunde;
+    $requestId = uniqid("customer_");
+    if (!empty($customerRef)) {
+        $request->custDetails->merchantCustRef = $customerRef;
+        $request->custDetails->loggedIn = false;
+    } else {
+        $request->custDetails->merchantCustRef = $requestId;
+        $request->custDetails->loggedIn = false;
+    }
+
+    $isB2B = false;
+    if (!empty($order->oRechnungsadresse->cFirma)) {
+        $request->custDetails->custType = CembraPayConstants::$CUSTOMER_BUSINESS;
+        $request->custDetails->companyName = $order->oRechnungsadresse->cFirma;
+        $isB2B = true;
+    } else {
+        $request->custDetails->custType = CembraPayConstants::$CUSTOMER_PRIVATE;
+    }
+    $lang = 'DE';
+    if (!empty($order->kSprache)) {
+        $langIso = LanguageHelper::getIsoFromLangID($order->kSprache);
+        if (!empty($langIso->cISO)) {
+            $lang = byjunoMapLang($langIso->cISO);
+        }
+    }
+
+
+    $request->custDetails->firstName = (string)html_entity_decode($order->oRechnungsadresse->cVorname, ENT_COMPAT, 'UTF-8');
+    $request->custDetails->lastName = (string)html_entity_decode($order->oRechnungsadresse->cNachname, ENT_COMPAT, 'UTF-8');
+    $request->custDetails->language = (string)$lang;
+
+
+    if (!empty($selected_gender)) {
+        $request->custDetails->salutation = $selected_gender;
+    }
+    if (!empty($selected_birthday)) {
+        $request->custDetails->dateOfBirth = $selected_birthday;
+    }
+
+    $request->billingAddr->addrFirstLine =
+        (string)html_entity_decode(trim($order->oRechnungsadresse->cStrasse), ENT_COMPAT, 'UTF-8'). " ".
+        (string)html_entity_decode(trim($order->oRechnungsadresse->cHausnummer), ENT_COMPAT, 'UTF-8');
+    $request->billingAddr->postalCode = (string)$order->oRechnungsadresse->cPLZ;
+    $request->billingAddr->town = (string)html_entity_decode($order->oRechnungsadresse->cOrt, ENT_COMPAT, 'UTF-8');
+    $request->billingAddr->country = (string)strtoupper($order->oRechnungsadresse->cLand);
+
+    $request->custContacts->phoneMobile = (string)$order->oRechnungsadresse->cMobil;
+    $request->custContacts->phonePrivate = (string)$order->oRechnungsadresse->cTel;
+    $request->custContacts->email = (string)$order->oRechnungsadresse->cMail;
+
+    $request->deliveryDetails->deliveryMethod = CembraPayConstants::$DELIVERY_POST;
+    $request->deliveryDetails->deliveryFirstName = (string)html_entity_decode($order->Lieferadresse->cVorname, ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliverySecondName = (string)html_entity_decode($order->Lieferadresse->cNachname, ENT_COMPAT, 'UTF-8');
+    if (!empty($order->Lieferadresse->cFirma)) {
+        $request->deliveryDetails->deliveryCompanyName = (string)$order->Lieferadresse->cFirma;
+    }
+    $request->deliveryDetails->deliverySalutation = null;
+
+    $request->deliveryDetails->deliveryAddrFirstLine = (string)html_entity_decode(trim($order->Lieferadresse->cStrasse), ENT_COMPAT, 'UTF-8')." ".
+                                                        (string)html_entity_decode(trim($order->Lieferadresse->cHausnummer), ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliveryAddrPostalCode = (string)$order->Lieferadresse->cPLZ;
+    $request->deliveryDetails->deliveryAddrTown = (string)html_entity_decode($order->Lieferadresse->cOrt, ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliveryAddrCountry = (string)strtoupper($order->Lieferadresse->cLand);
+
+    $request->order->basketItemsGoogleTaxonomies = array();
+    $request->order->basketItemsPrices = array();
+
+    if ($config->getOption("byjuno_threatmetrix")->value == "true" &&  $config->getOption("byjuno_threatmetrix_org")->value != '' && !empty($_SESSION["byjuno_session_id"])) {
+        $request->sessionInfo->tmxSessionId = $_SESSION["byjuno_session_id"];
+    }
+    $request->sessionInfo->sessionIp = byjunoGetClientIp();
+
+    if ($riskOwner != "") {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = false;
+    } else {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = true;
+    }
+    $request->cembraPayDetails->cembraPayPaymentMethod = mapMethod($repayment);
+    if ($invoiceDelivery == 'postal') {
+        $request->cembraPayDetails->invoiceDeliveryType = "POSTAL";
+    } else {
+        $request->cembraPayDetails->invoiceDeliveryType = "EMAIL";
+    }
+
+    $customerConsents = new CustomerConsents();
+    $customerConsents->consentType = "CEMBRAPAY-TC";
+    $customerConsents->consentProvidedAt = "MERCHANT";
+    $customerConsents->consentDate = CembraPayCheckoutAutRequest::Date();
+    $customerConsents->consentReference = base64_encode("TODO");// TODO
+    $request->customerConsents = array($customerConsents);
+    $request->merchantDetails->transactionChannel = "WEB";
+    $request->merchantDetails->integrationModule = "Cembrapay JTL 5.2 module 2.0.0";
+
+    return $request;
+
+}
 function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
 
     $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
@@ -289,7 +399,7 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
  * @return ByjunoRequest
  * @throws Exception
  */
-function CreateJTLOrderShopRequest($order, $msgType, $repayment, $invoiceDelivery, $riskOwner, $transaction, $selected_gender = "", $selected_birthday = "", $orderClosed = "NO") {
+function CreateJTLOrderShopRequest($order, $repayment, $invoiceDelivery, $riskOwner, $transaction, $selected_gender = "", $selected_birthday = "", $orderClosed = "NO") {
 
     /* @var $config JTL\Plugin\Data\Config */
     $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
