@@ -175,7 +175,7 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address, $msgtype) {
 }
 
 
-function CreateJTLAuthShopRequest($order, $msgType, $repayment, $invoiceDelivery, $riskOwner, $selected_gender = "", $selected_birthday = "", $orderClosed = "NO") {
+function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwner, $selected_gender = "", $selected_birthday = "") {
 
     /* @var $config JTL\Plugin\Data\Config */
     $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
@@ -690,4 +690,55 @@ function CreateShopRequestS5Cancel($amount, $orderCurrency, $orderId, $customerI
     $request->setTransactionType("EXPIRED");
     $request->setOpenBalance("0");
     return $request;
+}
+
+function CembraAuthorizationResponse($response)
+{
+    $responseObject = json_decode($response);
+    $result = new CembraPayCheckoutAuthorizationResponse();
+    if (empty($responseObject->processingStatus)) {
+        $result->processingStatus = CembraPayConstants::$REQUEST_ERROR;
+    } else {
+        $result->processingStatus = $responseObject->processingStatus;
+        if ($responseObject->processingStatus == CembraPayConstants::$AUTH_OK) {
+            $result->transactionId = $responseObject->transactionId;
+        }
+    }
+    return $result;
+}
+
+public function CembraGetAccessDataWebshop($config, $mode) {
+    $accessData = new CembraPayLoginDto();
+    $accessData->helperObject = "CembraSaveToken";
+    $accessData->timeout = (int)$config->getOption("byjuno_timeout")->value;
+
+    if ($mode == 'test') {
+        $accessData->mode = 'test';
+        $accessData->username = $config->getOption("cembrapaylogin_test")->value;
+        $accessData->password = $config->getOption("cembrapaypassword_test")->value;
+        $accessData->audience = $config->getOption("audience_test")->value;
+        $accessToken = $config->getOption("access_token_test")->value;
+    } else {
+        $accessData->mode = 'live';
+        $accessData->username = $config->getOption("cembrapaylogin_live")->value;
+        $accessData->password = $config->getOption("cembrapaypassword_live")->value;
+        $accessData->audience = $config->getOption("audience_live")->value;
+        $accessToken = $config->getOption("access_token_live")->value;
+    }
+    $tkn = explode(CembraPayConstants::$tokenSeparator, $accessToken);
+    $hash = $accessData->username.$accessData->password.$accessData->audience;
+    if ($hash == $tkn[0] && !empty($tkn[1])) {
+        $accessData->accessToken = $tkn[1];
+    }
+    return $accessData;
+}
+
+public function CembraSaveToken($config, $token, $accessData) {
+    /* @var $accessData CembraPayLoginDto */
+    $hash = $accessData->username.$accessData->password.$accessData->audience.CembraPayConstants::$tokenSeparator;
+    if ($accessData->mode == 'test') {
+        $config->setOption("access_token_test", $hash.$token);
+    } else {
+        $config->setOption("access_token_live", $hash.$token);
+    }
 }
