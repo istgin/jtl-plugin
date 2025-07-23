@@ -427,6 +427,8 @@ class ByjunoBase extends Method
                 $type = "Auth Request B2B";
             }
             $json = $requestAuth->createRequest();
+            var_dump($json);
+            exit();
             $cembraPayAzure = new CembraPayAzure();
             $cembrapayCommunicator = new CembraPayCommunicator($cembraPayAzure);
 

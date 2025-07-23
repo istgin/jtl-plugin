@@ -707,7 +707,7 @@ function CembraAuthorizationResponse($response)
     return $result;
 }
 
-public function CembraGetAccessDataWebshop($config, $mode) {
+function CembraGetAccessDataWebshop($config, $mode) {
     $accessData = new CembraPayLoginDto();
     $accessData->helperObject = "CembraSaveToken";
     $accessData->timeout = (int)$config->getOption("byjuno_timeout")->value;
@@ -733,7 +733,7 @@ public function CembraGetAccessDataWebshop($config, $mode) {
     return $accessData;
 }
 
-public function CembraSaveToken($config, $token, $accessData) {
+function CembraSaveToken($config, $token, $accessData) {
     /* @var $accessData CembraPayLoginDto */
     $hash = $accessData->username.$accessData->password.$accessData->audience.CembraPayConstants::$tokenSeparator;
     if ($accessData->mode == 'test') {
