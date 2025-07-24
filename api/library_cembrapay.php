@@ -4,6 +4,7 @@ use JTL\Checkout\Lieferadresse;
 use JTL\Language\LanguageHelper;
 use JTL\Plugin\Helper;
 use JTL\Session\Frontend;
+use JTL\Shop;
 use Plugin\byjuno\paymentmethod\ByjunoBase;
 
 function byjunoGetClientIp() {
@@ -380,7 +381,7 @@ function CreateJTLCDPShopRequest($customer, $cart, $address, $msgtype) {
     }
 
     $extraInfo["Name"] = 'CONNECTIVTY_MODULE';
-    $extraInfo["Value"] = 'Byjuno JTL 5.2 module 1.2.0';
+    $extraInfo["Value"] = 'Byjuno JTL 5.2 module 2.0.0';
     $request->setExtraInfo($extraInfo);
 
     return $request;
@@ -554,7 +555,7 @@ function CreateJTLOrderShopRequest($order, $repayment, $invoiceDelivery, $riskOw
     }
 
     $extraInfo["Name"] = 'CONNECTIVTY_MODULE';
-    $extraInfo["Value"] = 'Byjuno JTL 5.2 module 1.2.0';
+    $extraInfo["Value"] = 'Byjuno JTL 5.2 module 2.0.0';
     $request->setExtraInfo($extraInfo);
 
     return $request;
@@ -712,18 +713,27 @@ function CembraGetAccessDataWebshop($config, $mode) {
     $accessData->helperObject = "CembraSaveToken";
     $accessData->timeout = (int)$config->getOption("byjuno_timeout")->value;
 
+    $instance = ByjunoAccess::getInstance();
     if ($mode == 'test') {
+        $key = $instance->getAccessKey("access_token_test");
         $accessData->mode = 'test';
         $accessData->username = $config->getOption("cembrapaylogin_test")->value;
         $accessData->password = $config->getOption("cembrapaypassword_test")->value;
         $accessData->audience = $config->getOption("audience_test")->value;
-        $accessToken = $config->getOption("access_token_test")->value;
+        $accessToken = "";
+        if (!empty($key->access_value)) {
+            $accessToken = $key->accessToken;
+        }
     } else {
+        $key = $instance->getAccessKey("access_token_test");
         $accessData->mode = 'live';
         $accessData->username = $config->getOption("cembrapaylogin_live")->value;
         $accessData->password = $config->getOption("cembrapaypassword_live")->value;
         $accessData->audience = $config->getOption("audience_live")->value;
-        $accessToken = $config->getOption("access_token_live")->value;
+        $accessToken = "";
+        if (!empty($key->access_value)) {
+            $accessToken = $key->acessToken;
+        }
     }
     $tkn = explode(CembraPayConstants::$tokenSeparator, $accessToken);
     $hash = $accessData->username.$accessData->password.$accessData->audience;
@@ -733,12 +743,42 @@ function CembraGetAccessDataWebshop($config, $mode) {
     return $accessData;
 }
 
-function CembraSaveToken($config, $token, $accessData) {
+
+function savePluginSetting(string $key, string $value, string $pluginName): void {
+    $db = Shop::Container()->getDB();
+    $setting = $db->select('teinstellungen', 'cName', $key);
+    if ($setting !== null) {
+        $db->update('teinstellungen', 'cName', $key, ['cWert' => $value]);
+    } else {
+        $db->insert('teinstellungen', (object)[
+            'cName'    => $key,
+            'cWert'    => $value,
+            'cModul'   => $pluginName,
+            'kSprache' => 0
+        ]);
+    }
+}
+
+function getPluginSetting(string $key): ?array {
+    $db = Shop::Container()->getDB();
+    $setting = $db->selectAll('teinstellungen', 'cName', null);
+    return $setting;
+}
+
+function CembraSaveToken($token, $accessData) {
+    /* @var $cofing JTL\Plugin\Data\Config */
     /* @var $accessData CembraPayLoginDto */
     $hash = $accessData->username.$accessData->password.$accessData->audience.CembraPayConstants::$tokenSeparator;
+    $instance = ByjunoAccess::getInstance();
     if ($accessData->mode == 'test') {
-        $config->setOption("access_token_test", $hash.$token);
+        $instance->addOrUpdateAccessKey(Array(
+            "access_key" => "access_token_test",
+            "access_value" => $hash.$token
+        ));
     } else {
-        $config->setOption("access_token_live", $hash.$token);
+        $instance->addOrUpdateAccessKey(Array(
+            "access_key" => "access_token_live",
+            "access_value" => $hash.$token
+        ));
     }
 }

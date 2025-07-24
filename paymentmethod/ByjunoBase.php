@@ -427,8 +427,6 @@ class ByjunoBase extends Method
                 $type = "Auth Request B2B";
             }
             $json = $requestAuth->createRequest();
-            var_dump($json);
-            exit();
             $cembraPayAzure = new CembraPayAzure();
             $cembrapayCommunicator = new CembraPayCommunicator($cembraPayAzure);
 
@@ -442,10 +440,11 @@ class ByjunoBase extends Method
 
             $response = $cembrapayCommunicator->sendAuthRequest($json,
                 CembraGetAccessDataWebshop($this->config, $mode),
-                function ($object, $token, $accessData) {
-                    $object->saveToken($token, $accessData);
+                function ($object, $token, $accessData) {// your dynamic parameters
+                    CembraSaveToken($token, $accessData);
                 });
-
+            var_dump($response);
+            exit("aaa");
             $status = "";
             $responseRes = null;
             $byjunoLogger = ByjunoLogger::getInstance();
