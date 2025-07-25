@@ -717,9 +717,9 @@ function CembraGetAccessDataWebshop($config, $mode) {
     if ($mode == 'test') {
         $key = $instance->getAccessKey("access_token_test");
         $accessData->mode = 'test';
-        $accessData->username = $config->getOption("cembrapaylogin_test")->value;
-        $accessData->password = $config->getOption("cembrapaypassword_test")->value;
-        $accessData->audience = $config->getOption("audience_test")->value;
+        $accessData->username = $config->getOption("cembra_test_client_id")->value;
+        $accessData->password = $config->getOption("cembra_test_password")->value;
+        $accessData->audience = "59ff4c0b-7ce8-42f0-983b-306706936fa1/.default";
         $accessToken = "";
         if (!empty($key->access_value)) {
             $accessToken = $key->accessToken;
@@ -727,9 +727,9 @@ function CembraGetAccessDataWebshop($config, $mode) {
     } else {
         $key = $instance->getAccessKey("access_token_test");
         $accessData->mode = 'live';
-        $accessData->username = $config->getOption("cembrapaylogin_live")->value;
-        $accessData->password = $config->getOption("cembrapaypassword_live")->value;
-        $accessData->audience = $config->getOption("audience_live")->value;
+        $accessData->username = $config->getOption("cembra_live_client_id")->value;
+        $accessData->password = $config->getOption("cembra_live_password")->value;
+        $accessData->audience = "80d0ac9d-9d5c-499c-876e-71dd57e436f2/.default";
         $accessToken = "";
         if (!empty($key->access_value)) {
             $accessToken = $key->acessToken;
@@ -741,28 +741,6 @@ function CembraGetAccessDataWebshop($config, $mode) {
         $accessData->accessToken = $tkn[1];
     }
     return $accessData;
-}
-
-
-function savePluginSetting(string $key, string $value, string $pluginName): void {
-    $db = Shop::Container()->getDB();
-    $setting = $db->select('teinstellungen', 'cName', $key);
-    if ($setting !== null) {
-        $db->update('teinstellungen', 'cName', $key, ['cWert' => $value]);
-    } else {
-        $db->insert('teinstellungen', (object)[
-            'cName'    => $key,
-            'cWert'    => $value,
-            'cModul'   => $pluginName,
-            'kSprache' => 0
-        ]);
-    }
-}
-
-function getPluginSetting(string $key): ?array {
-    $db = Shop::Container()->getDB();
-    $setting = $db->selectAll('teinstellungen', 'cName', null);
-    return $setting;
 }
 
 function CembraSaveToken($token, $accessData) {

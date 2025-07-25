@@ -443,9 +443,6 @@ class ByjunoBase extends Method
                 function ($object, $token, $accessData) {// your dynamic parameters
                     CembraSaveToken($token, $accessData);
                 });
-            var_dump($response);
-            exit("aaa");
-            $status = "";
             $responseRes = null;
             $byjunoLogger = ByjunoLogger::getInstance();
             if ($response) {

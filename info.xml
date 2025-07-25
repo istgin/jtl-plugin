@@ -354,29 +354,28 @@
                     </SelectboxOptions>
                 </Setting>
 
-
                 <Setting type="text" initialValue="" sort="30" conf="Y">
-                    <Name>User ID</Name>
-                    <ValueName>byjuno_user_id</ValueName>
+                    <Name>Live ClientId</Name>
+                    <ValueName>cembra_live_client_id</ValueName>
+                </Setting>
+
+                <Setting type="password" initialValue="" sort="31" conf="Y">
+                    <Name>Live Password</Name>
+                    <ValueName>cembra_live_password</ValueName>
                 </Setting>
 
                 <Setting type="text" initialValue="" sort="40" conf="Y">
-                    <Name>Client ID</Name>
-                    <ValueName>byjuno_client_id</ValueName>
+                    <Name>Test ClientId</Name>
+                    <ValueName>cembra_test_client_id</ValueName>
                 </Setting>
 
-                <Setting type="password" initialValue="" sort="50" conf="Y">
-                    <Name>Password</Name>
-                    <ValueName>byjuno_password</ValueName>
-                </Setting>
-
-                <Setting type="text" initialValue="" sort="60" conf="Y">
-                    <Name>Technical Contact (E-mail)</Name>
-                    <ValueName>byjuno_tech_email</ValueName>
+                <Setting type="password" initialValue="" sort="41" conf="Y">
+                    <Name>Test Password</Name>
+                    <ValueName>cembra_test_password</ValueName>
                 </Setting>
 
                 <Setting type="text" initialValue="30" sort="70" conf="Y">
-                    <Name>Connection timeout to Cembrapay CDP server in seconds</Name>
+                    <Name>Connection timeout to Cembrapay BCDP server in seconds</Name>
                     <ValueName>byjuno_timeout</ValueName>
                 </Setting>
 
