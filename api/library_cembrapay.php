@@ -669,6 +669,23 @@ function byjunoOrderMapStatus($status)
     }
 }
 
+function CreateShopRequestSettle($doucmentId, $amount, $orderCurrency, $orderId, $tx)
+{
+
+    $request = new CembraPayCheckoutSettleRequest();
+    $request->requestMsgType = CembraPayConstants::$MESSAGE_SET;
+    $request->requestMsgId = CembraPayCheckoutSettleRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutSettleRequest::Date();
+    $request->transactionId = $tx;
+    $request->merchantOrderRef = $orderId;
+    $request->amount = round(number_format($amount, 2, '.', '') * 100);
+    $request->currency = $orderCurrency;
+    $request->settlementDetails->merchantInvoiceRef = $doucmentId;
+    $request->settlementDetails->isFinal = true;
+    return $request;
+
+}
+
 function CreateShopRequestS4($doucmentId, $amount, $orderAmount, $orderCurrency, $orderId, $customerId, $date)
 {
     $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
