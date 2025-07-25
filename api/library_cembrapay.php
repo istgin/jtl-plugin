@@ -27,6 +27,46 @@ function byjunoGetClientIp() {
     return $ipaddress;
 }
 
+function Cembra_MapPayment($type)
+{
+    if ($type == 'installment_3') {
+        return CembraPayConstants::$INSTALLMENT_3;
+    } else if ($type == 'installment_4') {
+        return CembraPayConstants::$INSTALLMENT_4;
+    } else if ($type == 'installment_6') {
+        return CembraPayConstants::$INSTALLMENT_6;
+    } else if ($type == 'installment_12') {
+        return CembraPayConstants::$INSTALLMENT_12;
+    } else if ($type == 'installment_24') {
+        return CembraPayConstants::$INSTALLMENT_24;
+    } else if ($type == 'installment_36') {
+        return CembraPayConstants::$INSTALLMENT_36;
+    } else if ($type == 'installment_48') {
+        return CembraPayConstants::$INSTALLMENT_48;
+    } else if ($type == 'single_invoice') {
+        return CembraPayConstants::$SINGLEINVOICE;
+    } else {
+        return CembraPayConstants::$CEMBRAPAYINVOICE;
+    }
+}
+
+function Cembra_MapToc($lang)
+{
+    switch ($lang) {
+        case "DE":
+            return "https://cembrapay.ch/de/terms";
+        case "FR":
+            return "https://cembrapay.ch/fr/terms";
+        case "EN":
+            return "https://cembrapay.ch/en/terms";
+        case "IT":
+            return "https://cembrapay.ch/it/terms";
+
+    }
+
+}
+
+
 function mapMethod($method) {
     if ($method == 'installment_3') {
         return "INSTALLMENT";
@@ -121,7 +161,7 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address, $msgtype) {
     $request->merchantOrderRef = null;
     $request->amount = round($cart->gibGesamtsummeWaren(true) * 100);
     $request->currency = $currency->getCode();
-    $request->custDetails->merchantCustRef = $custId;
+    $request->custDetails->merchantCustRef = (string)$custId;
     if ($customer->nRegistriert == 1) {
         $request->custDetails->loggedIn = true;
     } else {
@@ -192,11 +232,11 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
     $customerRef = $order->Lieferadresse->kKunde;
     $requestId = uniqid("customer_");
     if (!empty($customerRef)) {
-        $request->custDetails->merchantCustRef = $customerRef;
+        $request->custDetails->merchantCustRef = (string)$customerRef;
         $request->custDetails->loggedIn = false;
     } else {
-        $request->custDetails->merchantCustRef = $requestId;
-        $request->custDetails->loggedIn = false;
+        $request->custDetails->merchantCustRef = (string)$requestId;
+        $request->custDetails->loggedIn = true;
     }
 
     $isB2B = false;
@@ -222,7 +262,11 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
 
 
     if (!empty($selected_gender)) {
-        $request->custDetails->salutation = $selected_gender;
+        if ($selected_gender == 1) {
+            $request->custDetails->salutation = CembraPayConstants::$GENTER_MALE;
+        } else if ($selected_gender == 2) {
+            $request->custDetails->salutation = CembraPayConstants::$GENTER_FEMALE;
+        }
     }
     if (!empty($selected_birthday)) {
         $request->custDetails->dateOfBirth = $selected_birthday;
@@ -266,7 +310,7 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
     } else {
         $request->cembraPayDetails->riskOnlyOnCembraPay = true;
     }
-    $request->cembraPayDetails->cembraPayPaymentMethod = mapMethod($repayment);
+    $request->cembraPayDetails->cembraPayPaymentMethod = Cembra_MapPayment($repayment);
     if ($invoiceDelivery == 'postal') {
         $request->cembraPayDetails->invoiceDeliveryType = "POSTAL";
     } else {
@@ -277,7 +321,13 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
     $customerConsents->consentType = "CEMBRAPAY-TC";
     $customerConsents->consentProvidedAt = "MERCHANT";
     $customerConsents->consentDate = CembraPayCheckoutAutRequest::Date();
-    $customerConsents->consentReference = base64_encode("TODO");// TODO
+    $link = Cembra_MapToc($lang);
+    $exLink = explode("/", $link);
+    $consentReference = end($exLink);
+    if (empty($consentReference) && isset($exLink[count($exLink) - 1])) {
+        $consentReference = $exLink[count($exLink) - 2];
+    }
+    $customerConsents->consentReference = base64_encode($consentReference);
     $request->customerConsents = array($customerConsents);
     $request->merchantDetails->transactionChannel = "WEB";
     $request->merchantDetails->integrationModule = "Cembrapay JTL 5.2 module 2.0.0";

@@ -127,7 +127,10 @@ class ByjunoBase extends Method
                     $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_birthday_message", "Birthday is incorrect");
                     return false;
                 }
-                $_SESSION["byjuno_birthday"] = $_POST["byjuno_year"] . '-' . $_POST["byjuno_month"] . '-' . $_POST["byjuno_day"];
+                $dob_year = sprintf('%02d', intval($_POST["byjuno_year"]));
+                $dob_month = sprintf('%02d', intval($_POST["byjuno_month"]));
+                $dob_day = sprintf('%02d', intval($_POST["byjuno_day"]));
+                $_SESSION["byjuno_birthday"] = $dob_year . '-' . $dob_month . '-' . $dob_day;
             }
         } else {
             $_SESSION["byjuno_birthday"]  = "";
