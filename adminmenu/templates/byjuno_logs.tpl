@@ -55,6 +55,7 @@
             <td>Status</td>
             <td>Date</td>
             <td>Request ID</td>
+            <td>Tx ID</td>
             <td>Type</td>
         </tr>
         {foreach from=$byjunoOrders item=log}
@@ -65,6 +66,7 @@
                 <td>{if ($log->status === '0')}Error{else}{$log->status|escape}{/if}</td>
                 <td>{$log->creation_date|escape}</td>
                 <td>{$log->request_id|escape}</td>
+                <td>{$log->transaction_id|escape}</td>
                 <td><a style="text-decoration: underline"
                        href="javascript:byjuno_load('{$postUrl}&byjuno_viewxml={$log->byjuno_id}')">{$log->type|escape}</a>
                 </td>

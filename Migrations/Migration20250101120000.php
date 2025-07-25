@@ -17,6 +17,11 @@ class Migration20250101120000 extends Migration implements IMigration
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $this->execute($sql);
+
+    $append = "ALTER TABLE `xplugin_byjyno_orders`
+        ADD COLUMN IF NOT EXISTS `transaction_id` VARCHAR(250) DEFAULT NULL;";
+
+    $this->execute($append);
   }
 
   public function down()

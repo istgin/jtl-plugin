@@ -226,7 +226,7 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
     $request->requestMsgId = CembraPayCheckoutAutRequest::GUID();
     $request->requestMsgDateTime = CembraPayCheckoutAutRequest::Date();
     $request->merchantOrderRef = $order->cBestellNr;
-    $request->amount = number_format($order->fGesamtsumme, 2, '.', '') * 100;
+    $request->amount = round(number_format($order->fGesamtsumme, 2, '.', '') * 100);
     $request->currency = $order->Waehrung->getCode();
 
     $customerRef = $order->Lieferadresse->kKunde;

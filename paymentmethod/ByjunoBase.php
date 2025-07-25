@@ -455,6 +455,10 @@ class ByjunoBase extends Method
             } else {
                 $status = "ERROR";
             }
+            $cembrapayTrx = "";
+            if ($status == CembraPayConstants::$AUTH_OK) {
+                $cembrapayTrx = $responseRes->transactionId;
+            }
             $byjunoLogger->addSOrderLog(Array(
                 "order_id" => $order->cBestellNr,
                 "order_status" => $order->cStatus,
@@ -471,7 +475,8 @@ class ByjunoBase extends Method
                 "type" => $type,
                 "error" => $status,
                 "response" => $response,
-                "request" => $json
+                "request" => $json,
+                "transaction_id" => $cembrapayTrx
             ));
             if ($status == CembraPayConstants::$AUTH_OK) {
                 $_SESSION["change_paid"] = true;

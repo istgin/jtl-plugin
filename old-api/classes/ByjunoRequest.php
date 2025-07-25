@@ -6,7 +6,7 @@
  * Time: 10:28
  */
 
-class ByjunoRequest
+class ByjunoCommunicator
 {
     private $ClientId;
     private $Version;
