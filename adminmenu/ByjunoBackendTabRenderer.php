@@ -113,30 +113,13 @@ class ByjunoBackendTabRenderer
             exit();
         } else if (!empty($_GET["byjuno_viewxml"])) {
             $byjunoOrder = $this->db->selectSingleRow('xplugin_byjyno_orders', ["byjuno_id"], [$_GET["byjuno_viewxml"]]);
-            $docRequest = new DomDocument('1.0');
-            $docRequest->preserveWhiteSpace = false;
-            $docRequest->formatOutput = true;
-            $docResponse = new DomDocument('1.0');
-            $docResponse->preserveWhiteSpace = false;
-            $docResponse->formatOutput = true;
-            try {
-                $docRequest->loadXML($byjunoOrder->request);
-                $elem = $docRequest->getElementsByTagName('Request');
-                $elem->item(0)->removeAttribute("UserID");
-                $elem->item(0)->removeAttribute("Password");
-                $xml_request = $docRequest->saveXML();
-            } catch (\Exception $e) {
-                $xml_request = $byjunoOrder->request;
-            }
-            try {
-                if (empty($byjunoOrder->response)) {
-                    $xml_response = "empty";
-                } else {
-                    $docResponse->loadXML($byjunoOrder->response);
-                    $xml_response = $docResponse->saveXML();
-                }
-            } catch (\Exception $e) {
-                $xml_response = $byjunoOrder->response;
+            $data = json_decode($byjunoOrder->request, true);
+            $json_request = json_encode($data, JSON_PRETTY_PRINT);
+
+            $data = json_decode($byjunoOrder->response, true);
+            $json_response = json_encode($data, JSON_PRETTY_PRINT);
+            if (empty($json_response)) {
+                $json_response = $byjunoOrder->response;
             }
             echo '<table class="table-logs-byjuno">
             <tr>
@@ -147,8 +130,8 @@ class ByjunoBackendTabRenderer
                 <td>Response</td>
             </tr>
             <tr>
-                <td style="vertical-align: top"><textarea style="width: 100%; height: 600px">'.htmlspecialchars($xml_request).'</textarea></td>
-                <td style="vertical-align: top"><textarea style="width: 100%; height: 600px">'.htmlspecialchars($xml_response).'</textarea></td>
+                <td style="vertical-align: top"><textarea style="width: 100%; height: 600px">'.htmlspecialchars($json_request).'</textarea></td>
+                <td style="vertical-align: top"><textarea style="width: 100%; height: 600px">'.htmlspecialchars($json_response).'</textarea></td>
             </tr></table>';
             exit();
         } else {
