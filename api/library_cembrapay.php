@@ -130,11 +130,11 @@ function byjunoMapLang($lang) {
  * @param JTL\Cart\Cart $cart
  * @param JTL\Checkout\Lieferadresse
  * @param $msgtype
- * @return ByjunoRequest
+ * @return CembraPayCheckoutAutRequest
  * @throws Exception
  */
 
-function CreateJTLScreeningShopRequest($customer, $cart, $address, $msgtype) {
+function CreateJTLScreeningShopRequest($customer, $cart, $address) {
 
     $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     $custId = uniqid("guest_");
@@ -213,6 +213,8 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address, $msgtype) {
 
     $request->merchantDetails->transactionChannel = "WEB";
     $request->merchantDetails->integrationModule = "Byjuno JTL 5.4 module 2.0.0";
+
+    return $request;
 }
 
 
@@ -770,6 +772,31 @@ function CembraAuthorizationResponse($response)
         $result->processingStatus = $responseObject->processingStatus;
         if ($responseObject->processingStatus == CembraPayConstants::$AUTH_OK) {
             $result->transactionId = $responseObject->transactionId;
+        }
+    }
+    return $result;
+}
+
+function CembraScreeningResponse($response)
+{
+    $responseObject = json_decode($response);
+    $result = new CembraPayCheckoutScreeningResponse();
+    if (empty($responseObject->processingStatus)) {
+        $result->processingStatus = CembraPayConstants::$REQUEST_ERROR;
+    } else {
+        if ($responseObject->processingStatus == CembraPayConstants::$SCREENING_OK) {
+            $result->merchantCustRef = $responseObject->merchantCustRef;
+            $result->processingStatus = $responseObject->processingStatus;
+            $result->replyMsgDateTime = $responseObject->replyMsgDateTime;
+            $result->replyMsgId = $responseObject->replyMsgId;
+            $result->requestMsgDateTime = $responseObject->requestMsgDateTime;
+            $result->requestMsgId = $responseObject->requestMsgId;
+            $result->transactionId = $responseObject->transactionId;
+            if (!empty($responseObject->screeningDetails) && !empty($responseObject->screeningDetails->allowedCembraPayPaymentMethods)) {
+                $result->screeningDetails->allowedCembraPayPaymentMethods = $responseObject->screeningDetails->allowedCembraPayPaymentMethods;
+            }
+        } else {
+            $result->processingStatus = $responseObject->processingStatus;
         }
     }
     return $result;

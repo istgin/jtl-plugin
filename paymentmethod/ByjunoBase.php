@@ -9,6 +9,7 @@ use ByjunoRequest;
 use ByjunoResponse;
 use CembraPayAzure;
 use CembraPayCheckoutAuthorizationResponse;
+use CembraPayCheckoutAutRequest;
 use CembraPayCommunicator;
 use CembraPayConstants;
 use JTL\Checkout\Bestellung;
@@ -511,117 +512,117 @@ class ByjunoBase extends Method
             }
             $CDPStatus = (!empty($_SESSION["byjuno_cdp_status"])) ? $_SESSION["byjuno_cdp_status"] : null;
             try {
-                $requestCDP = CreateJTLCDPShopRequest($customer, $cart, $delivery, "CREDITCHECK");
-                if ($requestCDP->getExtraInfoByKey("ORDERAMOUNT") == 0) {
+                $requestCDP = CreateJTLScreeningShopRequest($customer, $cart, $delivery);
+                if ($requestCDP->amount == 0) {
                     return false;
                 }
                 if (!empty($CDPStatus) && $this->isTheSame($requestCDP)) {
-                    $accept = "";
-                    if (byjunoIsStatusOk($CDPStatus, "byjuno_cdp_accept")) {
-                        $accept = "OK";
+                    if ($CDPStatus == CembraPayConstants::$SCREENING_OK) {
+                        return true;
                     }
-                    if ($accept == "") {
-                        return false;
-                    }
-                    return true;
+                    return false;
                 }
                 if (!$this->isTheSame($requestCDP) || empty($CDPStatus)) {
                     $ByjunoRequestName = "Credit check request";
-                    if ($requestCDP->getCompanyName1() != '' && true) {
+                    if ($requestCDP->custDetails->companyName != '') {
                         $ByjunoRequestName = "Credit check request for Company";
-                        $xmlCDP = $requestCDP->createRequestCompany();
-                    } else {
-                        $xmlCDP = $requestCDP->createRequest();
                     }
+                    $jsonRequest = $requestCDP->createRequest();
 
                     $byjunoLogger = ByjunoLogger::getInstance();
-                    $byjunoCommunicator = new ByjunoCommunicator();
+                    $cembraPayAzure = new CembraPayAzure();
+                    $cembraPayCommunicator = new CembraPayCommunicator($cembraPayAzure);
+                    $mode = 'test';
                     if ($this->config->getOption("byjuno_mode")->value == 'live') {
-                        $byjunoCommunicator->setServer("live");
+                        $cembraPayCommunicator->setServer("live");
+                        $mode = 'live';
                     } else {
-                        $byjunoCommunicator->setServer("test");
+                        $cembraPayCommunicator->setServer("test");
                     }
-                    $responseCDP = $byjunoCommunicator->sendRequest($xmlCDP, intval($this->config->getOption("byjuno_timeout")->value));
-                    if ($responseCDP) {
-                        $byjunoResponse = new ByjunoResponse();
-                        $byjunoResponse->setRawResponse($responseCDP);
-                        $byjunoResponse->processResponse();
-                        $status = $byjunoResponse->getCustomerRequestStatus();
-                        if (intval($status) > 15) {
-                            $status = 0;
-                        }
+                    $response = $cembraPayCommunicator->sendScreeningRequest($jsonRequest,
+                        CembraGetAccessDataWebshop($this->config, $mode),
+                        function ($object, $token, $accessData) {
+                            CembraSaveToken($token, $accessData);
+                        });
+                    $responseRes = null;
+                    $status = "";
+                    if ($response) {
+                        /* @var $responseRes CembraPayCheckoutAuthorizationResponse */
+                        $responseRes = CembraScreeningResponse($response);
+                        $status = $responseRes->processingStatus;
+                    } else {
+                        $status = "ERROR";
+                    }
+
+                    $isOk = false;
+                    if ($status == CembraPayConstants::$SCREENING_OK) {
                         $byjunoLogger->addSOrderLog(Array(
                             "order_id" => -1,
                             "order_status" => -1,
-                            "request_type" => "CDP",
-                            "firstname" => $requestCDP->getFirstName(),
-                            "lastname" => $requestCDP->getLastName(),
-                            "town" => $requestCDP->getTown(),
-                            "postcode" => $requestCDP->getPostCode(),
-                            "street" => trim($requestCDP->getFirstLine().' '.$requestCDP->getHouseNumber()),
-                            "country" => $requestCDP->getCountryCode(),
+                            "request_type" => $ByjunoRequestName,
+                            "firstname" => $requestCDP->custDetails->firstName,
+                            "lastname" => $requestCDP->custDetails->lastName,
+                            "town" => $requestCDP->billingAddr->town,
+                            "postcode" => $requestCDP->billingAddr->postalCode,
+                            "street" => trim($requestCDP->billingAddr->addrFirstLine),
+                            "country" => $requestCDP->billingAddr->country,
                             "ip" => byjunoGetClientIp(),
                             "status" => $status,
-                            "request_id" => $requestCDP->getRequestId(),
+                            "request_id" => $requestCDP->requestMsgId,
                             "type" => $ByjunoRequestName,
-                            "error" => ($status == 0) ? "ERROR" : "",
-                            "response" => $responseCDP,
-                            "request" => $xmlCDP
+                            "error" => "",
+                            "response" => $response,
+                            "request" => $jsonRequest,
+                            "transaction_id" => ""
                         ));
+                        $isOk = true;
                     } else {
                         $byjunoLogger->addSOrderLog(Array(
                             "order_id" => -1,
                             "order_status" => -1,
-                            "request_type" => "CDP",
-                            "firstname" => $requestCDP->getFirstName(),
-                            "lastname" => $requestCDP->getLastName(),
-                            "town" => $requestCDP->getTown(),
-                            "postcode" => $requestCDP->getPostCode(),
-                            "street" => trim($requestCDP->getFirstLine().' '.$requestCDP->getHouseNumber()),
-                            "country" => $requestCDP->getCountryCode(),
+                            "request_type" => $ByjunoRequestName,
+                            "firstname" => $requestCDP->custDetails->firstName,
+                            "lastname" => $requestCDP->custDetails->lastName,
+                            "town" => $requestCDP->billingAddr->town,
+                            "postcode" => $requestCDP->billingAddr->postalCode,
+                            "street" => trim($requestCDP->billingAddr->addrFirstLine),
+                            "country" => $requestCDP->billingAddr->country,
                             "ip" => byjunoGetClientIp(),
                             "status" => 0,
-                            "request_id" => $requestCDP->getRequestId(),
+                            "request_id" => $requestCDP->requestMsgId,
                             "type" => $ByjunoRequestName,
-                            "error" => "empty response",
-                            "response" => $responseCDP,
-                            "request" => $xmlCDP
+                            "error" => $status,
+                            "response" => $response,
+                            "request" => $jsonRequest,
+                            "transaction_id" => ""
                         ));
                     }
 
                     $this->_savedUser = Array(
-                        "FirstName" => $requestCDP->getFirstName(),
-                        "LastName" => $requestCDP->getLastName(),
-                        "FirstLine" => $requestCDP->getFirstLine(),
-                        "CountryCode" => $requestCDP->getCountryCode(),
-                        "PostCode" => $requestCDP->getPostCode(),
-                        "Town" => $requestCDP->getTown(),
-                        "CompanyName1" => $requestCDP->getCompanyName1(),
-                        "DateOfBirth" => $requestCDP->getDateOfBirth(),
-                        "Email" => $requestCDP->getEmail(),
-                        "Fax" => $requestCDP->getFax(),
-                        "TelephonePrivate" => $requestCDP->getTelephonePrivate(),
-                        "TelephoneOffice" => $requestCDP->getTelephoneOffice(),
-                        "Gender" => $requestCDP->getGender(),
-                        "Amount" => $requestCDP->getExtraInfoByKey("ORDERAMOUNT"),
-                        "DELIVERY_FIRSTNAME" => $requestCDP->getExtraInfoByKey("DELIVERY_FIRSTNAME"),
-                        "DELIVERY_LASTNAME" => $requestCDP->getExtraInfoByKey("DELIVERY_LASTNAME"),
-                        "DELIVERY_FIRSTLINE" => $requestCDP->getExtraInfoByKey("DELIVERY_FIRSTLINE"),
-                        "DELIVERY_HOUSENUMBER" => $requestCDP->getExtraInfoByKey("DELIVERY_HOUSENUMBER"),
-                        "DELIVERY_COUNTRYCODE" => $requestCDP->getExtraInfoByKey("DELIVERY_COUNTRYCODE"),
-                        "DELIVERY_POSTCODE" => $requestCDP->getExtraInfoByKey("DELIVERY_POSTCODE"),
-                        "DELIVERY_TOWN" => $requestCDP->getExtraInfoByKey("DELIVERY_TOWN"),
-                        "DELIVERY_COMPANYNAME" => $requestCDP->getExtraInfoByKey("DELIVERY_COMPANYNAME")
+                        "FirstName" => $requestCDP->custDetails->firstName,
+                        "LastName" => $requestCDP->custDetails->lastName,
+                        "FirstLine" => $requestCDP->billingAddr->addrFirstLine,
+                        "CountryCode" => $requestCDP->billingAddr->country,
+                        "PostCode" => $requestCDP->billingAddr->postalCode,
+                        "Town" => $requestCDP->billingAddr->town,
+                        "CompanyName1" => $requestCDP->custDetails->companyName,
+                        "DateOfBirth" => $requestCDP->custDetails->dateOfBirth,
+                        "Email" => $requestCDP->custContacts->email,
+                        "TelephonePrivate" => $requestCDP->custContacts->phoneMobile,
+                        "TelephoneOffice" => $requestCDP->custContacts->phonePrivate,
+                        "Gender" => $requestCDP->custDetails->salutation,
+                        "Amount" => $requestCDP->amount,
+                        "DELIVERY_FIRSTNAME" => $requestCDP->deliveryDetails->deliveryFirstName,
+                        "DELIVERY_LASTNAME" => $requestCDP->deliveryDetails->deliverySecondName,
+                        "DELIVERY_FIRSTLINE" => $requestCDP->deliveryDetails->deliveryAddrFirstLine,
+                        "DELIVERY_COUNTRYCODE" => $requestCDP->deliveryDetails->deliveryAddrCountry,
+                        "DELIVERY_POSTCODE" => $requestCDP->deliveryDetails->deliveryAddrPostalCode,
+                        "DELIVERY_TOWN" => $requestCDP->deliveryDetails->deliveryAddrTown,
+                        "DELIVERY_COMPANYNAME" => $requestCDP->deliveryDetails->deliveryCompanyName
                     );
                     $_SESSION["byjuno_cdp"] = $this->_savedUser;
                     $_SESSION["byjuno_cdp_status"] = $status;
-
-                    $accept = "";
-                    if (byjunoIsStatusOk($status, "byjuno_cdp_accept")) {
-                        $accept = "OK";
-                    }
-
-                    if ($accept == "") {
+                    if (!$isOk) {
                         return false;
                     }
                 }
@@ -631,30 +632,28 @@ class ByjunoBase extends Method
         return true;
     }
 
-    public function isTheSame(ByjunoRequest $request) {
+    public function isTheSame(CembraPayCheckoutAutRequest $request) {
 
-        if ($request->getFirstName() != $this->_savedUser["FirstName"]
-            || $request->getLastName() != $this->_savedUser["LastName"]
-            || $request->getFirstLine() != $this->_savedUser["FirstLine"]
-            || $request->getCountryCode() != $this->_savedUser["CountryCode"]
-            || $request->getPostCode() != $this->_savedUser["PostCode"]
-            || $request->getTown() != $this->_savedUser["Town"]
-            || $request->getCompanyName1() != $this->_savedUser["CompanyName1"]
-            || $request->getDateOfBirth() != $this->_savedUser["DateOfBirth"]
-            || $request->getEmail() != $this->_savedUser["Email"]
-            || $request->getFax() != $this->_savedUser["Fax"]
-            || $request->getTelephonePrivate() != $this->_savedUser["TelephonePrivate"]
-            || $request->getTelephoneOffice() != $this->_savedUser["TelephoneOffice"]
-            || $request->getGender() != $this->_savedUser["Gender"]
-            || $request->getExtraInfoByKey("ORDERAMOUNT") != $this->_savedUser["Amount"]
-            || $request->getExtraInfoByKey("DELIVERY_FIRSTNAME") != $this->_savedUser["DELIVERY_FIRSTNAME"]
-            || $request->getExtraInfoByKey("DELIVERY_LASTNAME") != $this->_savedUser["DELIVERY_LASTNAME"]
-            || $request->getExtraInfoByKey("DELIVERY_FIRSTLINE") != $this->_savedUser["DELIVERY_FIRSTLINE"]
-            || $request->getExtraInfoByKey("DELIVERY_HOUSENUMBER") != $this->_savedUser["DELIVERY_HOUSENUMBER"]
-            || $request->getExtraInfoByKey("DELIVERY_COUNTRYCODE") != $this->_savedUser["DELIVERY_COUNTRYCODE"]
-            || $request->getExtraInfoByKey("DELIVERY_POSTCODE") != $this->_savedUser["DELIVERY_POSTCODE"]
-            || $request->getExtraInfoByKey("DELIVERY_TOWN") != $this->_savedUser["DELIVERY_TOWN"]
-            || $request->getExtraInfoByKey("DELIVERY_COMPANYNAME") != $this->_savedUser["DELIVERY_COMPANYNAME"]
+        if ($request->custDetails->firstName != $this->_savedUser["FirstName"]
+            || $request->custDetails->lastName != $this->_savedUser["LastName"]
+            || $request->billingAddr->addrFirstLine != $this->_savedUser["FirstLine"]
+            || $request->billingAddr->country != $this->_savedUser["CountryCode"]
+            || $request->billingAddr->postalCode != $this->_savedUser["PostCode"]
+            || $request->billingAddr->town != $this->_savedUser["Town"]
+            || $request->custDetails->companyName != $this->_savedUser["CompanyName1"]
+            || $request->custDetails->dateOfBirth != $this->_savedUser["DateOfBirth"]
+            || $request->custContacts->email != $this->_savedUser["Email"]
+            || $request->custContacts->phoneMobile != $this->_savedUser["TelephonePrivate"]
+            || $request->custContacts->phonePrivate != $this->_savedUser["TelephoneOffice"]
+            || $request->custDetails->salutation != $this->_savedUser["Gender"]
+            || $request->amount != $this->_savedUser["Amount"]
+            || $request->deliveryDetails->deliveryFirstName != $this->_savedUser["DELIVERY_FIRSTNAME"]
+            || $request->deliveryDetails->deliverySecondName != $this->_savedUser["DELIVERY_LASTNAME"]
+            || $request->deliveryDetails->deliveryAddrFirstLine != $this->_savedUser["DELIVERY_FIRSTLINE"]
+            || $request->deliveryDetails->deliveryAddrCountry != $this->_savedUser["DELIVERY_COUNTRYCODE"]
+            || $request->deliveryDetails->deliveryAddrPostalCode != $this->_savedUser["DELIVERY_POSTCODE"]
+            || $request->deliveryDetails->deliveryAddrTown != $this->_savedUser["DELIVERY_TOWN"]
+            || $request->deliveryDetails->deliveryCompanyName != $this->_savedUser["DELIVERY_COMPANYNAME"]
         ) {
             return false;
         }
