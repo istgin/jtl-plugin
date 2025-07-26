@@ -108,6 +108,9 @@ class ByjunoBase extends Method
         if (!isset($_POST["byjuno_form"])) {
             return true;
         }
+        if ($_POST["byjuno_form"] == "0") {
+            return true;
+        }
         if ($this->config->getOption("byjuno_gender_show")->value == "true") {
             if (empty($_POST["byjuno_gender"])) {
                 $_SESSION["byjuno_error_msg"] = $this->getText("byjuno_fail_gender_message", "Please select gender");
@@ -271,7 +274,8 @@ class ByjunoBase extends Method
             'l_date_of_birth' => $this->getText("DateofBirth", "Date of Birth"),
             'l_i_agree_with_terms_and_conditions' => $this->getText("Iagreewithtermsandconditions", "I agree with terms and conditions"),
             'l_by_email' => $this->getText("Byemail", "By email"),
-            'l_by_post' => $this->getText("Bypost", "By post")
+            'l_by_post' => $this->getText("Bypost", "By post"),
+            'is_chekout' => true
         );
         if ($byjuno_invoice) {
             if ($b2b && !empty($customer->cFirma)) {
