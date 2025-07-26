@@ -50,10 +50,16 @@ class ByjunoInvoice extends ByjunoBase
     public function preparePaymentProcess(Bestellung $order): void
     {
         $hash = $this->generateHash($order);
-        $returUrl = $this->getNotificationURL($hash);
-        $returUrl .= "&cembracancel=true";
+        $returnUrl = $this->getNotificationURL($hash);
         parent::preparePaymentProcess($order);
-        header('location:' . $returUrl);
-        exit();
+        //if ($this->config->getOption("cembra_plugin_mode")->value == 'api')
+        if (false) {
+            header('location:' . $returnUrl);
+            exit();
+        } else {
+            $redirect = $this->checkoutRequest($order, $returnUrl);
+            header('location:' . $redirect);
+            exit();
+        }
     }
 }

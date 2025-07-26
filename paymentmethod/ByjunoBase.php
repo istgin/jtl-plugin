@@ -10,6 +10,7 @@ use ByjunoResponse;
 use CembraPayAzure;
 use CembraPayCheckoutAuthorizationResponse;
 use CembraPayCheckoutAutRequest;
+use CembraPayCheckoutChkResponse;
 use CembraPayCommunicator;
 use CembraPayConstants;
 use JTL\Checkout\Bestellung;
@@ -29,13 +30,13 @@ require_once(dirname(__FILE__).'/../api/cembrapay.php');
 class ByjunoBase extends Method
 {
     public const PLUGIN_ID = 'byjuno';
-
-    var $paymethod = '';
-    var $localeTexts = array();
-    /* @var $config Config */
-    var $config;
     public static $SEND_MAIL = false;
-    var $info;
+
+    public $paymethod = '';
+    public $localeTexts = array();
+    /* @var $config Config */
+    public $config;
+    public $info;
 
     protected $_savedUser = Array(
         "FirstName" => "",
@@ -404,6 +405,68 @@ class ByjunoBase extends Method
     public function getReturnURL(Bestellung $order): string
     {
         return parent::getReturnURL($order);
+    }
+
+    public function checkoutRequest(Bestellung $order, string $returnUrl) {
+        $returUrlCancel = $returnUrl."&cembracancel=true";
+        $requestChk = CreateJTLChekoutShopRequest($order, $returnUrl, $returUrlCancel, $returUrlCancel);
+        $type = "Checkout Request";
+        $b2b = $this->config->getOption("byjuno_b2b")->value == "true";
+        if ($b2b && !empty($requestChk->custDetails->companyName)) {
+            $type = "Checkout B2B";
+        }
+        $json = $requestChk->createRequest();
+        $cembraPayAzure = new CembraPayAzure();
+        $cembrapayCommunicator = new CembraPayCommunicator($cembraPayAzure);
+
+        $mode = 'test';
+        if ($this->config->getOption("byjuno_mode")->value == 'live') {
+            $cembrapayCommunicator->setServer('live');
+            $mode = 'live';
+        } else {
+            $cembrapayCommunicator->setServer('test');
+        }
+
+        $response = $cembrapayCommunicator->sendCheckoutRequest($json,
+            CembraGetAccessDataWebshop($this->config, $mode),
+            function ($object, $token, $accessData) {
+                CembraSaveToken($token, $accessData);
+            });
+        $responseRes = null;
+        $byjunoLogger = ByjunoLogger::getInstance();
+        $redirect = $returUrlCancel;
+        if ($response) {
+            /* @var $responseRes CembraPayCheckoutChkResponse */
+            $responseRes = CembraCheckoutResponse($response);
+            $status = $responseRes->processingStatus;
+            $redirect = $responseRes->redirectUrlCheckout;
+        } else {
+            $status = "ERROR";
+        }
+        $cembrapayTrx = "";
+        if ($status == CembraPayConstants::$CHK_OK) {
+            $cembrapayTrx = $responseRes->transactionId;
+        }
+        $byjunoLogger->addSOrderLog(Array(
+            "order_id" => $order->cBestellNr,
+            "order_status" => $order->cStatus,
+            "request_type" => $type,
+            "firstname" => $requestChk->custDetails->firstName,
+            "lastname" => $requestChk->custDetails->lastName,
+            "town" => $requestChk->billingAddr->town,
+            "postcode" => $requestChk->billingAddr->postalCode,
+            "street" => trim($requestChk->billingAddr->addrFirstLine),
+            "country" => $requestChk->billingAddr->country,
+            "ip" => byjunoGetClientIp(),
+            "status" => (String)$status,
+            "request_id" => $requestChk->requestMsgId,
+            "type" => $type,
+            "error" => $status,
+            "response" => $response,
+            "request" => $json,
+            "transaction_id" => $cembrapayTrx
+        ));
+        return $redirect;
     }
 
     /**
