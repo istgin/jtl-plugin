@@ -51,6 +51,7 @@ class ByjunoInvoice extends ByjunoBase
     {
         $hash = $this->generateHash($order);
         $returUrl = $this->getNotificationURL($hash);
+        $returUrl .= "&cembracancel=true";
         parent::preparePaymentProcess($order);
         header('location:' . $returUrl);
         exit();

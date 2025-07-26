@@ -417,6 +417,10 @@ class ByjunoBase extends Method
      */
     public function finalizeOrder(Bestellung $order, string $hash, array $args): bool
     {
+        if (isset($_GET["cembracancel"])) {
+            $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
+            return false;
+        }
         ByjunoBase::$SEND_MAIL = true;
         $_SESSION["BYJUNO_ERROR"] = null;
         $handler = new OrderHandler(Shop::Container()->getDB(), Frontend::getCustomer(), Frontend::getCart());
