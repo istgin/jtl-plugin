@@ -438,17 +438,21 @@ class ByjunoBase extends Method
         $responseRes = null;
         $byjunoLogger = ByjunoLogger::getInstance();
         $redirect = $returUrlCancel;
+        $_SESSION["cembra_tx_id"] = "";
         if ($response) {
             /* @var $responseRes CembraPayCheckoutChkResponse */
             $responseRes = CembraCheckoutResponse($response);
             $status = $responseRes->processingStatus;
-            $redirect = $responseRes->redirectUrlCheckout;
         } else {
             $status = "ERROR";
         }
         $cembrapayTrx = "";
         if ($status == CembraPayConstants::$CHK_OK) {
             $cembrapayTrx = $responseRes->transactionId;
+            $redirect = $responseRes->redirectUrlCheckout;
+            $_SESSION["cembra_tx_id"] = $responseRes->transactionId;
+        } else {
+            $_SESSION["cembra_tx_id"] = "";
         }
         $byjunoLogger->addSOrderLog(Array(
             "order_id" => $order->cBestellNr,
@@ -487,9 +491,82 @@ class ByjunoBase extends Method
             $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
             return false;
         }
+        $byjunoLogger = ByjunoLogger::getInstance();
         if (true) {
             $order->cBestellNr = $_SESSION["cBestellNr"];
-            return true;
+            $transactionId = $_SESSION["cembra_tx_id"];
+            $requestTST = CembraConfirmTransaction($transactionId);
+            $CembraPayRequestName = "CNF";
+            $json = $requestTST->createRequest();
+            $cembraPayAzure = new CembraPayAzure();
+            $cembraPayCommunicator = new CembraPayCommunicator($cembraPayAzure);
+            $mode = 'test';
+            if ($this->config->getOption("byjuno_mode")->value == 'live') {
+                $mode = 'live';
+                $cembraPayCommunicator->setServer('live');
+            } else {
+                $cembraPayCommunicator->setServer('test');
+            }
+            $response = $cembraPayCommunicator->sendConfirmTransactionRequest($json,
+                CembraGetAccessDataWebshop($this->config, $mode),
+                function ($object, $token, $accessData) {
+                    CembraSaveToken($token, $accessData);
+                });
+
+
+            $transactionStatus = "";
+            $responseRes = null;
+            if ($response) {
+                $responseRes = CembraConfirmTransactionResponse($response);
+                if (!empty($responseRes->transactionStatus)) {
+                    $transactionStatus = $responseRes->transactionStatus->transactionStatus;
+                }
+                $byjunoLogger->addSOrderLog(array(
+                    "order_id" => $order->cBestellNr,
+                    "order_status" => $order->cStatus,
+                    "request_type" => $CembraPayRequestName,
+                    "firstname" => "-",
+                    "lastname" => "-",
+                    "town" => "-",
+                    "postcode" => "-",
+                    "street" =>"-",
+                    "country" => "-",
+                    "ip" => byjunoGetClientIp(),
+                    "status" => (string)$responseRes->processingStatus,
+                    "request_id" => $requestTST->requestMsgId,
+                    "type" => $CembraPayRequestName,
+                    "error" => "",
+                    "response" => $response,
+                    "request" => $json,
+                    "transaction_id" => $transactionId
+                ));
+            } else {
+                $byjunoLogger->addSOrderLog(array(
+                    "order_id" => $order->cBestellNr,
+                    "order_status" => $order->cStatus,
+                    "request_type" => $CembraPayRequestName,
+                    "firstname" => "-",
+                    "lastname" => "-",
+                    "town" => "-",
+                    "postcode" => "-",
+                    "street" =>"-",
+                    "country" => "-",
+                    "ip" => byjunoGetClientIp(),
+                    "status" => "ERROR",
+                    "request_id" => $requestTST->requestMsgId,
+                    "type" => $CembraPayRequestName,
+                    "error" => "ERROR",
+                    "response" => $response,
+                    "request" => $json,
+                    "transaction_id" => $transactionId
+                ));
+            }
+            if (!empty($transactionStatus) && in_array($transactionStatus, CembraPayConstants::$CNF_OK_TRANSACTION_STATUSES)) {
+                return true;
+            } else {
+                $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
+                return false;
+            }
         } else {
             ByjunoBase::$SEND_MAIL = true;
             $_SESSION["BYJUNO_ERROR"] = null;
@@ -522,11 +599,10 @@ class ByjunoBase extends Method
 
                 $response = $cembrapayCommunicator->sendAuthRequest($json,
                     CembraGetAccessDataWebshop($this->config, $mode),
-                    function ($object, $token, $accessData) {// your dynamic parameters
+                    function ($object, $token, $accessData) {
                         CembraSaveToken($token, $accessData);
                     });
                 $responseRes = null;
-                $byjunoLogger = ByjunoLogger::getInstance();
                 if ($response) {
                     /* @var $responseRes CembraPayCheckoutAuthorizationResponse */
                     $responseRes = CembraAuthorizationResponse($response);

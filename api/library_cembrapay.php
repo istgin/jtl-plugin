@@ -868,6 +868,63 @@ function CembraAuthorizationResponse($response)
     return $result;
 }
 
+function CembraConfirmTransaction($transactionId)
+{
+    $request = new CembraPayConfirmRequest();
+    $request->requestMsgId = CembraPayCheckoutChkRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutChkRequest::Date();
+    $request->transactionId = $transactionId;
+
+    return $request;
+}
+
+function CembraConfirmTransactionResponse($response)
+{
+    $responseObject = json_decode($response);
+    $result = new CembraPayConfirmResponse();
+    if (empty($responseObject->transactionStatus->transactionStatus)) {
+        $result->transactionStatus->transactionStatus= CembraPayConstants::$REQUEST_ERROR;
+    } else {
+        $result->requestMerchantId = $responseObject->requestMerchantId;
+        $result->requestMsgId = $responseObject->requestMsgId;
+        $result->requestMsgDateTime = $responseObject->requestMsgDateTime;
+        $result->replyMsgId = $responseObject->replyMsgId;
+        $result->replyMsgDateTime = $responseObject->replyMsgDateTime;
+        $result->isTokenDeleted = !empty($responseObject->isTokenDeleted) ? $responseObject->isTokenDeleted : false;
+        $result->transactionStatus->transactionStatus = $responseObject->transactionStatus->transactionStatus;
+    }
+    return $result;
+}
+
+function CembraGetTransaction($transactionId)
+{
+    $request = new CembraPayGetStatusRequest();
+    $request->requestMsgType = CembraPayConstants::$MESSAGE_STATUS;
+    $request->requestMsgId = CembraPayCheckoutChkRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutChkRequest::Date();
+    $request->transactionId = $transactionId;
+    return $request;
+}
+
+function CembraTransactionResponse($response)
+{
+    $responseObject = json_decode($response);
+    $result = new CembraPayGetStatusResponse();
+    if (empty($responseObject->transactionStatus->transactionStatus)) {
+        $result->transactionStatus->transactionStatus= CembraPayConstants::$REQUEST_ERROR;
+    } else {
+        $result->requestMerchantId = $responseObject->requestMerchantId;
+        $result->requestMsgType = $responseObject->transactionId;
+        $result->requestMsgId = $responseObject->requestMsgType;
+        $result->requestMsgDateTime = $responseObject->requestMsgDateTime;
+        $result->replyMsgId = $responseObject->replyMsgId;
+        $result->replyMsgDateTime = $responseObject->replyMsgDateTime;
+        $result->isTokenDeleted = !empty($responseObject->isTokenDeleted) ? $responseObject->isTokenDeleted : false;
+        $result->merchantOrderRef = $responseObject->merchantOrderRef;
+        $result->transactionStatus->transactionStatus = $responseObject->transactionStatus->transactionStatus;
+    }
+    return $result;
+}
 function CembraCheckoutResponse($response)
 {
     $responseObject = json_decode($response);
