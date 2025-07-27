@@ -21,7 +21,7 @@
         <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://h.online-metrix.net/tags?org_id={$byjuno_tmx_org_id}&session_id={$byjuno_tmx_session_id}&pageid=checkout"></iframe>
     </noscript>
 {/if}
-{if $is_checkout}
+{if $is_api}
     <input type="hidden" name="byjuno_form" value="1">
     <div id="panel-form">
         <div class="row ">

@@ -52,13 +52,12 @@ class ByjunoInvoice extends ByjunoBase
         $hash = $this->generateHash($order);
         $returnUrl = $this->getNotificationURL($hash);
         parent::preparePaymentProcess($order);
-        //if ($this->config->getOption("cembra_plugin_mode")->value == 'api')
-        if (false) {
-            header('location:' . $returnUrl);
-            exit();
-        } else {
+        if ($this->config->getOption("cembra_plugin_mode")->value == 'checkout') {
             $redirect = $this->checkoutRequest($order, $returnUrl);
             header('location:' . $redirect);
+            exit();
+        } else {
+            header('location:' . $returnUrl);
             exit();
         }
     }

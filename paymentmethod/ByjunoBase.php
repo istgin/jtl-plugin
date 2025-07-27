@@ -327,6 +327,10 @@ class ByjunoBase extends Method
             $values["byjuno_tmx_org_id"] = $this->config->getOption("byjuno_threatmetrix_org")->value;
             $values["byjuno_tmx_session_id"] = $_SESSION["byjuno_session_id"];
         }
+        $values["is_api"] = true;
+        if ($this->config->getOption("cembra_plugin_mode")->value == 'checkout') {
+            $values["is_api"] = false;
+        }
         $smarty->assign(
             $values
         );
@@ -487,12 +491,14 @@ class ByjunoBase extends Method
      */
     public function finalizeOrder(Bestellung $order, string $hash, array $args): bool
     {
+        $_SESSION["BYJUNO_ERROR"] = null;
         if (isset($_GET["cembracancel"])) {
             $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
             return false;
         }
         $byjunoLogger = ByjunoLogger::getInstance();
-        if (true) {
+        ByjunoBase::$SEND_MAIL = true;
+        if ($this->config->getOption("cembra_plugin_mode")->value == 'checkout') {
             $order->cBestellNr = $_SESSION["cBestellNr"];
             $transactionId = $_SESSION["cembra_tx_id"];
             $requestTST = CembraConfirmTransaction($transactionId);
@@ -577,8 +583,6 @@ class ByjunoBase extends Method
                 return false;
             }
         } else {
-            ByjunoBase::$SEND_MAIL = true;
-            $_SESSION["BYJUNO_ERROR"] = null;
             $handler = new OrderHandler(Shop::Container()->getDB(), Frontend::getCustomer(), Frontend::getCart());
             $order->cBestellNr = $handler->createOrderNo();
             try {

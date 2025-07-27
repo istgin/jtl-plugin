@@ -345,7 +345,16 @@
                     </SelectboxOptions>
                 </Setting>
 
-                <Setting type="selectbox" initialValue="test" sort="20" conf="Y">
+                <Setting type="selectbox" initialValue="checkout" sort="22" conf="Y">
+                    <Name>Plugin mode</Name>
+                    <ValueName>cembra_plugin_mode</ValueName>
+                    <SelectboxOptions>
+                        <Option value="checkout" sort="1">Cembra checkout</Option>
+                        <Option value="api" sort="2">Cembra api</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <Setting type="selectbox" initialValue="test" sort="25" conf="Y">
                     <Name>Mode</Name>
                     <ValueName>byjuno_mode</ValueName>
                     <SelectboxOptions>
