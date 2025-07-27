@@ -58,9 +58,6 @@ class ByjunoInvoice extends ByjunoBase
             exit();
         } else {
             $redirect = $this->checkoutRequest($order, $returnUrl);
-            if (!empty($redirect)) {
-
-            }
             header('location:' . $redirect);
             exit();
         }

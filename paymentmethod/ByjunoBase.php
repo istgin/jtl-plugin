@@ -562,6 +562,15 @@ class ByjunoBase extends Method
                 ));
             }
             if (!empty($transactionStatus) && in_array($transactionStatus, CembraPayConstants::$CNF_OK_TRANSACTION_STATUSES)) {
+                $_SESSION["change_paid"] = true;
+                $_SESSION["byjuno_cdp"] = null;
+                $_SESSION["byjuno_cdp_status"] = null;
+                $_SESSION["byjuno_error_msg"] = "";
+                $_SESSION["byjuno_gender"] = "";
+                $_SESSION["byjuno_birthday"] = "";
+                $_SESSION["byjuno_payment"] = "";
+                $_SESSION["byjuno_send_method"] = "";
+                $_SESSION["byjyno_terms"] = "";
                 return true;
             } else {
                 $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
