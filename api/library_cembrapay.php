@@ -914,6 +914,7 @@ function CembraGetAccessDataWebshop($config, $mode) {
     $accessData->helperObject = "CembraSaveToken";
     $accessData->timeout = (int)$config->getOption("byjuno_timeout")->value;
 
+    $accessToken = "";
     $instance = ByjunoAccess::getInstance();
     if ($mode == 'test') {
         $key = $instance->getAccessKey("access_token_test");
@@ -921,9 +922,8 @@ function CembraGetAccessDataWebshop($config, $mode) {
         $accessData->username = $config->getOption("cembra_test_client_id")->value;
         $accessData->password = $config->getOption("cembra_test_password")->value;
         $accessData->audience = "59ff4c0b-7ce8-42f0-983b-306706936fa1/.default";
-        $accessToken = "";
         if (!empty($key->access_value)) {
-            $accessToken = $key->accessToken;
+            $accessToken = $key->access_value;
         }
     } else {
         $key = $instance->getAccessKey("access_token_test");
@@ -931,9 +931,8 @@ function CembraGetAccessDataWebshop($config, $mode) {
         $accessData->username = $config->getOption("cembra_live_client_id")->value;
         $accessData->password = $config->getOption("cembra_live_password")->value;
         $accessData->audience = "80d0ac9d-9d5c-499c-876e-71dd57e436f2/.default";
-        $accessToken = "";
         if (!empty($key->access_value)) {
-            $accessToken = $key->acessToken;
+            $accessToken = $key->access_value;
         }
     }
     $tkn = explode(CembraPayConstants::$tokenSeparator, $accessToken);

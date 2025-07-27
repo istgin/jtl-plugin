@@ -96,6 +96,9 @@ class MerchantDetails
 {
     public $transactionChannel; //String
     public $integrationModule; //String
+    public $returnUrlSuccess; //String
+    public $returnUrlCancel; //String
+    public $returnUrlError; //String
 
 }
 
