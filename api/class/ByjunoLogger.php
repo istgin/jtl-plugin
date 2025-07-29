@@ -47,9 +47,18 @@ class ByjunoLogger
         // $byjunoOrder->dLetzterBlock = 'NOW()';
         Shop::Container()->getDB()->insert('xplugin_byjyno_orders', $byjunoOrder);
     }
-    public function getOrder($orderId)
+    public function getOrder($orderId, $request_type)
     {
-        $val = Shop::Container()->getDB()->select("xplugin_byjyno_orders", "order_id", $orderId);
+        $val = Shop::Container()->getDB()->select("xplugin_byjyno_orders",
+            "order_id", $orderId,
+            "request_type", $request_type);
+        return $val;
+    }
+    public function getSettlement($orderId, $request_type)
+    {
+        $val = Shop::Container()->getDB()->select("xplugin_byjyno_orders",
+            "order_id", $orderId,
+            "request_type", $request_type);
         return $val;
     }
 }

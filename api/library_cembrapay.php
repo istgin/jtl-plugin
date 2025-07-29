@@ -778,6 +778,36 @@ function CreateShopRequestSettle($doucmentId, $amount, $orderCurrency, $orderId,
     return $request;
 
 }
+function CreateShopRequestBCDPCancel($amount, $orderCurrency, $orderId, $tx)
+{
+    $request = new CembraPayCheckoutCancelRequest();
+    $request->requestMsgType = CembraPayConstants::$MESSAGE_CAN;
+    $request->requestMsgId = CembraPayCheckoutAutRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutAutRequest::Date();
+    $request->transactionId = $tx;
+    $request->merchantOrderRef = $orderId;
+    $request->amount = round(number_format($amount, 2, '.', '') * 100);
+    $request->currency = $orderCurrency;
+    $request->isFullCancelation = true;
+    return $request;
+}
+
+function CreateShopRequestCreditRefund($doucmentId, $amount, $orderCurrency, $orderId, $tx, $settlementId)
+{
+    $request = new CembraPayCheckoutCreditRequest();
+    $request->requestMsgType = CembraPayConstants::$MESSAGE_CNL;
+    $request->requestMsgId = CembraPayCheckoutCreditRequest::GUID();
+    $request->requestMsgDateTime = CembraPayCheckoutCreditRequest::Date();
+    $request->transactionId = $tx;
+    $request->merchantOrderRef = $orderId;
+    $request->amount = round(number_format($amount, 2, '.', '') * 100);
+    $request->currency = $orderCurrency;
+    $request->settlementDetails->merchantInvoiceRef = $doucmentId;
+    $request->settlementDetails->settlementId = $settlementId;
+    return $request;
+}
+
+
 
 function CreateShopRequestS4($doucmentId, $amount, $orderAmount, $orderCurrency, $orderId, $customerId, $date)
 {

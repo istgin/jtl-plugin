@@ -461,7 +461,7 @@ class ByjunoBase extends Method
         $byjunoLogger->addSOrderLog(Array(
             "order_id" => $order->cBestellNr,
             "order_status" => $order->cStatus,
-            "request_type" => $type,
+            "request_type" => $requestChk->requestMsgType,
             "firstname" => $requestChk->custDetails->firstName,
             "lastname" => $requestChk->custDetails->lastName,
             "town" => $requestChk->billingAddr->town,
@@ -502,7 +502,7 @@ class ByjunoBase extends Method
             $order->cBestellNr = $_SESSION["cBestellNr"];
             $transactionId = $_SESSION["cembra_tx_id"];
             $requestTST = CembraConfirmTransaction($transactionId);
-            $CembraPayRequestName = "CNF";
+            $CembraPayRequestName = "Checkout confirmation";
             $json = $requestTST->createRequest();
             $cembraPayAzure = new CembraPayAzure();
             $cembraPayCommunicator = new CembraPayCommunicator($cembraPayAzure);
@@ -530,7 +530,7 @@ class ByjunoBase extends Method
                 $byjunoLogger->addSOrderLog(array(
                     "order_id" => $order->cBestellNr,
                     "order_status" => $order->cStatus,
-                    "request_type" => $CembraPayRequestName,
+                    "request_type" => "CNF",
                     "firstname" => "-",
                     "lastname" => "-",
                     "town" => "-",
@@ -550,7 +550,7 @@ class ByjunoBase extends Method
                 $byjunoLogger->addSOrderLog(array(
                     "order_id" => $order->cBestellNr,
                     "order_status" => $order->cStatus,
-                    "request_type" => $CembraPayRequestName,
+                    "request_type" => "CNF",
                     "firstname" => "-",
                     "lastname" => "-",
                     "town" => "-",
@@ -630,7 +630,7 @@ class ByjunoBase extends Method
                 $byjunoLogger->addSOrderLog(array(
                     "order_id" => $order->cBestellNr,
                     "order_status" => $order->cStatus,
-                    "request_type" => $type,
+                    "request_type" => $requestAuth->requestMsgType,
                     "firstname" => $requestAuth->custDetails->firstName,
                     "lastname" => $requestAuth->custDetails->lastName,
                     "town" => $requestAuth->billingAddr->town,
@@ -727,7 +727,7 @@ class ByjunoBase extends Method
                         $byjunoLogger->addSOrderLog(Array(
                             "order_id" => -1,
                             "order_status" => -1,
-                            "request_type" => $ByjunoRequestName,
+                            "request_type" => $requestCDP->requestMsgType,
                             "firstname" => $requestCDP->custDetails->firstName,
                             "lastname" => $requestCDP->custDetails->lastName,
                             "town" => $requestCDP->billingAddr->town,
@@ -748,7 +748,7 @@ class ByjunoBase extends Method
                         $byjunoLogger->addSOrderLog(Array(
                             "order_id" => -1,
                             "order_status" => -1,
-                            "request_type" => $ByjunoRequestName,
+                            "request_type" => $requestCDP->requestMsgType,
                             "firstname" => $requestCDP->custDetails->firstName,
                             "lastname" => $requestCDP->custDetails->lastName,
                             "town" => $requestCDP->billingAddr->town,
