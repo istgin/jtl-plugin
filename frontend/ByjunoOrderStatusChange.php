@@ -73,7 +73,7 @@ try {
                     if ($byjunoConfig->getOption("byjuno_s4")->value == "true") {
                         $s4TriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s4_trigger")->value);
                         if (!empty($s4TriggerStatus) && $s4TriggerStatus == $arr["status"]) {
-                            $byjunoLogger = ByjunoLogger::getInstance();
+                            $byjunoLogger = CembraLogger::getInstance();
                             $log = $byjunoLogger->getOrder($invoiceNum, CembraPayConstants::$MESSAGE_CHK);
                             $txId = "";
                             if (!empty($log->transaction_id)) {
@@ -160,7 +160,7 @@ try {
                             $s5RefundTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_refund_trigger")->value);
                             if (!empty($s5RefundTriggerStatus) && $s5RefundTriggerStatus == $arr["status"]) {
 
-                                $byjunoLogger = ByjunoLogger::getInstance();
+                                $byjunoLogger = CembraLogger::getInstance();
                                 $log = $byjunoLogger->getOrder($invoiceNum, CembraPayConstants::$MESSAGE_CHK);
                                 $txId = "";
                                 if (!empty($log->transaction_id)) {
@@ -270,7 +270,7 @@ try {
                     if ($byjunoConfig->getOption("byjuno_s5_cancel")->value == "true") {
                         $s5CancelTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_cancel_trigger")->value);
                         if (!empty($s5CancelTriggerStatus) && $s5CancelTriggerStatus == $arr["status"]) {
-                            $byjunoLogger = ByjunoLogger::getInstance();
+                            $byjunoLogger = CembraLogger::getInstance();
                             $log = $byjunoLogger->getOrder($invoiceNum, CembraPayConstants::$MESSAGE_CHK);
                             $txId = "";
                             if (!empty($log->transaction_id)) {

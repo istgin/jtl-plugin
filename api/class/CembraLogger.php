@@ -8,7 +8,7 @@ use JTL\Shop;
  * Date: 14.2.9
  * Time: 10:28
  */
-class ByjunoLogger
+class CembraLogger
 {
     private static $instance = NULL;
     private $logs;
@@ -19,7 +19,7 @@ class ByjunoLogger
 
     public static function getInstance() {
         if(self::$instance === NULL) {
-            self::$instance = new ByjunoLogger();
+            self::$instance = new CembraLogger();
         }
         return self::$instance;
     }

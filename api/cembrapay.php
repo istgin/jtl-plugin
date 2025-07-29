@@ -2,8 +2,8 @@
 
 define("_JTL_MODULE_BYJUNO_API", "defined");
 require(dirname(__FILE__).'/library_cembrapay.php');
-require(dirname(__FILE__).'/class/ByjunoLogger.php');
-require(dirname(__FILE__).'/class/ByjunoAccess.php');
+require(dirname(__FILE__).'/class/CembraLogger.php');
+require(dirname(__FILE__).'/class/CembraAccess.php');
 require(dirname(__FILE__).'/class/CembraPayAzure.php');
 require(dirname(__FILE__).'/class/CembraPayCheckoutAuthorizationResponse.php');
 require(dirname(__FILE__).'/class/CembraPayCheckoutAutRequest.php');

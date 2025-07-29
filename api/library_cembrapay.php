@@ -683,7 +683,7 @@ function CembraGetAccessDataWebshop($config, $mode) {
     $accessData->timeout = (int)$config->getOption("byjuno_timeout")->value;
 
     $accessToken = "";
-    $instance = ByjunoAccess::getInstance();
+    $instance = CembraAccess::getInstance();
     if ($mode == 'test') {
         $key = $instance->getAccessKey("access_token_test");
         $accessData->mode = 'test';
@@ -715,7 +715,7 @@ function CembraSaveToken($token, $accessData) {
     /* @var $cofing JTL\Plugin\Data\Config */
     /* @var $accessData CembraPayLoginDto */
     $hash = $accessData->username.$accessData->password.$accessData->audience.CembraPayConstants::$tokenSeparator;
-    $instance = ByjunoAccess::getInstance();
+    $instance = CembraAccess::getInstance();
     if ($accessData->mode == 'test') {
         $instance->addOrUpdateAccessKey(Array(
             "access_key" => "access_token_test",

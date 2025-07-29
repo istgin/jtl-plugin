@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Plugin\byjuno\paymentmethod;
 
 use ByjunoCommunicator;
-use ByjunoLogger;
+use CembraLogger;
 use ByjunoRequest;
 use ByjunoResponse;
 use CembraPayAzure;
@@ -459,7 +459,7 @@ class ByjunoBase extends Method
                 CembraSaveToken($token, $accessData);
             });
         $responseRes = null;
-        $byjunoLogger = ByjunoLogger::getInstance();
+        $byjunoLogger = CembraLogger::getInstance();
         $redirect = $returUrlCancel;
         $_SESSION["cembra_tx_id"] = "";
         if ($response) {
@@ -515,7 +515,7 @@ class ByjunoBase extends Method
             $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
             return false;
         }
-        $byjunoLogger = ByjunoLogger::getInstance();
+        $byjunoLogger = CembraLogger::getInstance();
         ByjunoBase::$SEND_MAIL = true;
         if ($this->config->getOption("cembra_plugin_mode")->value == 'checkout') {
             $order->cBestellNr = $_SESSION["cBestellNr"];
@@ -716,7 +716,7 @@ class ByjunoBase extends Method
                     }
                     $jsonRequest = $requestCDP->createRequest();
 
-                    $byjunoLogger = ByjunoLogger::getInstance();
+                    $byjunoLogger = CembraLogger::getInstance();
                     $cembraPayAzure = new CembraPayAzure();
                     $cembraPayCommunicator = new CembraPayCommunicator($cembraPayAzure);
                     $mode = 'test';
