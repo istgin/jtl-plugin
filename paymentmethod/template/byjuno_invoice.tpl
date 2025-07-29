@@ -192,7 +192,7 @@
                 <hr>
             </div>
             <div class="col col-md-12 col-12">
-                At the last step you will be redirected to checkout please validate order
+                {$l_i_checkout}
             </div>
         </div>
     </div>

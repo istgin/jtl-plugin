@@ -50,18 +50,40 @@ function Cembra_MapPayment($type)
     }
 }
 
-function Cembra_MapToc($lang)
+function Cembra_MapToc($lang, $type, $config)
 {
-    switch ($lang) {
-        case "DE":
-            return "https://cembrapay.ch/de/terms";
-        case "FR":
-            return "https://cembrapay.ch/fr/terms";
-        case "EN":
-            return "https://cembrapay.ch/en/terms";
-        case "IT":
-            return "https://cembrapay.ch/it/terms";
+    if ($type == 'installment_3'
+        || $type == 'installment_4'
+        || $type == 'installment_6'
+        || $type == 'installment_12'
+        || $type == 'installment_24'
+        || $type == 'installment_36'
+        || $type == 'installment_48') {
 
+        switch ($lang) {
+            case "DE":
+                return $config->getOption("byjuno_toc_de_installment")->value;
+            case "FR":
+                return $config->getOption("byjuno_toc_fr_installment")->value;
+            case "EN":
+                return $config->getOption("byjuno_toc_en_installment")->value;
+            case "IT":
+                return $config->getOption("byjuno_toc_it_installment")->value;
+
+        }
+
+    } else {
+        switch ($lang) {
+            case "DE":
+                return $config->getOption("byjuno_toc_de_invoice")->value;
+            case "FR":
+                return $config->getOption("byjuno_toc_fr_invoice")->value;
+            case "EN":
+                return $config->getOption("byjuno_toc_en_invoice")->value;
+            case "IT":
+                return $config->getOption("byjuno_toc_it_invoice")->value;
+
+        }
     }
 
 }
@@ -323,7 +345,7 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
     $customerConsents->consentType = "CEMBRAPAY-TC";
     $customerConsents->consentProvidedAt = "MERCHANT";
     $customerConsents->consentDate = CembraPayCheckoutAutRequest::Date();
-    $link = Cembra_MapToc($lang);
+    $link = Cembra_MapToc($lang, $repayment, $config);
     $exLink = explode("/", $link);
     $consentReference = end($exLink);
     if (empty($consentReference) && isset($exLink[count($exLink) - 1])) {

@@ -41,10 +41,12 @@ class ByjunoInstallment extends ByjunoBase
     {
         $byjuno_installment = false;
         if ($this->config->getOption("byjuno_3_installments")->value == "true"
-            || $this->config->getOption("byjuno_36_installments")->value == "true"
+            || $this->config->getOption("byjuno_4_installments")->value == "true"
+            || $this->config->getOption("byjuno_6_installments")->value == "true"
             || $this->config->getOption("byjuno_12_installments")->value == "true"
             || $this->config->getOption("byjuno_24_installments")->value == "true"
-            || $this->config->getOption("byjuno_4_installments_12_months")->value == "true"
+            || $this->config->getOption("byjuno_36_installments")->value == "true"
+            || $this->config->getOption("byjuno_48_installments")->value == "true"
         ) {
             $byjuno_installment = true;
         }
@@ -55,15 +57,6 @@ class ByjunoInstallment extends ByjunoBase
             return false;
         }
         return $this->CDPRequest();
-    }
-
-    public function preparePaymentProcess(Bestellung $order): void
-    {
-        $hash = $this->generateHash($order);
-        $returUrl = $this->getNotificationURL($hash);
-        parent::preparePaymentProcess($order);
-        header('location:' . $returUrl);
-        exit();
     }
 
 }

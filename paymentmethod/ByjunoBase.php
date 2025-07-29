@@ -190,10 +190,12 @@ class ByjunoBase extends Method
         }
 
         if ($this->config->getOption("byjuno_3_installments")->value == "true"
-              || $this->config->getOption("byjuno_36_installments")->value == "true"
+              || $this->config->getOption("byjuno_4_installments")->value == "true"
+              || $this->config->getOption("byjuno_6_installments")->value == "true"
               || $this->config->getOption("byjuno_12_installments")->value == "true"
               || $this->config->getOption("byjuno_24_installments")->value == "true"
-              || $this->config->getOption("byjuno_4_installments_12_months")->value == "true"
+              || $this->config->getOption("byjuno_36_installments")->value == "true"
+              || $this->config->getOption("byjuno_48_installments")->value == "true"
           ) {
             $byjuno_installment = true;
         }
@@ -276,7 +278,8 @@ class ByjunoBase extends Method
             'l_i_agree_with_terms_and_conditions' => $this->getText("Iagreewithtermsandconditions", "I agree with terms and conditions"),
             'l_by_email' => $this->getText("Byemail", "By email"),
             'l_by_post' => $this->getText("Bypost", "By post"),
-            'is_chekout' => true
+            'is_chekout' => true,
+            'l_i_checkout' => $this->getText("cembra_chk_message", "At the last step, you will be redirected to checkout. Press Continue to validate your order."),
         );
         if ($byjuno_invoice) {
             if ($b2b && !empty($customer->cFirma)) {
@@ -303,8 +306,11 @@ class ByjunoBase extends Method
             if ($this->config->getOption("byjuno_3_installments")->value == "true") {
                 $selected_payments_installment[] = Array('name' => $this->getText('3installments', "3 installments"), 'id' => 'installment_3', "selected" => 0);
             }
-            if ($this->config->getOption("byjuno_36_installments")->value == "true") {
-                $selected_payments_installment[] = Array('name' => $this->getText('36installments', "36 installments"), 'id' => 'installment_36', "selected" => 0);
+            if ($this->config->getOption("byjuno_4_installments")->value == "true") {
+                $selected_payments_installment[] = Array('name' => $this->getText('4installments', "4 installments"), 'id' => 'installment_4', "selected" => 0);
+            }
+            if ($this->config->getOption("byjuno_6_installments")->value == "true") {
+                $selected_payments_installment[] = Array('name' => $this->getText('6installments', "6 installments"), 'id' => 'installment_6', "selected" => 0);
             }
             if ($this->config->getOption("byjuno_12_installments")->value == "true") {
                 $selected_payments_installment[] = Array('name' => $this->getText('12installments', "12 installments"), 'id' => 'installment_12', "selected" => 0);
@@ -312,8 +318,11 @@ class ByjunoBase extends Method
             if ($this->config->getOption("byjuno_24_installments")->value == "true") {
                 $selected_payments_installment[] = Array('name' => $this->getText('24installments', "24 installment"), 'id' => 'installment_24', "selected" => 0);
             }
-            if ($this->config->getOption("byjuno_4_installments_12_months")->value == "true") {
-                $selected_payments_installment[] = Array('name' => $this->getText('4installmentsin12months', "4 installments in 12 months"), 'id' => 'installment_4x12', "selected" => 0);
+            if ($this->config->getOption("byjuno_36_installments")->value == "true") {
+                $selected_payments_installment[] = Array('name' => $this->getText('36installments', "36 installments"), 'id' => 'installment_36', "selected" => 0);
+            }
+            if ($this->config->getOption("byjuno_48_installments")->value == "true") {
+                $selected_payments_installment[] = Array('name' => $this->getText('48installments', "48 installments"), 'id' => 'installment_48', "selected" => 0);
             }
             $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
             $values["selected_payment_installment"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_installment[0]["id"];
@@ -376,7 +385,17 @@ class ByjunoBase extends Method
      */
     public function preparePaymentProcess(Bestellung $order): void
     {
+        $hash = $this->generateHash($order);
+        $returnUrl = $this->getNotificationURL($hash);
         parent::preparePaymentProcess($order);
+        if ($this->config->getOption("cembra_plugin_mode")->value == 'checkout') {
+            $redirect = $this->checkoutRequest($order, $returnUrl);
+            header('location:' . $redirect);
+            exit();
+        } else {
+            header('location:' . $returnUrl);
+            exit();
+        }
     }
 
     /**

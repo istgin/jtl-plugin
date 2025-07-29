@@ -46,19 +46,4 @@ class ByjunoInvoice extends ByjunoBase
         $response = $this->CDPRequest();
         return $response;
     }
-
-    public function preparePaymentProcess(Bestellung $order): void
-    {
-        $hash = $this->generateHash($order);
-        $returnUrl = $this->getNotificationURL($hash);
-        parent::preparePaymentProcess($order);
-        if ($this->config->getOption("cembra_plugin_mode")->value == 'checkout') {
-            $redirect = $this->checkoutRequest($order, $returnUrl);
-            header('location:' . $redirect);
-            exit();
-        } else {
-            header('location:' . $returnUrl);
-            exit();
-        }
-    }
 }
