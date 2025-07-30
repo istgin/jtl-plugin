@@ -56,8 +56,27 @@ try {
     if (!empty($arr) && is_array($arr) && !empty($arr["oBestellung"])) {
         $order = $arr["oBestellung"];
         if (!empty($order->kBestellung)) {
-            $byjunoOrder = Shop::Container()->getDB()->select('xplugin_byjyno_orders', ['order_id', 'request_type'], [$order->cBestellNr, 'S3']);
-            if (!empty($byjunoOrder) && $byjunoOrder->request_type == 'S3') {
+            $byjunoLogger = CembraLogger::getInstance();
+            $byjunoOrder = $byjunoLogger->getOrder($order->cBestellNr, CembraPayConstants::$MESSAGE_CHK);
+            $txId = "";
+            if (!empty($byjunoOrder->transaction_id)) {
+                $txId = $byjunoOrder->transaction_id;
+            } else {
+                $byjunoOrder = $byjunoLogger->getOrder($order->cBestellNr, CembraPayConstants::$MESSAGE_AUTH);
+                if (!empty($byjunoOrder->transaction_id)) {
+                    $txId = $byjunoOrder->transaction_id;
+                } else {
+                    $byjunoOrder = $byjunoLogger->getOrder($order->cBestellNr, "S3");
+                    if (!empty($byjunoOrder->transaction_id)) {
+                        $txId = $byjunoOrder->transaction_id;
+                    }
+                }
+            }
+            if (!empty($byjunoOrder) && (
+                $byjunoOrder->request_type == CembraPayConstants::$MESSAGE_CHK 
+                    || $byjunoOrder->request_type == CembraPayConstants::$MESSAGE_AUTH
+                    || $byjunoOrder->request_type == "S3")
+               ) {
                 $invoiceNum = $order->cBestellNr;
                 $currency = new Currency($order->kWaehrung);
                 $amount = $order->fGesamtsumme;
@@ -66,136 +85,71 @@ try {
                 } else {
                     $customerId = "guest";
                 }
-                $time = time();
-                $dt = date("Y-m-d", $time);
-
+                $isRefunded = false;
                 if ($byjunoConfig->getOption("byjuno_s5_refund")->value == "true") {
-                    $byjunoOrderS4 = Shop::Container()->getDB()->select('xplugin_byjyno_orders', ['order_id', 'request_type'], [$order->cBestellNr, 'S4']);
-                    if (!empty($byjunoOrderS4)) {
-                        $s5RefundTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_refund_trigger")->value);
-                        if (!empty($s5RefundTriggerStatus) && $s5RefundTriggerStatus == '-1') {
+                    $s5RefundTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_refund_trigger")->value);
+                    if (!empty($s5RefundTriggerStatus) && $s5RefundTriggerStatus == '-1') {                           
 
-                            $byjunoLogger = CembraLogger::getInstance();
-                            $log = $byjunoLogger->getOrder($invoiceNum, CembraPayConstants::$MESSAGE_CHK);
-                            $txId = "";
-                            if (!empty($log->transaction_id)) {
-                                $txId = $log->transaction_id;
-                            } else {
-                                $log = $byjunoLogger->getOrder($invoiceNum, CembraPayConstants::$MESSAGE_AUTH);
-                                if (!empty($log->transaction_id)) {
-                                    $txId = $log->transaction_id;
-                                }
-                            }
-
-                            $settlement = $byjunoLogger->getSettlement($invoiceNum, CembraPayConstants::$MESSAGE_SET);
-                            $settlementId = "";
-                            if (!empty($settlement->transaction_id)) {
-                                $settlementId = $settlement->transaction_id;
-                            }
-
-                            $requestRefund = CreateShopRequestCreditRefund($invoiceNum, $amount, $currency->getCode(), $invoiceNum, $txId, $settlementId);
-
-                            $CembraPayRequestName = "Refund Request";
-
-                            $mode = $byjunoConfig->getOption("byjuno_mode")->value;
-                            $json = $requestRefund->createRequest();
-                            $cembraPayAzure = new CembraPayAzure();
-                            $cembrapayCommunicator = new CembraPayCommunicator($cembraPayAzure);
-                            if ($mode == 'live') {
-                                $cembrapayCommunicator->setServer('live');
-                            } else {
-                                $cembrapayCommunicator->setServer('test');
-                            }
-                            $response = $cembrapayCommunicator->sendCreditRequest($json,
-                                CembraGetAccessDataWebshop($byjunoConfig, $mode),
-                                function ($object, $token, $accessData) {// your dynamic parameters
-                                    CembraSaveToken($token, $accessData);
-                                });
-                            $status = "";
-                            $txRefund = "";
-                            if (isset($response)) {
-                                $responseRes = CembraPayConstants::creditResponse($response);
-                                $status = $responseRes->processingStatus;
-                                if (!empty($responseRes->settlementId)) {
-                                    $txRefund = $responseRes->settlementId;
-                                }
-                            }
-                            $byjunoLogger->addSOrderLog(Array(
-                                "order_id" => $order->cBestellNr,
-                                "order_status" => $arr["status"],
-                                "request_type" => CembraPayConstants::$MESSAGE_CNL,
-                                "firstname" => "",
-                                "lastname" =>  "",
-                                "town" => "",
-                                "postcode" =>  "",
-                                "street" => "",
-                                "country" =>  "",
-                                "ip" => byjunoGetClientIp(),
-                                "status" => ($status == "") ? "ERROR" : $status,
-                                "request_id" => $requestRefund->requestMsgId,
-                                "type" => $CembraPayRequestName,
-                                "error" => ($status == "") ? "ERROR" : $status,
-                                "response" => $response,
-                                "request" => $json,
-                                "transaction_id" => $txRefund
-                            ));
-                            /*
-
-                            $requestS5Refund = CreateShopRequestS5Refund($invoiceNum, $amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
-                            $xmlRequestS5Refund = $requestS5Refund->createRequest();
-                            $byjunoCommunicator = new ByjunoCommunicator();
-                            if ($byjunoConfig->getOption("byjuno_mode")->value == 'live') {
-                                $byjunoCommunicator->setServer("live");
-                            } else {
-                                $byjunoCommunicator->setServer("test");
-                            }
-                            $responseS5Refund = $byjunoCommunicator->sendS4Request($xmlRequestS5Refund, intval($byjunoConfig->getOption("byjuno_timeout")->value));
-                            $statusLog = "S5 Refund Request";
-                            $statusS5Refund = "ERR";
-                            if (isset($responseS5Refund)) {
-                                $byjunoResponseS5Refund = new ByjunoS4Response();
-                                $byjunoResponseS5Refund->setRawResponse($responseS5Refund);
-                                $byjunoResponseS5Refund->processResponse();
-                                $statusS5Refund = $byjunoResponseS5Refund->getProcessingInfoClassification();
-                            }
-                            $byjunoLogger = ByjunoLogger::getInstance();
-                            $byjunoLogger->addSOrderLog(Array(
-                                "order_id" => $order->cBestellNr,
-                                "order_status" => $order->cStatus,
-                                "request_type" => "S5 Refund",
-                                "firstname" => "",
-                                "lastname" => "",
-                                "town" => "",
-                                "postcode" => "",
-                                "street" => "",
-                                "country" => "",
-                                "ip" => byjunoGetClientIp(),
-                                "status" => $statusS5Refund,
-                                "request_id" => $requestS5Refund->getRequestId(),
-                                "type" => $statusLog,
-                                "error" => $statusS5Refund,
-                                "response" => $responseS5Refund,
-                                "request" => $xmlRequestS5Refund
-                            ));
-                            */
+                        $settlement = $byjunoLogger->getSettlement($invoiceNum, CembraPayConstants::$MESSAGE_SET);
+                        $settlementId = "";
+                        if (!empty($settlement->transaction_id)) {
+                            $settlementId = $settlement->transaction_id;
                         }
+
+                        $requestRefund = CreateShopRequestCreditRefund($invoiceNum, $amount, $currency->getCode(), $invoiceNum, $txId, $settlementId);
+
+                        $CembraPayRequestName = "Refund Request";
+
+                        $mode = $byjunoConfig->getOption("byjuno_mode")->value;
+                        $json = $requestRefund->createRequest();
+                        $cembraPayAzure = new CembraPayAzure();
+                        $cembrapayCommunicator = new CembraPayCommunicator($cembraPayAzure);
+                        if ($mode == 'live') {
+                            $cembrapayCommunicator->setServer('live');
+                        } else {
+                            $cembrapayCommunicator->setServer('test');
+                        }
+                        $response = $cembrapayCommunicator->sendCreditRequest($json,
+                            CembraGetAccessDataWebshop($byjunoConfig, $mode),
+                            function ($object, $token, $accessData) {// your dynamic parameters
+                                CembraSaveToken($token, $accessData);
+                            });
+                        $status = "";
+                        $txRefund = "";
+                        if (isset($response)) {
+                            $responseRes = CembraPayConstants::creditResponse($response);
+                            $status = $responseRes->processingStatus;
+                            if (!empty($responseRes->settlementId)) {
+                                $txRefund = $responseRes->settlementId;
+                            }
+                            $isRefunded = ($status == CembraPayConstants::$CREDIT_OK);
+                        }
+                        $byjunoLogger->addSOrderLog(Array(
+                            "order_id" => $order->cBestellNr,
+                            "order_status" => $arr["status"],
+                            "request_type" => CembraPayConstants::$MESSAGE_CNL,
+                            "firstname" => "",
+                            "lastname" =>  "",
+                            "town" => "",
+                            "postcode" =>  "",
+                            "street" => "",
+                            "country" =>  "",
+                            "ip" => byjunoGetClientIp(),
+                            "status" => ($status == "") ? "ERROR" : $status,
+                            "request_id" => $requestRefund->requestMsgId,
+                            "type" => $CembraPayRequestName,
+                            "error" => ($status == "") ? "ERROR" : "",
+                            "response" => $response,
+                            "request" => $json,
+                            "transaction_id" => $txRefund
+                        ));
                     }
                 }
 
                 if ($byjunoConfig->getOption("byjuno_s5_cancel")->value == "true") {
                     $s5CancelTriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s5_cancel_trigger")->value);
-                    if (!empty($s5CancelTriggerStatus) && $s5CancelTriggerStatus == '-1') {
-                        $byjunoLogger = CembraLogger::getInstance();
-                        $log = $byjunoLogger->getOrder($invoiceNum, CembraPayConstants::$MESSAGE_CHK);
-                        $txId = "";
-                        if (!empty($log->transaction_id)) {
-                            $txId = $log->transaction_id;
-                        } else {
-                            $log = $byjunoLogger->getOrder($invoiceNum, CembraPayConstants::$MESSAGE_AUTH);
-                            if (!empty($log->transaction_id)) {
-                                $txId = $log->transaction_id;
-                            }
-                        }
+                    if (!empty($s5CancelTriggerStatus) && $s5CancelTriggerStatus == '-1' && !$isRefunded) {
+
                         $requestCancel = CreateShopRequestBCDPCancel($amount, $currency->getCode(), $invoiceNum, $txId);
 
                         $CembraPayRequestName = "Cancel Request";
@@ -215,12 +169,12 @@ try {
                                 CembraSaveToken($token, $accessData);
                             });
                         $status = "";
-                        $txRefund = "";
+                        $txCancel = "";
                         if (isset($response)) {
-                            $responseRes = CembraPayConstants::creditResponse($response);
+                            $responseRes = CembraPayConstants::cancelResponse($response);
                             $status = $responseRes->processingStatus;
-                            if (!empty($responseRes->settlementId)) {
-                                $txRefund = $responseRes->settlementId;
+                            if (!empty($responseRes->transactionId)) {
+                                $txCancel = $responseRes->transactionId;
                             }
                         }
                         $byjunoLogger->addSOrderLog(Array(
@@ -237,49 +191,11 @@ try {
                             "status" => ($status == "") ? "ERROR" : $status,
                             "request_id" => $requestCancel->requestMsgId,
                             "type" => $CembraPayRequestName,
-                            "error" => ($status == "") ? "ERROR" : $status,
+                            "error" => ($status == "") ? "ERROR" : "",
                             "response" => $response,
                             "request" => $json,
-                            "transaction_id" => $txRefund
+                            "transaction_id" => $txCancel
                         ));
-
-                        /*$requestS5Cancel= CreateShopRequestS5Cancel($amount, $currency->getCode(), $invoiceNum, $customerId, $dt);
-                        $xmlRequestS5Cancel = $requestS5Cancel->createRequest();
-                        $byjunoCommunicator = new ByjunoCommunicator();
-                        if ($byjunoConfig->getOption("byjuno_mode")->value == 'live') {
-                            $byjunoCommunicator->setServer("live");
-                        } else {
-                            $byjunoCommunicator->setServer("test");
-                        }
-                        $responseS5Cancel = $byjunoCommunicator->sendS4Request($xmlRequestS5Cancel, intval($byjunoConfig->getOption("byjuno_timeout")->value));
-                        $statusLog = "S5 Cancel Request";
-                        $statusS5Cancel = "ERR";
-                        if (isset($responseS5Cancel)) {
-                            $byjunoResponseS5Cancel = new ByjunoS4Response();
-                            $byjunoResponseS5Cancel->setRawResponse($responseS5Cancel);
-                            $byjunoResponseS5Cancel->processResponse();
-                            $statusS5Cancel = $byjunoResponseS5Cancel->getProcessingInfoClassification();
-                        }
-                        $byjunoLogger = ByjunoLogger::getInstance();
-                        $byjunoLogger->addSOrderLog(Array(
-                            "order_id" => $order->cBestellNr,
-                            "order_status" => $order->cStatus,
-                            "request_type" => "S5 Cancel",
-                            "firstname" => "",
-                            "lastname" =>  "",
-                            "town" => "",
-                            "postcode" =>  "",
-                            "street" => "",
-                            "country" =>  "",
-                            "ip" => byjunoGetClientIp(),
-                            "status" => $statusS5Cancel,
-                            "request_id" => $requestS5Cancel->getRequestId(),
-                            "type" => $statusLog,
-                            "error" => $statusS5Cancel,
-                            "response" => $responseS5Cancel,
-                            "request" => $xmlRequestS5Cancel
-                        ));
-                        */
                     }
                 }
             }

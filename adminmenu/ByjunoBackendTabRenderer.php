@@ -94,6 +94,8 @@ class ByjunoBackendTabRenderer
             <td>Status</td>
             <td>Date</td>
             <td>Request ID</td>
+            <td>Order ID</td>
+            <td>Tx ID</td>
             <td>Type</td>
         </tr>';
                 foreach ($byjunoOrders as $log) {
@@ -105,6 +107,8 @@ class ByjunoBackendTabRenderer
                 <td>'.$status.'</td>
                 <td>'.$log->creation_date.'</td>
                 <td>'.$log->request_id.'</td>
+                <td>'.$log->order_id.'</td>
+                <td>'.$log->transaction_id.'</td>
                 <td><a style="text-decoration: underline" href="javascript:byjuno_load(\''.$url.'&byjuno_viewxml='.$log->byjuno_id.'\')">'.$log->type.'</a></td>
             </tr>';
                 }
