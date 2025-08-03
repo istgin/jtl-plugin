@@ -311,7 +311,7 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
     $customerConsents->consentReference = base64_encode($consentReference);
     $request->customerConsents = array($customerConsents);
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "Cembrapay JTL 5.2 module 2.0.0";
+    $request->merchantDetails->integrationModule = "Cembrapay JTL 5 module 2.0.0";
 
     return $request;
 
@@ -400,7 +400,7 @@ function CreateJTLChekoutShopRequest($order, $successUrl, $cancelUrl, $errorUrl)
     $request->merchantDetails->returnUrlError = base64_encode($errorUrl);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "Cembrapay JTL 5.2 module 2.0.0";
+    $request->merchantDetails->integrationModule = "Cembrapay JTL 5 module 2.0.0";
 
     return $request;
 
