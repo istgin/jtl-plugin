@@ -175,8 +175,7 @@
             <div class="form-group byjuno_toc">
                 <input type="checkbox" value="terms_conditions" name="byjyno_terms" id="byjyno_terms"
                        style="display: inline-block"/> &nbsp;
-                <a href="{$toc_url_invoice}" target="_blank"
-                   style="font-weight: bold; text-decoration: underline">{$l_i_agree_with_terms_and_conditions}</a>
+                {$l_i_agree_with_terms_and_conditions}
             </div>
         </div>
 </div>

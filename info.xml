@@ -111,10 +111,10 @@
             <Variable>
                 <Name>Iagreewithtermsandconditions</Name>
                 <Description>Iagreewithtermsandconditions</Description>
-                <VariableLocalized iso="GER">Ich akzeptiere die AGB</VariableLocalized>
-                <VariableLocalized iso="ENG">I agree with terms and conditions</VariableLocalized>
-                <VariableLocalized iso="ITA">Accetto i termini e le condizioni</VariableLocalized>
-                <VariableLocalized iso="FRA">J'accepte les termes et conditions</VariableLocalized>
+                <VariableLocalized iso="GER">Kauf auf Rechnung (inklusive Ratenzahlung) wird durch CembraPay AG abgewickelt. Es gelten die (1)AGB(2) und die (3)Datenschutzerklärung der CembraPay AG(4).</VariableLocalized>
+                <VariableLocalized iso="ENG">The payment option Invoice (including payment in installments) is operated by CembraPay AG. The (1)T&amp;C(2) and the (3)Data Privacy Policy of CembraPay AG(4) apply.</VariableLocalized>
+                <VariableLocalized iso="ITA">L'opzione di pagamento tramite fattura (pagamento rateale incluso) è gestita dalla CembraPay SA. Si applicano le (1)CGC(2) e l?Informativa sulla (3)privacy di CembraPay SA(4).</VariableLocalized>
+                <VariableLocalized iso="FRA">L'option de paiement par facture (paiement échelonné inclus) est gérée par CembraPay SA. Les (1)conditions générales(2) et le (3)la politique de confidentialité de CembraPay SA(4) s'appliquent.</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Byemail</Name>
@@ -373,8 +373,8 @@
                     <Name>Plugin mode</Name>
                     <ValueName>cembra_plugin_mode</ValueName>
                     <SelectboxOptions>
-                        <Option value="checkout" sort="1">Cembra checkout</Option>
-                        <Option value="api" sort="2">Cembra api</Option>
+                        <Option value="checkout" sort="1">CembraPay Checkout redirect</Option>
+                        <Option value="api" sort="2">CembraPay API, no redirect</Option>
                     </SelectboxOptions>
                 </Setting>
 
@@ -393,7 +393,7 @@
                 </Setting>
 
                 <Setting type="password" initialValue="" sort="31" conf="Y">
-                    <Name>Live Password</Name>
+                    <Name>Live Secret</Name>
                     <ValueName>cembra_live_password</ValueName>
                 </Setting>
 
@@ -403,7 +403,7 @@
                 </Setting>
 
                 <Setting type="password" initialValue="" sort="41" conf="Y">
-                    <Name>Test Password</Name>
+                    <Name>Test Secret</Name>
                     <ValueName>cembra_test_password</ValueName>
                 </Setting>
 
@@ -436,7 +436,7 @@
                 </Setting>
 
                 <Setting type="selectbox" initialValue="true" sort="110" conf="Y">
-                    <Name>Enable gender</Name>
+                    <Name>Enable gender selection</Name>
                     <ValueName>byjuno_gender_show</ValueName>
                     <SelectboxOptions>
                         <Option value="true" sort="1">Yes</Option>
@@ -495,12 +495,12 @@
                     </SelectboxOptions>
                 </Setting>
 
-                <Setting type="text" initialValue="test-invoices@byjuno.ch" sort="154" conf="Y">
+                <Setting type="text" initialValue="uat-invoices@cembrapay.ch" sort="154" conf="Y">
                     <Name>Cembrapay test mode email</Name>
                     <ValueName>byjuno_mail_test_box</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="invoices@byjuno.ch" sort="156" conf="Y">
+                <Setting type="text" initialValue="invoices@cembrapay.ch" sort="156" conf="Y">
                     <Name>Cembrapay live mode email</Name>
                     <ValueName>byjuno_mail_live_box</ValueName>
                 </Setting>
@@ -689,6 +689,26 @@
                 <Setting type="text" initialValue="https://cembrapay.ch/it/terms" sort="398" conf="Y">
                     <Name>T&amp;C Cembrapay Installment (IT) link</Name>
                     <ValueName>byjuno_toc_it_installment</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="https://cembrapay.ch/en/privacy" sort="410" conf="Y">
+                    <Name>Privacy Cembrapay (EN) link</Name>
+                    <ValueName>byjuno_privacy_en</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="https://cembrapay.ch/de/privacy" sort="420" conf="Y">
+                    <Name>Privacy Cembrapay (DE) link</Name>
+                    <ValueName>byjuno_privacy_de</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="https://cembrapay.ch/fr/privacy" sort="430" conf="Y">
+                    <Name>Privacy Cembrapay (FR) link</Name>
+                    <ValueName>byjuno_privacy_fr</ValueName>
+                </Setting>
+
+                <Setting type="text" initialValue="https://cembrapay.ch/it/privacy" sort="440" conf="Y">
+                    <Name>Privacy Cembrapay (IT) link</Name>
+                    <ValueName>byjuno_privacy_it</ValueName>
                 </Setting>
 
             </Settingslink>

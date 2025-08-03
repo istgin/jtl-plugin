@@ -275,18 +275,17 @@ class ByjunoBase extends Method
             'l_male' => $this->getText("Male", "Male"),
             'l_female' => $this->getText("Female", "Female"),
             'l_date_of_birth' => $this->getText("DateofBirth", "Date of Birth"),
-            'l_i_agree_with_terms_and_conditions' => $this->getText("Iagreewithtermsandconditions", "I agree with terms and conditions"),
             'l_by_email' => $this->getText("Byemail", "By email"),
             'l_by_post' => $this->getText("Bypost", "By post"),
             'is_chekout' => true,
             'l_i_checkout' => $this->getText("cembra_chk_message", "At the last step, you will be redirected to checkout. Press Continue to validate your order."),
         );
+        $tocUrl = "";
         if ($byjuno_invoice) {
             if ($b2b && !empty($customer->cFirma)) {
                 $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoSingleInvoice', "Byjuno Single Invoice"), 'id' => 'single_invoice', "selected" => 1);
                 $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
                 $values['selected_payments_invoice'] = $selected_payments_invoice;
-                $values['toc_url_invoice'] = $tocUrl;
             } else {
                 if ($this->config->getOption("byjuno_invoice")->value == "true") {
                     $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoInvoice', "Byjuno Invoice (With partial payment option)"), 'id' => 'byjuno_invoice', "selected" => 0);
@@ -298,7 +297,6 @@ class ByjunoBase extends Method
 
                 $values["selected_payment_invoice"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_invoice[0]["id"];
                 $values['selected_payments_invoice'] = $selected_payments_invoice;
-                $values['toc_url_invoice'] = $tocUrl;
             }
         }
 
@@ -327,8 +325,16 @@ class ByjunoBase extends Method
             $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
             $values["selected_payment_installment"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_installment[0]["id"];
             $values['selected_payments_installment'] = $selected_payments_installment;
-            $values['toc_url_installment'] = $tocUrl;
         }
+        $privacyUrl = $this->config->getOption('byjuno_privacy_'.$langtoc.'')->value;
+
+        $agree_text = $this->getText("Iagreewithtermsandconditions", "I agree with terms and conditions");
+        $agree_text = str_replace("(1)", "<a href='".$tocUrl."' target='_blank' style='text-decoration: underline'>", $agree_text);
+        $agree_text = str_replace("(2)", "</a>", $agree_text);
+        $agree_text = str_replace("(3)", "<a href='".$privacyUrl."' target='_blank' style='text-decoration: underline'>", $agree_text);
+        $agree_text = str_replace("(4)", "</a>", $agree_text);
+        $values['l_i_agree_with_terms_and_conditions'] = $agree_text;
+
         $tmx = $this->config->getOption("byjuno_threatmetrix")->value == "true";
         $values["byjuno_tmx"] = $tmx;
         if ($tmx) {
