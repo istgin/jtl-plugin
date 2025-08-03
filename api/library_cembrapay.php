@@ -128,10 +128,7 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address) {
         }
     }
     $currency = $cart->Waehrung ?? Frontend::getCurrency();
-    $b2b = false;
-    if (!empty($customer->cFirma)) {
-        $b2b = true;
-    }
+
 
     $request = new CembraPayCheckoutAutRequest();
     $request->requestMsgType = CembraPayConstants::$MESSAGE_SCREENING;
@@ -146,7 +143,8 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address) {
     } else {
         $request->custDetails->loggedIn = false;
     }
-    if (!empty($billingAddress["company"]) && $b2b) {
+    $b2b = $config->getOption("byjuno_b2b")->value == "true";
+    if (!empty($customer->cFirma) && $b2b) {
         $request->custDetails->custType = CembraPayConstants::$CUSTOMER_BUSINESS;
         $request->custDetails->companyName = $customer->cFirma;
     } else {
@@ -168,7 +166,7 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address) {
     $request->deliveryDetails->deliveryDetailsDifferent = true;
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($address->cVorname, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliverySecondName =  html_entity_decode($address->cNachname, ENT_COMPAT, 'UTF-8');
-    if (!empty($address->cFirma) && $b2b) {
+    if (!empty($address->cFirma)) {
         $request->deliveryDetails->deliveryCompanyName = $address->cFirma;
     }
     $request->deliveryDetails->deliverySalutation = CembraPayConstants::$GENTER_UNKNOWN;
@@ -220,11 +218,10 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
         $request->custDetails->loggedIn = true;
     }
 
-    $isB2B = false;
-    if (!empty($order->oRechnungsadresse->cFirma)) {
+    $b2b = $config->getOption("byjuno_b2b")->value == "true";
+    if (!empty($order->oRechnungsadresse->cFirma) && $b2b) {
         $request->custDetails->custType = CembraPayConstants::$CUSTOMER_BUSINESS;
         $request->custDetails->companyName = $order->oRechnungsadresse->cFirma;
-        $isB2B = true;
     } else {
         $request->custDetails->custType = CembraPayConstants::$CUSTOMER_PRIVATE;
     }
@@ -339,12 +336,10 @@ function CreateJTLChekoutShopRequest($order, $successUrl, $cancelUrl, $errorUrl)
         $request->custDetails->merchantCustRef = (string)$requestId;
         $request->custDetails->loggedIn = true;
     }
-
-    $isB2B = false;
-    if (!empty($order->oRechnungsadresse->cFirma)) {
+    $b2b = $config->getOption("byjuno_b2b")->value == "true";
+    if (!empty($order->oRechnungsadresse->cFirma) && $b2b) {
         $request->custDetails->custType = CembraPayConstants::$CUSTOMER_BUSINESS;
         $request->custDetails->companyName = $order->oRechnungsadresse->cFirma;
-        $isB2B = true;
     } else {
         $request->custDetails->custType = CembraPayConstants::$CUSTOMER_PRIVATE;
     }

@@ -182,7 +182,7 @@ class ByjunoBase extends Method
         global $smarty;
         $customer = Frontend::getCustomer();
 
-        $b2b =  $this->config->getOption("byjuno_b2b")->value == "true";
+        $b2b = $this->config->getOption("byjuno_b2b")->value == "true";
         $byjuno_invoice = false;
         $byjuno_installment = false;
         if ($this->config->getOption("byjuno_invoice")->value == "true" || $this->config->getOption("byjuno_single_invoice")->value == "true") {
@@ -445,7 +445,7 @@ class ByjunoBase extends Method
         $type = "Checkout Request";
         $b2b = $this->config->getOption("byjuno_b2b")->value == "true";
         if ($b2b && !empty($requestChk->custDetails->companyName)) {
-            $type = "Checkout B2B";
+            $type = "Checkout Request B2B";
         }
         $json = $requestChk->createRequest();
         $cembraPayAzure = new CembraPayAzure();
