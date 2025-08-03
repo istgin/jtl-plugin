@@ -182,7 +182,6 @@ class ByjunoBase extends Method
         global $smarty;
         $customer = Frontend::getCustomer();
 
-        $b2b = $this->config->getOption("byjuno_b2b")->value == "true";
         $byjuno_invoice = false;
         $byjuno_installment = false;
         if ($this->config->getOption("byjuno_invoice")->value == "true" || $this->config->getOption("byjuno_single_invoice")->value == "true") {
@@ -198,11 +197,6 @@ class ByjunoBase extends Method
               || $this->config->getOption("byjuno_48_installments")->value == "true"
           ) {
             $byjuno_installment = true;
-        }
-        if ($b2b) {
-            if (!empty($customer->cFirma)) {
-                $byjuno_installment = false;
-            }
         }
         $byjuno_error = "";
         if (!empty($_SESSION["byjuno_error_msg"])) {
@@ -282,22 +276,16 @@ class ByjunoBase extends Method
         );
         $tocUrl = "";
         if ($byjuno_invoice) {
-            if ($b2b && !empty($customer->cFirma)) {
-                $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoSingleInvoice', "Byjuno Single Invoice"), 'id' => 'single_invoice', "selected" => 1);
-                $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
-                $values['selected_payments_invoice'] = $selected_payments_invoice;
-            } else {
-                if ($this->config->getOption("byjuno_invoice")->value == "true") {
-                    $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoInvoice', "Byjuno Invoice (With partial payment option)"), 'id' => 'byjuno_invoice', "selected" => 0);
-                }
-                if ($this->config->getOption("byjuno_single_invoice")->value == "true") {
-                    $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoSingleInvoice', "Byjuno Single Invoice"), 'id' => 'single_invoice', "selected" => 0);
-                }
-                $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
-
-                $values["selected_payment_invoice"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_invoice[0]["id"];
-                $values['selected_payments_invoice'] = $selected_payments_invoice;
+            if ($this->config->getOption("byjuno_invoice")->value == "true") {
+                $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoInvoice', "Byjuno Invoice (With partial payment option)"), 'id' => 'byjuno_invoice', "selected" => 0);
             }
+            if ($this->config->getOption("byjuno_single_invoice")->value == "true") {
+                $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoSingleInvoice', "Byjuno Single Invoice"), 'id' => 'single_invoice', "selected" => 0);
+            }
+            $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
+
+            $values["selected_payment_invoice"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_invoice[0]["id"];
+            $values['selected_payments_invoice'] = $selected_payments_invoice;
         }
 
         if ($byjuno_installment) {
@@ -748,7 +736,7 @@ class ByjunoBase extends Method
                     $isOk = false;
                     if ($status == CembraPayConstants::$SCREENING_OK) {
                         $byjunoLogger->addSOrderLog(Array(
-                            "order_id" => -1,
+                            "order_id" => "",
                             "order_status" => -1,
                             "request_type" => $requestCDP->requestMsgType,
                             "firstname" => $requestCDP->custDetails->firstName,
@@ -769,7 +757,7 @@ class ByjunoBase extends Method
                         $isOk = true;
                     } else {
                         $byjunoLogger->addSOrderLog(Array(
-                            "order_id" => -1,
+                            "order_id" => "",
                             "order_status" => -1,
                             "request_type" => $requestCDP->requestMsgType,
                             "firstname" => $requestCDP->custDetails->firstName,
