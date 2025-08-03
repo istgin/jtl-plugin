@@ -738,13 +738,11 @@ class ByjunoBase extends Method
                             CembraSaveToken($token, $accessData);
                         });
                     $responseRes = null;
-                    $status = "";
+                    $status = 0;
                     if ($response) {
                         /* @var $responseRes CembraPayCheckoutAuthorizationResponse */
                         $responseRes = CembraScreeningResponse($response);
                         $status = $responseRes->processingStatus;
-                    } else {
-                        $status = "ERROR";
                     }
 
                     $isOk = false;
@@ -781,7 +779,7 @@ class ByjunoBase extends Method
                             "street" => trim($requestCDP->billingAddr->addrFirstLine),
                             "country" => $requestCDP->billingAddr->country,
                             "ip" => byjunoGetClientIp(),
-                            "status" => 0,
+                            "status" => $status,
                             "request_id" => $requestCDP->requestMsgId,
                             "type" => $ByjunoRequestName,
                             "error" => $status,

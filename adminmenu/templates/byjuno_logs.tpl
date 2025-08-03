@@ -76,7 +76,7 @@
         {/foreach}
         {if !$byjunoOrders}
             <tr>
-                <td colspan="7" style="padding: 10px">
+                <td colspan="9" style="padding: 10px">
                     No results found
                 </td>
             </tr>
