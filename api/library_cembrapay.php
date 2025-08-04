@@ -7,6 +7,11 @@ use JTL\Session\Frontend;
 use JTL\Shop;
 use Plugin\byjuno\paymentmethod\ByjunoBase;
 
+function CembraIsValidDOB($dob) {
+    $date = DateTime::createFromFormat('Y-m-d', $dob);
+    return $date && $date->format('Y-m-d') === $dob;
+}
+
 function byjunoGetClientIp() {
     $ipaddress = '';
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
@@ -113,12 +118,13 @@ function byjunoMapLang($lang) {
  * @throws Exception
  */
 
-function CreateJTLScreeningShopRequest($customer, $cart, $address) {
+function CreateJTLScreeningShopRequest($customer, $cart, $address)
+{
 
     $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
     $custId = uniqid("guest_");
     if ($customer->nRegistriert == 1) {
-        $custId =  uniqid("registered_");
+        $custId = uniqid("registered_");
     }
     $lang = 'DE';
     if (!empty($customer->kSprache)) {
@@ -155,6 +161,10 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address) {
     $request->custDetails->lastName = (string)html_entity_decode($customer->cNachname, ENT_COMPAT, 'UTF-8');
     $request->custDetails->language = (string)$lang;
     $request->custDetails->salutation = CembraPayConstants::$GENTER_UNKNOWN;
+    if (!empty($customer->dGeburtstag) && CembraIsValidDOB($customer->dGeburtstag)) {
+        $request->custDetails->dateOfBirth = $customer->dGeburtstag;
+    }
+
     $request->billingAddr->addrFirstLine = (string)html_entity_decode(trim($customer->cStrasse), ENT_COMPAT, 'UTF-8');
     $request->billingAddr->postalCode = (string)$customer->cPLZ;
     $request->billingAddr->town = (string)html_entity_decode($customer->cOrt, ENT_COMPAT, 'UTF-8');
@@ -237,6 +247,11 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
     $request->custDetails->firstName = (string)html_entity_decode($order->oRechnungsadresse->cVorname, ENT_COMPAT, 'UTF-8');
     $request->custDetails->lastName = (string)html_entity_decode($order->oRechnungsadresse->cNachname, ENT_COMPAT, 'UTF-8');
     $request->custDetails->language = (string)$lang;
+
+    $kunde = Frontend::getCustomer();
+    if (!empty($kunde->dGeburtstag) && CembraIsValidDOB($kunde->dGeburtstag)) {
+        $request->custDetails->dateOfBirth = $kunde->dGeburtstag;
+    }
 
 
     if (!empty($selected_gender)) {
@@ -355,6 +370,10 @@ function CreateJTLChekoutShopRequest($order, $successUrl, $cancelUrl, $errorUrl)
     $request->custDetails->firstName = (string)html_entity_decode($order->oRechnungsadresse->cVorname, ENT_COMPAT, 'UTF-8');
     $request->custDetails->lastName = (string)html_entity_decode($order->oRechnungsadresse->cNachname, ENT_COMPAT, 'UTF-8');
     $request->custDetails->language = (string)$lang;
+    $kunde = Frontend::getCustomer();
+    if (!empty($kunde->dGeburtstag) && CembraIsValidDOB($kunde->dGeburtstag)) {
+        $request->custDetails->dateOfBirth = $kunde->dGeburtstag;
+    }
 
     $request->billingAddr->addrFirstLine =
         (string)html_entity_decode(trim($order->oRechnungsadresse->cStrasse), ENT_COMPAT, 'UTF-8'). " ".
