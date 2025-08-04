@@ -316,7 +316,7 @@ class ByjunoBase extends Method
         }
         $privacyUrl = $this->config->getOption('byjuno_privacy_'.$langtoc.'')->value;
 
-        $agree_text = $this->getText("Iagreewithtermsandconditions", "I agree with terms and conditions");
+        $agree_text = $this->getText("Iagreewithtermsandconditionsnew", "I agree with terms and conditions");
         $agree_text = str_replace("(1)", "<a href='".$tocUrl."' target='_blank' style='text-decoration: underline'>", $agree_text);
         $agree_text = str_replace("(2)", "</a>", $agree_text);
         $agree_text = str_replace("(3)", "<a href='".$privacyUrl."' target='_blank' style='text-decoration: underline'>", $agree_text);

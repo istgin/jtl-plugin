@@ -34,7 +34,7 @@
                 <VariableLocalized iso="GER">Cembrapay Ratenzahlung</VariableLocalized>
                 <VariableLocalized iso="ENG">Cembrapay Installment</VariableLocalized>
                 <VariableLocalized iso="ITA">Cembrapay Pagamento rateale</VariableLocalized>
-                <VariableLocalized iso="FRA">Paiement échelonné Cembrapay</VariableLocalized>
+                <VariableLocalized iso="FRA">CembraPay Paiement échelonné</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Year</Name>
@@ -71,18 +71,18 @@
             <Variable>
                 <Name>Selectinvoicedeliverymethod</Name>
                 <Description>Selectinvoicedeliverymethod</Description>
-                <VariableLocalized iso="GER">Rechnungsversand auswähle</VariableLocalized>
-                <VariableLocalized iso="ENG">Select invoice delivery method</VariableLocalized>
-                <VariableLocalized iso="ITA">Selezionare la consegna della fattura</VariableLocalized>
-                <VariableLocalized iso="FRA">Sélectionnez la méthode de livraison de vos factures</VariableLocalized>
+                <VariableLocalized iso="GER">Rechnung erhalten</VariableLocalized>
+                <VariableLocalized iso="ENG">Receive invoice</VariableLocalized>
+                <VariableLocalized iso="ITA">Ricevere la fattura</VariableLocalized>
+                <VariableLocalized iso="FRA">Recevoir la facture</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Gender</Name>
                 <Description>Gender</Description>
-                <VariableLocalized iso="GER">Geschlecht</VariableLocalized>
-                <VariableLocalized iso="ENG">Gender</VariableLocalized>
-                <VariableLocalized iso="ITA">Sesso</VariableLocalized>
-                <VariableLocalized iso="FRA">Sexe</VariableLocalized>
+                <VariableLocalized iso="GER">Herr</VariableLocalized>
+                <VariableLocalized iso="ENG">Mr.</VariableLocalized>
+                <VariableLocalized iso="ITA">Signor</VariableLocalized>
+                <VariableLocalized iso="FRA">Monsieur</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Male</Name>
@@ -95,10 +95,10 @@
             <Variable>
                 <Name>Female</Name>
                 <Description>Female</Description>
-                <VariableLocalized iso="GER">Weiblich</VariableLocalized>
-                <VariableLocalized iso="ENG">Female</VariableLocalized>
-                <VariableLocalized iso="ITA">Femminile</VariableLocalized>
-                <VariableLocalized iso="FRA">Féminin</VariableLocalized>
+                <VariableLocalized iso="GER">Frau</VariableLocalized>
+                <VariableLocalized iso="ENG">Ms</VariableLocalized>
+                <VariableLocalized iso="ITA">Signora</VariableLocalized>
+                <VariableLocalized iso="FRA">Madame</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>DateofBirth</Name>
@@ -109,8 +109,8 @@
                 <VariableLocalized iso="FRA">Date de naîssance</VariableLocalized>
             </Variable>
             <Variable>
-                <Name>Iagreewithtermsandconditions</Name>
-                <Description>Iagreewithtermsandconditions</Description>
+                <Name>Iagreewithtermsandconditionsnew</Name>
+                <Description>Iagreewithtermsandconditionsnew</Description>
                 <VariableLocalized iso="GER">Kauf auf Rechnung (inklusive Ratenzahlung) wird durch CembraPay AG abgewickelt. Es gelten die (1)AGB(2) und die (3)Datenschutzerklärung der CembraPay AG(4).</VariableLocalized>
                 <VariableLocalized iso="ENG">The payment option Invoice (including payment in installments) is operated by CembraPay AG. The (1)T&amp;C(2) and the (3)Data Privacy Policy of CembraPay AG(4) apply.</VariableLocalized>
                 <VariableLocalized iso="ITA">L'opzione di pagamento tramite fattura (pagamento rateale incluso) è gestita dalla CembraPay SA. Si applicano le (1)CGC(2) e l?Informativa sulla (3)privacy di CembraPay SA(4).</VariableLocalized>
@@ -119,18 +119,18 @@
             <Variable>
                 <Name>Byemail</Name>
                 <Description>Byemail</Description>
-                <VariableLocalized iso="GER">Rechnungsversand via E-Mail an</VariableLocalized>
-                <VariableLocalized iso="ENG">Send invoice via E-Mail to</VariableLocalized>
-                <VariableLocalized iso="ITA">Invio fattura tramite e-mail (senza spese aggiuntive) a</VariableLocalized>
-                <VariableLocalized iso="FRA">Envoi des factures par courrier électronique à (gratuit)</VariableLocalized>
+                <VariableLocalized iso="GER">via E-Mail (ohne Gebühr)</VariableLocalized>
+                <VariableLocalized iso="ENG">by e-mail</VariableLocalized>
+                <VariableLocalized iso="ITA">via e-mail (gratuitamente)	</VariableLocalized>
+                <VariableLocalized iso="FRA">par e-mail (sans frais supplémentaires)</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>Bypost</Name>
                 <Description>Bypost</Description>
-                <VariableLocalized iso="GER">Rechnungsversand in Papierform via Post (gegen Gebühr von CHF 3.95 pro Brief) an</VariableLocalized>
-                <VariableLocalized iso="ENG">Send invoice via mail to (Fee of CHF 3.95 per Letter)</VariableLocalized>
-                <VariableLocalized iso="ITA">Invio fattura cartacea tramite posta (spese aggiuntive di CHF 3.95) a</VariableLocalized>
-                <VariableLocalized iso="FRA">Envoi des facture par courrier à (Frais de CHF 3.95 par lettre)</VariableLocalized>
+                <VariableLocalized iso="GER">in Papierform via Post (gegen Gebühr von CHF 4.25)</VariableLocalized>
+                <VariableLocalized iso="ENG">dispatch in paper form by post (for a fee of CHF 4.25)</VariableLocalized>
+                <VariableLocalized iso="ITA">in forma cartacea per posta (costo di 4.25 CHF)</VariableLocalized>
+                <VariableLocalized iso="FRA">sur papier par courrier (tarif de CHF 4.25)</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>ByjunoSingleInvoice</Name>
@@ -146,7 +146,7 @@
                 <VariableLocalized iso="GER">Cembrapay Rechnung mit Teilzahlungsoption</VariableLocalized>
                 <VariableLocalized iso="ENG">Cembrapay invoice with partial payment option</VariableLocalized>
                 <VariableLocalized iso="ITA">Cembrapay fattura con opzione di pagamento parziale</VariableLocalized>
-                <VariableLocalized iso="FRA">Facture Cembrapay avec option de paiement partiel</VariableLocalized>
+                <VariableLocalized iso="FRA">CembraPay Rechnung avec option de paiement échelonné</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>3installments</Name>
@@ -154,7 +154,7 @@
                 <VariableLocalized iso="GER">3 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">3 installments</VariableLocalized>
                 <VariableLocalized iso="ITA">3 rate</VariableLocalized>
-                <VariableLocalized iso="FRA">3 échéances</VariableLocalized>
+                <VariableLocalized iso="FRA">3 parties</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>4installments</Name>
@@ -162,7 +162,7 @@
                 <VariableLocalized iso="GER">4 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">4 installments</VariableLocalized>
                 <VariableLocalized iso="ITA">4 rate</VariableLocalized>
-                <VariableLocalized iso="FRA">4 échéances</VariableLocalized>
+                <VariableLocalized iso="FRA">4 parties</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>6installments</Name>
@@ -170,7 +170,7 @@
                 <VariableLocalized iso="GER">6 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">6 installments</VariableLocalized>
                 <VariableLocalized iso="ITA">6 rate</VariableLocalized>
-                <VariableLocalized iso="FRA">6 échéances</VariableLocalized>
+                <VariableLocalized iso="FRA">6 parties</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>12installments</Name>
@@ -178,7 +178,7 @@
                 <VariableLocalized iso="GER">12 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">12 installments</VariableLocalized>
                 <VariableLocalized iso="ITA">12 rate</VariableLocalized>
-                <VariableLocalized iso="FRA">12 échéances</VariableLocalized>
+                <VariableLocalized iso="FRA">12 parties</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>24installments</Name>
@@ -186,7 +186,7 @@
                 <VariableLocalized iso="GER">24 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">24 installments</VariableLocalized>
                 <VariableLocalized iso="ITA">24 rate</VariableLocalized>
-                <VariableLocalized iso="FRA">24 échéances</VariableLocalized>
+                <VariableLocalized iso="FRA">24 parties</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>36installments</Name>
@@ -194,23 +194,23 @@
                 <VariableLocalized iso="GER">36 Raten</VariableLocalized>
                 <VariableLocalized iso="ENG">36 installments</VariableLocalized>
                 <VariableLocalized iso="ITA">36 rate</VariableLocalized>
-                <VariableLocalized iso="FRA">36 échéances</VariableLocalized>
+                <VariableLocalized iso="FRA">36 parties</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>48installments</Name>
                 <Description>48installments</Description>
                 <VariableLocalized iso="GER">48 Raten</VariableLocalized>
-                <VariableLocalized iso="ENG">48 Raten</VariableLocalized>
-                <VariableLocalized iso="ITA">48 Raten</VariableLocalized>
-                <VariableLocalized iso="FRA">48 Raten</VariableLocalized>
+                <VariableLocalized iso="ENG">48 installments</VariableLocalized>
+                <VariableLocalized iso="ITA">48 rate</VariableLocalized>
+                <VariableLocalized iso="FRA">48 parties</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_fail_message</Name>
                 <Description>byjuno_fail_message</Description>
                 <VariableLocalized iso="GER">Der Anbieter dieser Zahlungsart hat die gewählte Bezahlmethode abgelehnt. Bitte wählen Sie eine andere Zahlungsart.</VariableLocalized>
-                <VariableLocalized iso="ENG">Payment Method Provider have refused selected payment method, please select different payment method.</VariableLocalized>
-                <VariableLocalized iso="ITA">L?operatore del servizio di pagamento ha rifiutato la modalità di pagamento da Lei scelta. La preghiamo di scegliere un?altra modalità di pagamento.</VariableLocalized>
-                <VariableLocalized iso="FRA">Le prestataire de ce type de paiement a rejeté la méthode de paiement choisie. Veuillez choisir un autre mode de paiement.</VariableLocalized>
+                <VariableLocalized iso="ENG">The Payment Method Provider has refused selected payment method, please select different payment method.</VariableLocalized>
+                <VariableLocalized iso="ITA">L'operatore del servizio di pagamento ha rifiutato la modalità di pagamento da Lei scelta. La preghiamo di scegliere un?altra modalità di pagamento.</VariableLocalized>
+                <VariableLocalized iso="FRA">L'institution de crédit a refusé le paiement. Veuillez essayer un autre moyen de paiement.</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>byjuno_fail_gender_message</Name>
@@ -247,15 +247,15 @@
             <Variable>
                 <Name>byjuno_fail_agree_message</Name>
                 <Description>byjuno_fail_agree_message</Description>
-                <VariableLocalized iso="GER">Sie müssen die AGB akzeptieren</VariableLocalized>
-                <VariableLocalized iso="ENG">You must agree with Cembrapay terms and conditions</VariableLocalized>
+                <VariableLocalized iso="GER">Sie müssen die AGB akzeptieren um fortzufahren.</VariableLocalized>
+                <VariableLocalized iso="ENG">You must accept with Cembrapay terms and conditions to proceed.</VariableLocalized>
                 <VariableLocalized iso="ITA">Vogliate accettare i termini e condizioni</VariableLocalized>
                 <VariableLocalized iso="FRA">Veuillez accepter les termes et conditions</VariableLocalized>
             </Variable>
             <Variable>
                 <Name>cembra_chk_message</Name>
                 <Description>cembra_chk_message</Description>
-                <VariableLocalized iso="GER">Im letzten Schritt werden Sie zur Kasse weitergeleitet. Klicken Sie auf ?Weiter?, um Ihre Bestellung zu bestätigen.</VariableLocalized>
+                <VariableLocalized iso="GER">Im letzten Schritt werden Sie zu CembraPay weitergeleitet. Klicken Sie auf Weiter, um Ihre Bestellung zu bestätigen.</VariableLocalized>
                 <VariableLocalized iso="ENG">At the last step, you will be redirected to checkout. Press Continue to validate your order.</VariableLocalized>
                 <VariableLocalized iso="ITA">Nell'ultimo passaggio verrai reindirizzato al checkout. Premi "Continua" per convalidare il tuo ordine.</VariableLocalized>
                 <VariableLocalized iso="FRA">À la dernière étape, vous serez redirigé vers la caisse. Cliquez sur « Continuer » pour valider votre commande.</VariableLocalized>
