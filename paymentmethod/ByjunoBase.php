@@ -602,7 +602,6 @@ class ByjunoBase extends Method
                 $requestAuth = CreateJTLAuthShopRequest($order,
                     $_SESSION["byjuno_payment"],
                     $_SESSION["byjuno_send_method"],
-                    "",
                     $_SESSION["byjuno_gender"],
                     $_SESSION["byjuno_birthday"]);
 

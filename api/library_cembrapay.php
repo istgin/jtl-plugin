@@ -5,6 +5,7 @@ use JTL\Language\LanguageHelper;
 use JTL\Plugin\Helper;
 use JTL\Session\Frontend;
 use JTL\Shop;
+use Magento\Store\Model\ScopeInterface;
 use Plugin\byjuno\paymentmethod\ByjunoBase;
 
 function CembraIsValidDOB($dob) {
@@ -191,6 +192,12 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address)
 
     $request->sessionInfo->sessionIp = byjunoGetClientIp();
 
+    if ($config->getOption("cembra_allow_risk")->value == "true") {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = true;
+    } else {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = false;
+    }
+
     $customerConsents = new CustomerConsents();
     $customerConsents->consentType = "SCREENING";
     $customerConsents->consentProvidedAt = "MERCHANT";
@@ -205,7 +212,7 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address)
 }
 
 
-function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwner, $selected_gender = "", $selected_birthday = "") {
+function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $selected_gender = "", $selected_birthday = "") {
 
     /* @var $config JTL\Plugin\Data\Config */
     $config = Helper::getPluginById(ByjunoBase::PLUGIN_ID)->getConfig();
@@ -298,11 +305,12 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $riskOwn
     }
     $request->sessionInfo->sessionIp = byjunoGetClientIp();
 
-    if ($riskOwner != "") {
-        $request->cembraPayDetails->riskOnlyOnCembraPay = false;
-    } else {
+    if ($config->getOption("cembra_allow_risk")->value == "true") {
         $request->cembraPayDetails->riskOnlyOnCembraPay = true;
+    } else {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = false;
     }
+
     $request->cembraPayDetails->cembraPayPaymentMethod = Cembra_MapPayment($repayment);
     if ($invoiceDelivery == 'postal') {
         $request->cembraPayDetails->invoiceDeliveryType = "POSTAL";
@@ -407,6 +415,12 @@ function CreateJTLChekoutShopRequest($order, $successUrl, $cancelUrl, $errorUrl)
         $request->sessionInfo->tmxSessionId = $_SESSION["byjuno_session_id"];
     }
     $request->sessionInfo->sessionIp = byjunoGetClientIp();
+
+    if ($config->getOption("cembra_allow_risk")->value == "true") {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = true;
+    } else {
+        $request->cembraPayDetails->riskOnlyOnCembraPay = false;
+    }
 
     $request->cembraPayDetails->cembraPayPaymentMethod = null;
     $request->merchantDetails->returnUrlSuccess = base64_encode($successUrl);
