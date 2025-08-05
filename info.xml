@@ -495,9 +495,16 @@
                     </SelectboxOptions>
                 </Setting>
 
+                <Setting type="selectbox" initialValue="false" sort="155" conf="Y">
+                    <Name>Auto invoice</Name>
+                    <ValueName>cembra_auto_invoice</ValueName>
+                    <SelectboxOptions>
+                        <Option value="true" sort="1">Yes</Option>
+                        <Option value="false" sort="2">No</Option>
+                    </SelectboxOptions>
+                </Setting>
 
-
-                <Setting type="selectbox" initialValue="true" sort="152" conf="Y">
+                <Setting type="selectbox" initialValue="true" sort="158" conf="Y">
                     <Name>Enable order confirmation copy to Cembrapay</Name>
                     <ValueName>byjuno_mail_send</ValueName>
                     <SelectboxOptions>
@@ -506,17 +513,17 @@
                     </SelectboxOptions>
                 </Setting>
 
-                <Setting type="text" initialValue="uat-invoices@cembrapay.ch" sort="154" conf="Y">
+                <Setting type="text" initialValue="uat-invoices@cembrapay.ch" sort="160" conf="Y">
                     <Name>Cembrapay test mode email</Name>
                     <ValueName>byjuno_mail_test_box</ValueName>
                 </Setting>
 
-                <Setting type="text" initialValue="invoices@cembrapay.ch" sort="156" conf="Y">
+                <Setting type="text" initialValue="invoices@cembrapay.ch" sort="162" conf="Y">
                     <Name>Cembrapay live mode email</Name>
                     <ValueName>byjuno_mail_live_box</ValueName>
                 </Setting>
 
-                <Setting type="selectbox" initialValue="true" sort="160" conf="Y">
+                <Setting type="selectbox" initialValue="true" sort="165" conf="Y">
                     <Name>Settlement transactions (order changed from WAWI)</Name>
                     <ValueName>byjuno_s4</ValueName>
                     <SelectboxOptions>

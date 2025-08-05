@@ -11,6 +11,7 @@ use CembraPayAzure;
 use CembraPayCheckoutAuthorizationResponse;
 use CembraPayCheckoutAutRequest;
 use CembraPayCheckoutChkResponse;
+use CembraPayCheckoutSettleResponse;
 use CembraPayCommunicator;
 use CembraPayConstants;
 use JTL\Checkout\Bestellung;
@@ -511,21 +512,22 @@ class ByjunoBase extends Method
         }
         $byjunoLogger = CembraLogger::getInstance();
         ByjunoBase::$SEND_MAIL = true;
+        $autoInvoiceTxId = "";
+        $cembraPayAzure = new CembraPayAzure();
+        $cembraPayCommunicator = new CembraPayCommunicator($cembraPayAzure);
+        $mode = 'test';
+        if ($this->config->getOption("byjuno_mode")->value == 'live') {
+            $cembraPayCommunicator->setServer('live');
+            $mode = 'live';
+        } else {
+            $cembraPayCommunicator->setServer('test');
+        }
         if ($this->config->getOption("cembra_plugin_mode")->value == 'checkout') {
             $order->cBestellNr = $_SESSION["cBestellNr"];
             $transactionId = $_SESSION["cembra_tx_id"];
             $requestTST = CembraConfirmTransaction($transactionId);
             $CembraPayRequestName = "Checkout confirmation";
             $json = $requestTST->createRequest();
-            $cembraPayAzure = new CembraPayAzure();
-            $cembraPayCommunicator = new CembraPayCommunicator($cembraPayAzure);
-            $mode = 'test';
-            if ($this->config->getOption("byjuno_mode")->value == 'live') {
-                $mode = 'live';
-                $cembraPayCommunicator->setServer('live');
-            } else {
-                $cembraPayCommunicator->setServer('test');
-            }
             $response = $cembraPayCommunicator->sendConfirmTransactionRequest($json,
                 CembraGetAccessDataWebshop($this->config, $mode),
                 function ($object, $token, $accessData) {
@@ -590,7 +592,7 @@ class ByjunoBase extends Method
                 $_SESSION["byjuno_payment"] = "";
                 $_SESSION["byjuno_send_method"] = "";
                 $_SESSION["byjyno_terms"] = "";
-                return true;
+                $autoInvoiceTxId = $transactionId;
             } else {
                 $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
                 return false;
@@ -611,18 +613,9 @@ class ByjunoBase extends Method
                     $type = "Auth Request B2B";
                 }
                 $json = $requestAuth->createRequest();
-                $cembraPayAzure = new CembraPayAzure();
-                $cembrapayCommunicator = new CembraPayCommunicator($cembraPayAzure);
 
-                $mode = 'test';
-                if ($this->config->getOption("byjuno_mode")->value == 'live') {
-                    $cembrapayCommunicator->setServer('live');
-                    $mode = 'live';
-                } else {
-                    $cembrapayCommunicator->setServer('test');
-                }
 
-                $response = $cembrapayCommunicator->sendAuthRequest($json,
+                $response = $cembraPayCommunicator->sendAuthRequest($json,
                     CembraGetAccessDataWebshop($this->config, $mode),
                     function ($object, $token, $accessData) {
                         CembraSaveToken($token, $accessData);
@@ -638,6 +631,7 @@ class ByjunoBase extends Method
                 $cembrapayTrx = "";
                 if ($status == CembraPayConstants::$AUTH_OK) {
                     $cembrapayTrx = $responseRes->transactionId;
+                    $autoInvoiceTxId = $cembrapayTrx;
                 }
                 $byjunoLogger->addSOrderLog(array(
                     "order_id" => $order->cBestellNr,
@@ -668,7 +662,6 @@ class ByjunoBase extends Method
                     $_SESSION["byjuno_payment"] = "";
                     $_SESSION["byjuno_send_method"] = "";
                     $_SESSION["byjyno_terms"] = "";
-                    return true;
                 } else {
                     $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
                     return false;
@@ -678,6 +671,50 @@ class ByjunoBase extends Method
                 return false;
             }
         }
+        if ($this->config->getOption("byjuno_s4")->value == "true"
+            && $this->config->getOption("cembra_auto_invoice")->value == "true") {
+            $invoiceNum = $order->cBestellNr;
+            $requestInvoice = CreateShopRequestSettle($invoiceNum, $order->fGesamtsumme, $order->Waehrung->getCode(), $invoiceNum, $autoInvoiceTxId);
+
+            $CembraPayRequestName = "Settle Request (auto)";
+
+            $mode = $this->config->getOption("byjuno_mode")->value;
+            $json = $requestInvoice->createRequest();
+            $response = $cembraPayCommunicator->sendSettleRequest($json,
+                CembraGetAccessDataWebshop($this->config, $mode),
+                function ($object, $token, $accessData) {// your dynamic parameters
+                    CembraSaveToken($token, $accessData);
+                });
+            $statusSet = "";
+            $txSettle = "";
+            if (isset($response)) {
+                $responseRes = CembraPayConstants::settleResponse($response);
+                $statusSet = $responseRes->processingStatus;
+                if (!empty($responseRes->settlementId)) {
+                    $txSettle = $responseRes->settlementId;
+                }
+            }
+            $byjunoLogger->addSOrderLog(Array(
+                "order_id" => $order->cBestellNr,
+                "order_status" => "",
+                "request_type" => CembraPayConstants::$MESSAGE_SET,
+                "firstname" => "",
+                "lastname" =>  "",
+                "town" => "",
+                "postcode" =>  "",
+                "street" => "",
+                "country" =>  "",
+                "ip" => byjunoGetClientIp(),
+                "status" => ($statusSet == "") ? "ERROR" : $statusSet,
+                "request_id" => $requestInvoice->requestMsgId,
+                "type" => $CembraPayRequestName,
+                "error" => ($statusSet == "") ? "ERROR" : "",
+                "response" => $response,
+                "request" => $json,
+                "transaction_id" => $txSettle
+            ));
+        }
+        return true;
     }
 
     public function CDPRequest() {

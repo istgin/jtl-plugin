@@ -91,7 +91,8 @@ try {
                         $customerId = "guest";
                     }
 
-                    if ($byjunoConfig->getOption("byjuno_s4")->value == "true") {
+                    if ($byjunoConfig->getOption("byjuno_s4")->value == "true"
+                        && $byjunoConfig->getOption("cembra_auto_invoice")->value == "false") {
                         $s4TriggerStatus = byjunoOrderMapStatus($byjunoConfig->getOption("byjuno_s4_trigger")->value);
                         if (!empty($s4TriggerStatus) && $s4TriggerStatus == $arr["status"]) {
                             
