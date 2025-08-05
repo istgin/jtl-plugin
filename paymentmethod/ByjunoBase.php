@@ -583,15 +583,6 @@ class ByjunoBase extends Method
                 ));
             }
             if (!empty($transactionStatus) && in_array($transactionStatus, CembraPayConstants::$CNF_OK_TRANSACTION_STATUSES)) {
-                $_SESSION["change_paid"] = true;
-                $_SESSION["byjuno_cdp"] = null;
-                $_SESSION["byjuno_cdp_status"] = null;
-                $_SESSION["byjuno_error_msg"] = "";
-                $_SESSION["byjuno_gender"] = "";
-                $_SESSION["byjuno_birthday"] = "";
-                $_SESSION["byjuno_payment"] = "";
-                $_SESSION["byjuno_send_method"] = "";
-                $_SESSION["byjyno_terms"] = "";
                 $autoInvoiceTxId = $transactionId;
             } else {
                 $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
@@ -652,17 +643,7 @@ class ByjunoBase extends Method
                     "request" => $json,
                     "transaction_id" => $cembrapayTrx
                 ));
-                if ($status == CembraPayConstants::$AUTH_OK) {
-                    $_SESSION["change_paid"] = true;
-                    $_SESSION["byjuno_cdp"] = null;
-                    $_SESSION["byjuno_cdp_status"] = null;
-                    $_SESSION["byjuno_error_msg"] = "";
-                    $_SESSION["byjuno_gender"] = "";
-                    $_SESSION["byjuno_birthday"] = "";
-                    $_SESSION["byjuno_payment"] = "";
-                    $_SESSION["byjuno_send_method"] = "";
-                    $_SESSION["byjyno_terms"] = "";
-                } else {
+                if ($status != CembraPayConstants::$AUTH_OK) {
                     $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
                     return false;
                 }
@@ -713,7 +694,20 @@ class ByjunoBase extends Method
                 "request" => $json,
                 "transaction_id" => $txSettle
             ));
+            if (empty($statusSet) || !in_array($statusSet, CembraPayConstants::$SETTLE_STATUSES)) {
+                $_SESSION["BYJUNO_ERROR"] = $this->getText('byjuno_fail_message', "Payment Method Provider have refused selected payment method, please select different payment method.");
+                return false;
+            }
         }
+        $_SESSION["change_paid"] = true;
+        $_SESSION["byjuno_cdp"] = null;
+        $_SESSION["byjuno_cdp_status"] = null;
+        $_SESSION["byjuno_error_msg"] = "";
+        $_SESSION["byjuno_gender"] = "";
+        $_SESSION["byjuno_birthday"] = "";
+        $_SESSION["byjuno_payment"] = "";
+        $_SESSION["byjuno_send_method"] = "";
+        $_SESSION["byjyno_terms"] = "";
         return true;
     }
 
