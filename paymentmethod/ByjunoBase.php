@@ -189,6 +189,7 @@ class ByjunoBase extends Method
             $byjuno_invoice = true;
         }
 
+        $b2b = $this->config->getOption("byjuno_b2b")->value == "true";
         if ($this->config->getOption("byjuno_3_installments")->value == "true"
               || $this->config->getOption("byjuno_4_installments")->value == "true"
               || $this->config->getOption("byjuno_6_installments")->value == "true"
@@ -277,43 +278,57 @@ class ByjunoBase extends Method
         );
         $tocUrl = "";
         if ($byjuno_invoice) {
-            if ($this->config->getOption("byjuno_invoice")->value == "true") {
-                $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoInvoice', "Byjuno Invoice (With partial payment option)"), 'id' => 'byjuno_invoice', "selected" => 0);
-            }
-            if ($this->config->getOption("byjuno_single_invoice")->value == "true") {
-                $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoSingleInvoice', "Byjuno Single Invoice"), 'id' => 'single_invoice', "selected" => 0);
-            }
-            $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
+            if ($b2b && !empty($customer->cFirma)) {
+                $selected_payments_invoice[] = Array('name' => $this->getText('ByjunoSingleInvoice', "Byjuno Single Invoice"), 'id' => 'single_invoice', "selected" => 1);
+                $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
+                $values["selected_payment_invoice"] = $selected_payments_invoice[0]["id"];
+                $values['selected_payments_invoice'] = $selected_payments_invoice;
+            } else {
+                if ($this->config->getOption("byjuno_invoice")->value == "true") {
+                    $selected_payments_invoice[] = array('name' => $this->getText('ByjunoInvoice', "Byjuno Invoice (With partial payment option)"), 'id' => 'byjuno_invoice', "selected" => 0);
+                }
+                if ($this->config->getOption("byjuno_single_invoice")->value == "true") {
+                    $selected_payments_invoice[] = array('name' => $this->getText('ByjunoSingleInvoice', "Byjuno Single Invoice"), 'id' => 'single_invoice', "selected" => 0);
+                }
+                $tocUrl = $this->config->getOption('byjuno_toc_' . $langtoc . '_invoice')->value;
 
-            $values["selected_payment_invoice"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_invoice[0]["id"];
-            $values['selected_payments_invoice'] = $selected_payments_invoice;
+                $values["selected_payment_invoice"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_invoice[0]["id"];
+                $values['selected_payments_invoice'] = $selected_payments_invoice;
+            }
         }
 
         if ($byjuno_installment) {
-            if ($this->config->getOption("byjuno_3_installments")->value == "true") {
-                $selected_payments_installment[] = Array('name' => $this->getText('3installments', "3 installments"), 'id' => 'installment_3', "selected" => 0);
+            if ($b2b && !empty($customer->cFirma)) {
+                $selected_payments_invoice_installment[] = Array('name' => $this->getText('ByjunoSingleInvoice', "Byjuno Single Invoice"), 'id' => 'single_invoice', "selected" => 1);
+                $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
+                $values["selected_payment_installment"] = $selected_payments_invoice_installment[0]["id"];
+                $values['selected_payments_installment'] = $selected_payments_invoice_installment;
+            } else {
+                if ($this->config->getOption("byjuno_3_installments")->value == "true") {
+                    $selected_payments_installment[] = array('name' => $this->getText('3installments', "3 installments"), 'id' => 'installment_3', "selected" => 0);
+                }
+                if ($this->config->getOption("byjuno_4_installments")->value == "true") {
+                    $selected_payments_installment[] = array('name' => $this->getText('4installments', "4 installments"), 'id' => 'installment_4', "selected" => 0);
+                }
+                if ($this->config->getOption("byjuno_6_installments")->value == "true") {
+                    $selected_payments_installment[] = array('name' => $this->getText('6installments', "6 installments"), 'id' => 'installment_6', "selected" => 0);
+                }
+                if ($this->config->getOption("byjuno_12_installments")->value == "true") {
+                    $selected_payments_installment[] = array('name' => $this->getText('12installments', "12 installments"), 'id' => 'installment_12', "selected" => 0);
+                }
+                if ($this->config->getOption("byjuno_24_installments")->value == "true") {
+                    $selected_payments_installment[] = array('name' => $this->getText('24installments', "24 installment"), 'id' => 'installment_24', "selected" => 0);
+                }
+                if ($this->config->getOption("byjuno_36_installments")->value == "true") {
+                    $selected_payments_installment[] = array('name' => $this->getText('36installments', "36 installments"), 'id' => 'installment_36', "selected" => 0);
+                }
+                if ($this->config->getOption("byjuno_48_installments")->value == "true") {
+                    $selected_payments_installment[] = array('name' => $this->getText('48installments', "48 installments"), 'id' => 'installment_48', "selected" => 0);
+                }
+                $tocUrl = $this->config->getOption('byjuno_toc_' . $langtoc . '_invoice')->value;
+                $values["selected_payment_installment"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_installment[0]["id"];
+                $values['selected_payments_installment'] = $selected_payments_installment;
             }
-            if ($this->config->getOption("byjuno_4_installments")->value == "true") {
-                $selected_payments_installment[] = Array('name' => $this->getText('4installments', "4 installments"), 'id' => 'installment_4', "selected" => 0);
-            }
-            if ($this->config->getOption("byjuno_6_installments")->value == "true") {
-                $selected_payments_installment[] = Array('name' => $this->getText('6installments', "6 installments"), 'id' => 'installment_6', "selected" => 0);
-            }
-            if ($this->config->getOption("byjuno_12_installments")->value == "true") {
-                $selected_payments_installment[] = Array('name' => $this->getText('12installments', "12 installments"), 'id' => 'installment_12', "selected" => 0);
-            }
-            if ($this->config->getOption("byjuno_24_installments")->value == "true") {
-                $selected_payments_installment[] = Array('name' => $this->getText('24installments', "24 installment"), 'id' => 'installment_24', "selected" => 0);
-            }
-            if ($this->config->getOption("byjuno_36_installments")->value == "true") {
-                $selected_payments_installment[] = Array('name' => $this->getText('36installments', "36 installments"), 'id' => 'installment_36', "selected" => 0);
-            }
-            if ($this->config->getOption("byjuno_48_installments")->value == "true") {
-                $selected_payments_installment[] = Array('name' => $this->getText('48installments', "48 installments"), 'id' => 'installment_48', "selected" => 0);
-            }
-            $tocUrl = $this->config->getOption('byjuno_toc_'.$langtoc.'_invoice')->value;
-            $values["selected_payment_installment"] = (!empty($_SESSION["byjuno_payment"])) ? $_SESSION["byjuno_payment"] : $selected_payments_installment[0]["id"];
-            $values['selected_payments_installment'] = $selected_payments_installment;
         }
         $privacyUrl = $this->config->getOption('byjuno_privacy_'.$langtoc.'')->value;
 
