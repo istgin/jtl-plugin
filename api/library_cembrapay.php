@@ -110,6 +110,40 @@ function byjunoMapLang($lang) {
     return $lng;
 }
 
+function isDifferentAddress($lieferadresse, $rechnungsadresse): bool
+{
+    // Convert both objects to associative arrays
+    $a1 = (array) $lieferadresse;
+    $a2 = (array) $rechnungsadresse;
+
+    // Define which fields we want to compare
+    $fieldsToCompare = [
+        'cVorname',
+        'cNachname',
+        'cFirma',
+        'cAnrede',
+        'cStrasse',
+        'cHausnummer',
+        'cPLZ',
+        'cOrt',
+        'cLand'
+    ];
+
+    foreach ($fieldsToCompare as $field) {
+        // Normalize nulls and empty strings for fair comparison
+        $v1 = isset($a1[$field]) ? trim((string) $a1[$field]) : '';
+        $v2 = isset($a2[$field]) ? trim((string) $a2[$field]) : '';
+
+        if ($v1 !== $v2) {
+            // Uncomment this if you want to debug which field differs:
+            // echo "Different at $field: '$v1' vs '$v2'\n";
+            return true;
+        }
+    }
+
+    return false;
+}
+
 /**
  * @param JTL\Customer\Customer $customer
  * @param JTL\Cart\Cart $cart
@@ -174,14 +208,17 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address)
     $request->custContacts->phoneMobile = $customer->cMobil;
     $request->custContacts->phonePrivate = $customer->cTel;
 
-    $request->deliveryDetails->deliveryDetailsDifferent = true;
+    $isDifferent = isDifferentAddress($customer, $address);
+    $request->deliveryDetails->deliveryDetailsDifferent = $isDifferent;
+    $request->deliveryDetails->deliveryMethod = CembraPayConstants::$DELIVERY_POST;
     $request->deliveryDetails->deliveryFirstName = html_entity_decode($address->cVorname, ENT_COMPAT, 'UTF-8');
-    $request->deliveryDetails->deliverySecondName =  html_entity_decode($address->cNachname, ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliverySecondName = html_entity_decode($address->cNachname, ENT_COMPAT, 'UTF-8');
     if (!empty($address->cFirma)) {
         $request->deliveryDetails->deliveryCompanyName = $address->cFirma;
     }
     $request->deliveryDetails->deliverySalutation = CembraPayConstants::$GENTER_UNKNOWN;
-    $request->deliveryDetails->deliveryAddrFirstLine = html_entity_decode(trim($address->cStrasse), ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliveryAddrFirstLine = (string)html_entity_decode(trim($address->Lieferadresse->cStrasse), ENT_COMPAT, 'UTF-8') . " " .
+        (string)html_entity_decode(trim($address->Lieferadresse->cHausnummer), ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliveryAddrPostalCode = $address->cPLZ;
     $request->deliveryDetails->deliveryAddrTown = html_entity_decode($address->cOrt, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliveryAddrCountry = strtoupper($address->cLand);
@@ -283,6 +320,8 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $selecte
     $request->custContacts->phonePrivate = (string)$order->oRechnungsadresse->cTel;
     $request->custContacts->email = (string)$order->oRechnungsadresse->cMail;
 
+    $isDifferent = isDifferentAddress($order->oRechnungsadresse, $order->Lieferadresse);
+    $request->deliveryDetails->deliveryDetailsDifferent = $isDifferent;
     $request->deliveryDetails->deliveryMethod = CembraPayConstants::$DELIVERY_POST;
     $request->deliveryDetails->deliveryFirstName = (string)html_entity_decode($order->Lieferadresse->cVorname, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliverySecondName = (string)html_entity_decode($order->Lieferadresse->cNachname, ENT_COMPAT, 'UTF-8');
@@ -291,8 +330,8 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $selecte
     }
     $request->deliveryDetails->deliverySalutation = null;
 
-    $request->deliveryDetails->deliveryAddrFirstLine = (string)html_entity_decode(trim($order->Lieferadresse->cStrasse), ENT_COMPAT, 'UTF-8')." ".
-                                                        (string)html_entity_decode(trim($order->Lieferadresse->cHausnummer), ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliveryAddrFirstLine = (string)html_entity_decode(trim($order->Lieferadresse->cStrasse), ENT_COMPAT, 'UTF-8') . " " .
+        (string)html_entity_decode(trim($order->Lieferadresse->cHausnummer), ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliveryAddrPostalCode = (string)$order->Lieferadresse->cPLZ;
     $request->deliveryDetails->deliveryAddrTown = (string)html_entity_decode($order->Lieferadresse->cOrt, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliveryAddrCountry = (string)strtoupper($order->Lieferadresse->cLand);
@@ -394,6 +433,8 @@ function CreateJTLChekoutShopRequest($order, $successUrl, $cancelUrl, $errorUrl)
     $request->custContacts->phonePrivate = (string)$order->oRechnungsadresse->cTel;
     $request->custContacts->email = (string)$order->oRechnungsadresse->cMail;
 
+    $isDifferent = isDifferentAddress($order->oRechnungsadresse, $order->Lieferadresse);
+    $request->deliveryDetails->deliveryDetailsDifferent = $isDifferent;
     $request->deliveryDetails->deliveryMethod = CembraPayConstants::$DELIVERY_POST;
     $request->deliveryDetails->deliveryFirstName = (string)html_entity_decode($order->Lieferadresse->cVorname, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliverySecondName = (string)html_entity_decode($order->Lieferadresse->cNachname, ENT_COMPAT, 'UTF-8');
@@ -402,7 +443,7 @@ function CreateJTLChekoutShopRequest($order, $successUrl, $cancelUrl, $errorUrl)
     }
     $request->deliveryDetails->deliverySalutation = null;
 
-    $request->deliveryDetails->deliveryAddrFirstLine = (string)html_entity_decode(trim($order->Lieferadresse->cStrasse), ENT_COMPAT, 'UTF-8')." ".
+    $request->deliveryDetails->deliveryAddrFirstLine = (string)html_entity_decode(trim($order->Lieferadresse->cStrasse), ENT_COMPAT, 'UTF-8') . " " .
         (string)html_entity_decode(trim($order->Lieferadresse->cHausnummer), ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliveryAddrPostalCode = (string)$order->Lieferadresse->cPLZ;
     $request->deliveryDetails->deliveryAddrTown = (string)html_entity_decode($order->Lieferadresse->cOrt, ENT_COMPAT, 'UTF-8');
