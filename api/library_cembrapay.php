@@ -200,7 +200,9 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address)
         $request->custDetails->dateOfBirth = $customer->dGeburtstag;
     }
 
-    $request->billingAddr->addrFirstLine = (string)html_entity_decode(trim($customer->cStrasse), ENT_COMPAT, 'UTF-8');
+    $request->billingAddr->addrFirstLine =
+        (string)html_entity_decode(trim($customer->cStrasse), ENT_COMPAT, 'UTF-8'). " ".
+        (string)html_entity_decode(trim($customer->cHausnummer), ENT_COMPAT, 'UTF-8');
     $request->billingAddr->postalCode = (string)$customer->cPLZ;
     $request->billingAddr->town = (string)html_entity_decode($customer->cOrt, ENT_COMPAT, 'UTF-8');
     $request->billingAddr->country = strtoupper($customer->cLand);
@@ -243,7 +245,7 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address)
     $request->customerConsents = array($customerConsents);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "Byjuno JTL 5.4 module 2.0.0";
+    $request->merchantDetails->integrationModule = "CembraPay JTL 5 module 2.0.0";
 
     return $request;
 }
@@ -370,7 +372,7 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $selecte
     $customerConsents->consentReference = base64_encode($consentReference);
     $request->customerConsents = array($customerConsents);
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "Cembrapay JTL 5 module 2.0.0";
+    $request->merchantDetails->integrationModule = "CembraPay JTL 5 module 2.0.0";
 
     return $request;
 
@@ -469,7 +471,7 @@ function CreateJTLChekoutShopRequest($order, $successUrl, $cancelUrl, $errorUrl)
     $request->merchantDetails->returnUrlError = base64_encode($errorUrl);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "Cembrapay JTL 5 module 2.0.0";
+    $request->merchantDetails->integrationModule = "CembraPay JTL 5 module 2.0.0";
 
     return $request;
 
