@@ -219,8 +219,8 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address)
         $request->deliveryDetails->deliveryCompanyName = $address->cFirma;
     }
     $request->deliveryDetails->deliverySalutation = CembraPayConstants::$GENTER_UNKNOWN;
-    $request->deliveryDetails->deliveryAddrFirstLine = (string)html_entity_decode(trim($address->Lieferadresse->cStrasse), ENT_COMPAT, 'UTF-8') . " " .
-        (string)html_entity_decode(trim($address->Lieferadresse->cHausnummer), ENT_COMPAT, 'UTF-8');
+    $request->deliveryDetails->deliveryAddrFirstLine = (string)html_entity_decode(trim($address->cStrasse), ENT_COMPAT, 'UTF-8') . " " .
+        (string)html_entity_decode(trim($address->cHausnummer), ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliveryAddrPostalCode = $address->cPLZ;
     $request->deliveryDetails->deliveryAddrTown = html_entity_decode($address->cOrt, ENT_COMPAT, 'UTF-8');
     $request->deliveryDetails->deliveryAddrCountry = strtoupper($address->cLand);
