@@ -245,7 +245,7 @@ function CreateJTLScreeningShopRequest($customer, $cart, $address)
     $request->customerConsents = array($customerConsents);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "CembraPay JTL 5 module 2.0.0";
+    $request->merchantDetails->integrationModule = "CembraPay JTL 5 module 2.0.1";
 
     return $request;
 }
@@ -372,7 +372,7 @@ function CreateJTLAuthShopRequest($order, $repayment, $invoiceDelivery, $selecte
     $customerConsents->consentReference = base64_encode($consentReference);
     $request->customerConsents = array($customerConsents);
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "CembraPay JTL 5 module 2.0.0";
+    $request->merchantDetails->integrationModule = "CembraPay JTL 5 module 2.0.1";
 
     return $request;
 
@@ -471,7 +471,7 @@ function CreateJTLChekoutShopRequest($order, $successUrl, $cancelUrl, $errorUrl)
     $request->merchantDetails->returnUrlError = base64_encode($errorUrl);
 
     $request->merchantDetails->transactionChannel = "WEB";
-    $request->merchantDetails->integrationModule = "CembraPay JTL 5 module 2.0.0";
+    $request->merchantDetails->integrationModule = "CembraPay JTL 5 module 2.0.1";
 
     return $request;
 
